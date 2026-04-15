@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Personas - ATS Project</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0f172a;
+            --secondary: #3b82f6;
+            --hr-color: #ec4899;
+            --hm-color: #8b5cf6;
+            --cand-color: #10b981;
+            --bg: #f8fafc;
+            --text-main: #334155;
+            --border: #e2e8f0;
+        }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg); color: var(--text-main); line-height: 1.6; margin: 0; padding: 2rem; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .header { text-align: center; margin-bottom: 3rem; }
+        .header h1 { color: var(--primary); font-size: 2.5rem; margin-bottom: 0.5rem; }
+        .header p { color: #64748b; font-size: 1.1rem; max-width: 800px; margin: 0 auto; }
+        .personas-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; }
+        .persona-card { background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); border: 1px solid var(--border); transition: transform 0.2s; }
+        .persona-card:hover { transform: translateY(-5px); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
+        .p-header { padding: 2rem; color: white; position: relative; }
+        .p-hr { background: linear-gradient(135deg, var(--hr-color), #be185d); }
+        .p-hm { background: linear-gradient(135deg, var(--hm-color), #6d28d9); }
+        .p-cand { background: linear-gradient(135deg, var(--cand-color), #047857); }
+        .avatar-placeholder { width: 80px; height: 80px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; margin-bottom: 1rem; border: 2px solid rgba(255,255,255,0.5); }
+        .p-name { font-size: 1.5rem; font-weight: 700; margin: 0; }
+        .p-role { font-size: 0.95rem; opacity: 0.9; margin: 0; }
+        .p-body { padding: 2rem; }
+        .section-title { font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; color: #64748b; font-weight: 700; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-top: 1.5rem; margin-bottom: 1rem; }
+        .section-title:first-child { margin-top: 0; }
+        ul { padding-left: 1.25rem; margin: 0; }
+        li { margin-bottom: 0.5rem; font-size: 0.95rem; }
+        .quote { font-style: italic; color: #475569; background: #f1f5f9; padding: 1rem; border-radius: 8px; border-left: 4px solid var(--secondary); margin-bottom: 1.5rem; font-size: 0.95rem;}
+        .tech-savvy { display: flex; align-items: center; gap: 0.5rem; margin-top: 1rem; }
+        .bar { flex-grow: 1; background: #e2e8f0; height: 8px; border-radius: 4px; overflow: hidden; }
+        .fill { background: var(--secondary); height: 100%; }
+        .badge { background: #f1f5f9; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600; color: #334155; display: inline-block; margin-right: 0.5rem; margin-bottom: 0.5rem;}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Hồ sơ Người dùng (User Personas)</h1>
+            <p>Xây dựng dựa trên kết quả phỏng vấn các đối tượng trong Stakeholder Matrix. Đây sẽ là Kim chỉ nam (North Star) cho quá trình thiết kế UI/UX và ưu tiên Backlog ở giai đoạn Code ATS.</p>
+        </div>
+
+        <div class="personas-grid">
+            <!-- Persona 1 -->
+            <div class="persona-card">
+                <div class="p-header p-hr">
+                    <div class="avatar-placeholder">👩🏻‍💻</div>
+                    <h2 class="p-name">Chị Mai - "Bận Rộn"</h2>
+                    <p class="p-role">Key User | Chuyên viên Tuyển dụng (Recruiter)</p>
+                </div>
+                <div class="p-body">
+                    <div class="quote">"Chị dành cả thanh xuân chỉ để copy paste dữ liệu từ Email ứng viên ra file Excel theo dõi."</div>
+                    
+                    <h3 class="section-title">Hành vi & Tích cách</h3>
+                    <p style="font-size: 0.95rem;">Làm việc đa nhiệm, luôn phải mở cùng lúc 10 tab Chrome (Facebook, VietnamWorks, Excel, Gmail). Dễ bị mất kiên nhẫn nếu phần mềm load chậm hoặc bắt điền nhiều trường thông tin.</p>
+                    
+                    <h3 class="section-title">Nỗi Đau (Pain-Points)</h3>
+                    <ul>
+                        <li>Thường xuyên quên nhắc ứng viên lịch phỏng vấn.</li>
+                        <li>Trưởng bộ phận hay giục "Bao giờ có người?" nhưng gửi CV thì Trưởng bộ phận lại không duyệt ngay.</li>
+                        <li>Cuối tháng tổng hợp KPI tỷ lệ Pass/Fail để nộp cho Giám đốc mất hẳn 1 ngày cày số.</li>
+                    </ul>
+
+                    <h3 class="section-title">Mục tiêu từ Hệ thống ATS</h3>
+                    <ul>
+                        <li><span class="badge">Nhanh</span> Hệ thống có nút bấm 1 click để duyệt ứng viên.</li>
+                        <li><span class="badge">Tự động</span> Hệ thống tự đọc CV và trích xuất số điện thoại, bắt trùng CV.</li>
+                    </ul>
+
+                    <div class="tech-savvy">
+                        <span style="font-size: 0.85rem; font-weight: 600; width: 100px;">Tech Savvy:</span>
+                        <div class="bar"><div class="fill" style="width: 70%; background: var(--hr-color);"></div></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Persona 2 -->
+            <div class="persona-card">
+                <div class="p-header p-hm">
+                    <div class="avatar-placeholder">👨🏽‍💼</div>
+                    <h2 class="p-name">Anh Bình - "Thực Tế"</h2>
+                    <p class="p-role">End User | Trưởng Phòng Kỹ Thuật (Hiring Manager)</p>
+                </div>
+                <div class="p-body">
+                    <div class="quote">"Đừng bắt tôi đăng nhập vào hệ thống lạ nào nữa. Gửi mail ngắn gọn bạn này giỏi gì, tôi ấn Duyệt là xong."</div>
+                    
+                    <h3 class="section-title">Hành vi & Tích cách</h3>
+                    <p style="font-size: 0.95rem;">Rất khắt khe về chuyên môn, lịch họp liên miên suốt tuần. Chủ yếu duyệt yêu cầu qua điện thoại Smartphone trong lúc nghỉ giải lao hoặc đi cafe.</p>
+                    
+                    <h3 class="section-title">Nỗi Đau (Pain-Points)</h3>
+                    <ul>
+                        <li>Phải căng mắt đọc những CV dài 4 trang lưu định dạng lộn xộn từ HR gửi sang.</li>
+                        <li>Đôi khi quên trả lời email của HR dẫn đến mất ứng viên giỏi.</li>
+                        <li>Khó đánh giá chéo ý kiến cùng lúc với các Leader khác khi phỏng vấn.</li>
+                    </ul>
+
+                    <h3 class="section-title">Mục tiêu từ Hệ thống ATS</h3>
+                    <ul>
+                        <li><span class="badge">Mobility</span> UI tối ưu 100% cho màn hình ngang điện thoại.</li>
+                        <li><span class="badge">Tóm tắt</span> ATS phải auto gen ra được bảng Tóm tắt kỹ năng ứng viên (VD: Java 5 năm, Spring boot 3 năm) để đọc sâu.</li>
+                    </ul>
+
+                    <div class="tech-savvy">
+                        <span style="font-size: 0.85rem; font-weight: 600; width: 100px;">Tech Savvy:</span>
+                        <div class="bar"><div class="fill" style="width: 90%; background: var(--hm-color);"></div></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Persona 3 -->
+            <div class="persona-card">
+                <div class="p-header p-cand">
+                    <div class="avatar-placeholder">🎓</div>
+                    <h2 class="p-name">Tuấn Kiệt - "Tài Năng"</h2>
+                    <p class="p-role">External User | Ứng viên IT (Candidate)</p>
+                </div>
+                <div class="p-body">
+                    <div class="quote">"Nếu trang tuyển dụng của công ty bắt tạo tài khoản dài dòng, tôi sẽ thoát và nộp cho công ty khác."</div>
+                    
+                    <h3 class="section-title">Hành vi & Tích cách</h3>
+                    <p style="font-size: 0.95rem;">Sinh viên mới ra trường hoặc IT có 2 năm kinh nghiệm. Cùng một lúc đi rải CV cho 5 công ty khác nhau. Thích sự minh bạch và phản hồi nhanh nhạy.</p>
+                    
+                    <h3 class="section-title">Nỗi Đau (Pain-Points)</h3>
+                    <ul>
+                        <li>Gửi CV đi xong như ném sỏi xuống ao, không có email confirm đã nhận thành công.</li>
+                        <li>Website tuyển dụng công ty load quá chậm, form bắt điền tay lại những gì đã có trong CV (Upload file rồi còn bắt gõ lại kinh nghiệm).</li>
+                    </ul>
+
+                    <h3 class="section-title">Mục tiêu từ Hệ thống ATS</h3>
+                    <ul>
+                        <li><span class="badge">Seamless</span> Nộp CV hoàn tất trong môt trang duy nhất (One-page layout).</li>
+                        <li><span class="badge">Brand</span> Nhận được Email phản hồi chuyên nghiệp lập tức sau khi nhấn Submit.</li>
+                    </ul>
+
+                    <div class="tech-savvy">
+                        <span style="font-size: 0.85rem; font-weight: 600; width: 100px;">Tech Savvy:</span>
+                        <div class="bar"><div class="fill" style="width: 100%; background: var(--cand-color);"></div></div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</body>
+</html>

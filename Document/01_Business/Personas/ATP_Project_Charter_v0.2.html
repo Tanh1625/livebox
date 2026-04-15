@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ATP_Project_Charter_v0.2</title>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            color: #4a4a4a;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background: #e9ecef;
+        }
+        .document-wrapper {
+            background: #fff;
+            max-width: 850px;
+            margin: 40px auto;
+            padding: 60px 80px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            box-sizing: border-box;
+        }
+        h1 {
+            font-family: "Segoe UI", Arial, sans-serif;
+            font-size: 2.6em;
+            font-weight: 400;
+            color: #2c2c2c;
+            margin-bottom: 25px;
+            margin-top: 0;
+        }
+        .header-divider {
+            border-bottom: 2px solid #aecdda;
+            margin-bottom: 35px;
+        }
+        h2 {
+            font-family: "Segoe UI", Arial, sans-serif;
+            font-weight: 400;
+            font-size: 1.8em;
+            color: #55b6c2;
+            margin-top: 35px;
+            margin-bottom: 20px;
+        }
+        h3 {
+            font-family: "Segoe UI", Arial, sans-serif;
+            font-weight: 400;
+            font-size: 1.35em;
+            color: #f78b7b;
+            margin-top: 25px;
+            margin-bottom: 12px;
+        }
+        p {
+            margin-bottom: 18px;
+            font-size: 14.5px;
+            text-align: justify;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 25px;
+            font-size: 14.5px;
+        }
+        table, th, td {
+            border: 1px solid #222;
+        }
+        th, td {
+            padding: 10px 15px;
+        }
+        th {
+            font-weight: 400;
+            color: #55b6c2;
+            text-align: center;
+        }
+        td {
+            color: #4a4a4a;
+        }
+        .overview-table td:first-child {
+            color: #55b6c2;
+            text-align: center;
+            width: 35%;
+        }
+        .signatures {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+        .signature-block {
+            width: 45%;
+        }
+        .signature-line {
+            border-bottom: 1px solid #4a4a4a;
+            margin-bottom: 8px;
+            height: 40px;
+        }
+        .signature-name {
+            font-size: 14.5px;
+            color: #4a4a4a;
+        }
+        .page-break {
+            margin-top: 60px;
+        }
+        @media print {
+            body { background: #fff; }
+            .document-wrapper { box-shadow: none; margin: 0; padding: 20px; }
+            .page-break { page-break-before: always; margin-top: 0; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="document-wrapper">
+    <!-- Header -->
+    <h1>Project Charter</h1>
+    <div class="header-divider"></div>
+
+    <!-- Overview Section -->
+    <h2>Project Overview</h2>
+    
+    <table class="overview-table">
+        <tbody>
+            <tr>
+                <td>Project Name:</td>
+                <td>Hệ thống Web Tuyển dụng (ATS Platform)</td>
+            </tr>
+            <tr>
+                <td>Project Sponsor:</td>
+                <td>Giám đốc Nhân sự (HR Director)</td>
+            </tr>
+            <tr>
+                <td>Project Manager (PM):</td>
+                <td>Business Analyst Lead</td>
+            </tr>
+            <tr>
+                <td>PM Email Address:</td>
+                <td>ba.lead@company.com</td>
+            </tr>
+            <tr>
+                <td>PM Phone Number:</td>
+                <td>098x.xxx.xxx</td>
+            </tr>
+            <tr>
+                <td>Business Unit:</td>
+                <td>Khối Hành chính - Nhân sự & CNTT</td>
+            </tr>
+            <tr>
+                <td>Expected Start Date:</td>
+                <td>01/04/2026</td>
+            </tr>
+            <tr>
+                <td>Expected Completion Date:</td>
+                <td>15/07/2026</td>
+            </tr>
+            <tr>
+                <td>Estimated Budget:</td>
+                <td>N/A (Sử dụng nguồn nhân lực nội bộ)</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Description Section -->
+    <h2>Project Description</h2>
+    
+    <h3>Purpose</h3>
+    <p>Dự án ATS nhằm giải quyết tình trạng nhập liệu CV thủ công bằng Excel, khắc phục sự rơi rớt (leakage) ứng viên trong quá trình luân chuyển quy trình đánh giá giữa HR và Trưởng bộ phận. Hệ thống thiết lập một nền tảng tập trung (centralized platform) để nâng cao tốc độ tuyển dụng (giảm 30% time-to-hire) đáp ứng quy mô nhân sự ngày càng mở rộng của Công ty (100+ CBNV).</p>
+
+    <h3>Scope</h3>
+    <p><strong>Bao gồm (In-scope):</strong> Quản lý cổng thông tin việc làm (Job Board), Tự động bóc tách CV (Auto-parser CV), Quản lý quy trình phễu ứng viên (Pipeline Kanban), và Tự động hóa gửi Email (Interview Invitations).</p>
+    <p><strong>Không bao gồm (Out-of-scope):</strong> Hệ thống thi trắc nghiệm riêng biệt, Tích hợp module tính lương/Chấm công (Core HR), Chatbot phản hồi AI tự động cho Ứng viên.</p>
+
+    <!-- Page Break Simulation -->
+    <div class="page-break"></div>
+
+    <!-- Deliverables Section -->
+    <h3>Key Deliverables</h3>
+    <p>1. Cổng Web-based Internal Portal dành cho HR và Trưởng Bộ phận (Hiring Manager).<br>
+       2. Trang Web Tuyển dụng (Career Site) dành cho Ứng viên apply công việc. <br>
+       3. Bộ tài liệu Thiết kế (SRS, ERD Database, System Architecture).</p>
+
+    <!-- Resources Section -->
+    <h3>Resources</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Team Members</th>
+                <th>Facilities</th>
+                <th>Equipment</th>
+                <th>Other Resources</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1 Project Manager/BA</td>
+                <td>Office Meeting Rooms</td>
+                <td>On-Premise Server/AWS</td>
+                <td>API Parse CV (Bên thứ 3)</td>
+            </tr>
+            <tr>
+                <td>1 UI/UX, 1 QA</td>
+                <td>Figma/Jira Workspace</td>
+                <td>Enterprise Emails</td>
+                <td>Ngân sách SMS Brandname</td>
+            </tr>
+            <tr>
+                <td>2 Backend, 1 Frontend</td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Schedule Section -->
+    <h3>Schedule</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Key Milestone</th>
+                <th>Start Date</th>
+                <th>Completion Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Khảo sát Requirement & Chốt SRS (Baseline)</td>
+                <td>01/04/2026</td>
+                <td>14/04/2026</td>
+            </tr>
+            <tr>
+                <td>Thiết kế UI/UX & Data Architecture</td>
+                <td>15/04/2026</td>
+                <td>30/04/2026</td>
+            </tr>
+            <tr>
+                <td>Development & Unit Testing</td>
+                <td>01/05/2026</td>
+                <td>30/06/2026</td>
+            </tr>
+            <tr>
+                <td>User Acceptance Testing (UAT) & Go-Live</td>
+                <td>01/07/2026</td>
+                <td>15/07/2026</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Risks Section -->
+    <h3>Risks</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Potential Risk</th>
+                <th>Perceived Impact</th>
+                <th>Proposed Mitigation Strategy</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>User adoption (Kháng cự thay đổi từ thói quen dùng Excel)</td>
+                <td>Cao (High)</td>
+                <td>Tập trung vào UI/UX mượt mà nhất. Bổ sung các Role đào tạo từ sớm bằng bản thiết kế Prototype trước khi code.</td>
+            </tr>
+            <tr>
+                <td>Parser CV sai với các định dạng PDF phức tạp</td>
+                <td>Trung bình (Medium)</td>
+                <td>Bổ sung cơ chế Fallback: Cung cấp tính năng để HR chỉnh sửa thủ công (Manual Edit) sau khi nhận kết quả thô từ AI.</td>
+            </tr>
+            <tr>
+                <td>Thiếu API Tích hợp bảo mật LDAP/SSO nội bộ</td>
+                <td>Cao (High)</td>
+                <td>Giao tiếp với IT Admin sớm trong tuần thứ 2 để chốt chuẩn giao thức Token và Security rules.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Approval Section -->
+    <h2>Approval and Signatures</h2>
+    <div class="signatures">
+        <div class="signature-block">
+            <div class="signature-line"></div>
+            <div class="signature-name">[Name], Project Sponsor</div>
+        </div>
+        <div class="signature-block">
+            <div class="signature-line"></div>
+            <div class="signature-name">[Name], Project Manager</div>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

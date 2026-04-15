@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Goals - ATS Project</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0f172a;
+            --accent: #10b981;
+            --text-main: #334155;
+            --border: #e2e8f0;
+        }
+        body { font-family: 'Inter', sans-serif; background-color: #f1f5f9; color: var(--text-main); line-height: 1.6; padding: 2rem; }
+        .doc-container { max-width: 900px; margin: 0 auto; background: white; padding: 4rem; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); border-top: 6px solid var(--accent); border-radius: 8px; }
+        .header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid var(--border); padding-bottom: 1.5rem; margin-bottom: 2rem; }
+        .title { font-size: 2.2rem; margin: 0 0 0.5rem 0; color: var(--primary); }
+        .status-draft { display: inline-block; background: #fefce8; color: #a16207; padding: 0.2rem 0.6rem; border-radius: 4px; font-size: 0.85rem; font-weight: bold; border: 1px solid #fef08a;}
+        h2 { color: var(--primary); font-size: 1.4rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-top: 2.5rem; }
+        .grid-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 1.5rem; }
+        .card { border: 1px solid var(--border); padding: 1.5rem; border-radius: 8px; background: #f8fafc; }
+        .card h3 { color: #047857; margin-top: 0; display: flex; align-items: center; gap: 0.5rem;}
+        .metric-badge { background: #dcfce7; color: #166534; padding: 0.3rem 0.6rem; border-radius: 4px; font-weight: bold; font-size: 1.2rem; display: inline-block; margin-bottom: 1rem;}
+        ul { padding-left: 1.5rem; margin-bottom: 0;}
+    </style>
+</head>
+<body>
+    <div class="doc-container">
+        <div class="header">
+            <div>
+                <h1 class="title">Danh sách Mục tiêu Kinh tế (Business Goals & KPIs)</h1>
+                <div style="color: #64748b; font-size: 1.1rem;">Khảo sát hiện trạng (As-Is) & Mục tiêu hướng tới (To-Be) của Dự án ATS</div>
+            </div>
+            <div>
+                <span class="status-draft">Version: v0.1 (Draft)</span>
+            </div>
+        </div>
+
+        <h2>1. Vấn đề Hiện tại (Pain Points - As-Is Context)</h2>
+        <p>Phân tích từ quá trình phỏng vấn Ban giám đốc và Bộ phận HR của công ty IT 100+ nhân sự, chúng ta gặp 3 điểm nghẽn chính:</p>
+        <ul>
+            <li><strong>Nhập liệu thủ công mất thời gian:</strong> HR tốn 3-4 giờ mỗi ngày chỉ để copy thông tin ứng viên từ file PDF CV vào file Excel Quản lý.</li>
+            <li><strong>Thất thoát nguồn lực (Candidate Leakage):</strong> Khi tỷ lệ apply cao vào các Job Fair, HR bỏ sót email, quên gửi phản hồi (Reject letter), dẫn đến hình ảnh nhà tuyển dụng (Employer Branding) đi xuống.</li>
+            <li><strong>Thiếu dữ liệu điều hành (No Analytics):</strong> Giám đốc không biết nguồn tuyển dụng nào (VietnamWorks, TopCV, LinkedIn) mang lại ứng viên chất lượng nhất để đổ ngân sách Marketing hợp lý.</li>
+        </ul>
+
+        <h2>2. Mục tiêu Kinh doanh (SMART Business Goals)</h2>
+        <p>Hệ thống ATS Phase 1 khi đưa vào vận hành (Dự kiến sau 4 tháng) phải giải quyết bằng được các KPI cụ thể dưới đây:</p>
+
+        <div class="grid-cards">
+            <div class="card">
+                <h3>1. Rút ngắn thời gian tuyển (Time-to-Hire)</h3>
+                <div class="metric-badge">Giảm 30%</div>
+                <p>Nút thắt thắt lớn nhất đang ở khâu sàng lọc sơ yếu lý lịch và sắp lịch phỏng vấn.</p>
+                <ul>
+                    <li><strong>Mục tiêu:</strong> Đưa thời gian tuyển dụng trung bình (Từ lúc đăng tín đến lúc ký Offer) <b>từ 18 ngày xuống còn dưới 12 ngày.</b></li>
+                    <li><strong>Cách ATS hỗ trợ:</strong> Tự động bóc tách (Parse) CV, xếp lịch Google Meet tự động qua 1 click chuột.</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3>2. Số hóa & Tối ưu năng suất (Productivity)</h3>
+                <div class="metric-badge">Tiết kiệm 20 giờ/tuần</div>
+                <p>Giải phóng Recruiter khỏi các tác vụ Admin thủ công không sinh ra giá trị trực tiếp.</p>
+                <ul>
+                    <li><strong>Mục tiêu:</strong> Chấm dứt 100% việc nhập liệu bằng tay vào Excel.</li>
+                    <li><strong>Cách ATS hỗ trợ:</strong> Nguồn CV đổ thẳng về System Pool. Trạng thái Pipeline của Ứng viên (New -> Test -> Interviewing -> Offered) thao tác hoàn toàn bằng kéo thả Board Kanban.</li>
+                </ul>
+            </div>
+
+            <div class="card" style="grid-column: 1 / -1;">
+                <h3>3. Xây dựng Data Data-driven Recruitment Strategy</h3>
+                <div class="metric-badge">Dashboard 360 độ</div>
+                <p>Mang lại quyền lực kiểm soát cho HR/C-Level thông qua bức tranh dữ liệu (Big Data).</p>
+                <ul>
+                    <li><strong>Mục tiêu:</strong> Báo cáo chính xác Tỷ lệ chuyển đổi (Conversion rate) của từng kênh tuyển dụng và Chi phí trên mỗi Lượt tuyển (Cost-Per-Hire).</li>
+                    <li><strong>Cách ATS hỗ trợ:</strong> Cung cấp báo cáo phễu (Pipeline Charts), Tracking Sources (Biết ứng viên qua link UTM nào) để phân bổ ngân sách 500 triệu năm sau hợp lý.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div style="background: #eff6ff; border-left: 4px solid #3b82f6; padding: 1.5rem; margin-top: 2.5rem;">
+            <p style="margin: 0; color: #1e40af;"><strong>Tuyên thệ dự án:</strong> "Dự án ATS không sinh ra chỉ để số hóa giấy tờ lưu cho bề thế, mà phải là công cụ vũ khí đắc lực giúp công ty chiến thắng trên mặt trận chiêu mộ Nhân tài IT thị trường." - <i>BA Lead</i></p>
+        </div>
+    </div>
+</body>
+</html>
