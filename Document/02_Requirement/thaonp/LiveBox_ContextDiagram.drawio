@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="Electron" modified="2023-10-25T00:00:00.000Z" agent="Mozilla/5.0" version="21.1.2" type="device">
+  <diagram id="ctx_diag_livebox" name="LiveBox System Context Diagram">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        
+        <!-- ==================== The System / Process 0 ==================== -->
+        <mxCell id="system" value="&lt;b style=&quot;font-size: 16px;&quot;&gt;LiveBox System&lt;/b&gt;&lt;br&gt;&lt;br&gt;Real-time Chat Ecosystem&lt;br&gt;(React SPA, Spring Boot, PostgreSQL)" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=0;fontSize=12;spacing=4;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="325" y="300" width="200" height="200" as="geometry" />
+        </mxCell>
+        
+        <!-- ==================== External Entities (Actors) ==================== -->
+        <!-- External Entity 1: Community Admin -->
+        <mxCell id="admin" value="Community Admin&#xa;«The Organizer»&#xa;(Alex)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;shadow=1;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="60" y="100" width="160" height="80" as="geometry" />
+        </mxCell>
+        
+        <!-- External Entity 2: Authenticated Member -->
+        <mxCell id="member" value="Authenticated Member&#xa;«The Socializer»&#xa;(Jamie)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;shadow=1;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="60" y="600" width="160" height="80" as="geometry" />
+        </mxCell>
+        
+        <!-- External Entity 3: Anonymous Visitor -->
+        <mxCell id="guest" value="Anonymous Visitor&#xa;«The Explorer»&#xa;(Sam)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1;shadow=1;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="630" y="360" width="160" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== Data Flows (Edges) ==================== -->
+        
+        <!-- Admin to System -->
+        <mxCell id="edge-admin-in" value="Provisions Servers/Channels&#xa;Configures RBAC" style="endArrow=classic;html=1;labelBackgroundColor=none;edgeStyle=orthogonalEdgeStyle;rounded=1;fontSize=11;fontColor=#333333;" edge="1" parent="1" source="admin" target="system">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="425" y="140" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- System to Admin -->
+        <mxCell id="edge-admin-out" value="Zero-Reload Reactivity (SPA)&#xa;Immediate UI Feedback" style="endArrow=classic;html=1;dashed=1;labelBackgroundColor=none;edgeStyle=orthogonalEdgeStyle;rounded=1;fontSize=11;fontColor=#333333;exitX=0;exitY=0.25;exitDx=0;exitDy=0;" edge="1" parent="1" source="system" target="admin">
+           <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="140" y="320" />
+            </Array>
+           </mxGeometry>
+        </mxCell>
+
+        <!-- Member to System -->
+        <mxCell id="edge-member-in" value="Sends Real-time Messages&#xa;Joins Voice/Text Channels" style="endArrow=classic;html=1;labelBackgroundColor=none;edgeStyle=orthogonalEdgeStyle;rounded=1;fontSize=11;fontColor=#333333;" edge="1" parent="1" source="member" target="system">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="425" y="640" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- System to Member -->
+        <mxCell id="edge-member-out" value="WebSocket Broadcasts (&lt;200ms)&#xa;Optimistic UI Updates" style="endArrow=classic;html=1;dashed=1;labelBackgroundColor=none;edgeStyle=orthogonalEdgeStyle;rounded=1;fontSize=11;fontColor=#333333;exitX=0;exitY=0.75;exitDx=0;exitDy=0;" edge="1" parent="1" source="system" target="member">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="140" y="475" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Guest to System -->
+        <mxCell id="edge-guest-in" value="Submits Registration Payload&#xa;Login Credentials" style="endArrow=classic;html=1;labelBackgroundColor=none;edgeStyle=orthogonalEdgeStyle;rounded=1;fontSize=11;fontColor=#333333;exitX=0.25;exitY=0;exitDx=0;exitDy=0;" edge="1" parent="1" source="guest" target="system">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="670" y="350" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- System to Guest -->
+        <mxCell id="edge-guest-out" value="Issues JWT Session (HttpOnly)&#xa;Graceful 401 Redirects" style="endArrow=classic;html=1;dashed=1;labelBackgroundColor=none;edgeStyle=orthogonalEdgeStyle;rounded=1;fontSize=11;fontColor=#333333;exitX=1;exitY=0.75;exitDx=0;exitDy=0;" edge="1" parent="1" source="system" target="guest">
+          <mxGeometry width="50" height="50" relative="1" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
