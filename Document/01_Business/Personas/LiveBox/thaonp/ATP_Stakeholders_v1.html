@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stakeholder Matrix - LiveBox Project</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0f172a;
+            --text-main: #334155;
+            --border: #e2e8f0;
+            --accent: #3b82f6;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f1f5f9;
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 2rem;
+            margin: 0;
+        }
+
+        .doc-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 4rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            border-top: 6px solid var(--accent);
+            border-radius: 8px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .title {
+            font-size: 2.2rem;
+            margin: 0 0 0.5rem 0;
+            color: var(--primary);
+        }
+
+        .status-draft {
+            display: inline-block;
+            background: #eff6ff;
+            color: #1e40af;
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            border: 1px solid #bfdbfe;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 2rem;
+        }
+
+        th,
+        td {
+            border: 1px solid var(--border);
+            padding: 1rem;
+            text-align: left;
+        }
+
+        th {
+            background: #f8fafc;
+            color: var(--primary);
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+        }
+
+        h2 {
+            color: var(--primary);
+            font-size: 1.4rem;
+            margin-top: 0;
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-align: center;
+            width: 60px;
+        }
+
+        .high {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .medium {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .low {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .role {
+            background: #e0e7ff;
+            color: #3730a3;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="doc-container">
+        <div class="header">
+            <div>
+                <h1 class="title">Stakeholder Matrix</h1>
+                <div style="color: #64748b; font-size: 1.1rem;">Survey & Analysis of LiveBox Project Stakeholders</div>
+            </div>
+            <div>
+                <span class="status-draft">Version: v1.0 (Baseline)</span>
+            </div>
+        </div>
+
+        <h2>Power/Interest Grid Analysis</h2>
+        <p>Mapping the influence and engagement levels of the key individuals, target users, and technical teams that
+            impact the success of the LiveBox real-time ecosystem.</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th width="20%">Stakeholder / Role</th>
+                    <th width="10%">Power</th>
+                    <th width="10%">Interest</th>
+                    <th width="30%">Objectives & Expectations</th>
+                    <th width="30%">BA Management Strategy</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <span class="role">Sponsor / Decider</span><br />
+                        <b>CTO / Project Sponsor</b>
+                    </td>
+                    <td><span class="tag high">High</span></td>
+                    <td><span class="tag high">High</span></td>
+                    <td>Requires a scalable architecture that guarantees &lt; 200ms latency and supports 10k+ concurrent
+                        users. Demands zero data loss via ACID-compliant PostgreSQL transactions.</td>
+                    <td><strong>Manage Closely:</strong> Present technical blueprints (Architecture, DB schemas) for
+                        approval. Provide KPI dashboards on system load tests and security audits.</td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="role">Key User</span><br />
+                        <b>Community Admin</b> (Alex)
+                    </td>
+                    <td><span class="tag high">High</span></td>
+                    <td><span class="tag high">High</span></td>
+                    <td>Needs a robust workspace provisioning flow without F5 page reloads. Demands explicit Role-Based
+                        Access Control (RBAC) tools to manage Server/Channel members.</td>
+                    <td><strong>Keep Satisfied:</strong> Involve them in early React Component testing. Ensure UI state
+                        synchronizes perfectly to Backend mutations to guarantee a seamless SPA experience.</td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="role">End User</span><br />
+                        <b>Authenticated Member</b> (Jamie)
+                    </td>
+                    <td><span class="tag low">Low</span></td>
+                    <td><span class="tag high">High</span></td>
+                    <td>Relies entirely on instant message delivery. Despises network lag or frozen UI frames. Demands
+                        obvious visual indicators (Optimistic UI) when a message is pending server ACK.</td>
+                    <td><strong>Keep Informed & Monitor:</strong> Beta-test the WebSocket messaging flow intensively.
+                        Prioritize UX edge-case handling for network degradation or dropped socket connections.</td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="role">IT / Implementer</span><br />
+                        <b>Development Team</b> (FE/BE)
+                    </td>
+                    <td><span class="tag medium">Med</span></td>
+                    <td><span class="tag high">High</span></td>
+                    <td>Requires clear un-ambiguous technical specifications: DTO mappings, WebSocket sub-protocols, JWT
+                        payload definitions, and PostgreSQL entity relations.</td>
+                    <td><strong>Consult & Collaborate:</strong> Provide granular Agile User Stories. Run frequent
+                        grooming sessions to align the React (TypeScript) and Spring Boot teams on identical API
+                        contracts.</td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="role">Quality Assurance</span><br />
+                        <b>QA / Tester Team</b>
+                    </td>
+                    <td><span class="tag medium">Med</span></td>
+                    <td><span class="tag high">High</span></td>
+                    <td>
+                        Responsible for ensuring system reliability and quality across real-time messaging and voice
+                        communication.
+                        Requires clear acceptance criteria, test scenarios for WebSocket flows, concurrency handling,
+                        and failure recovery
+                        (e.g., dropped connections, retry mechanisms). Focuses on detecting race conditions and
+                        validating end-to-end user experience.
+                    </td>
+                    <td>
+                        <strong>Consult & Validate:</strong> Define detailed test cases from User Stories. Collaborate
+                        closely with Dev team
+                        to validate API contracts and WebSocket events. Perform regression, load, and integration
+                        testing to ensure system stability
+                        under high concurrency conditions.
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="role">External User</span><br />
+                        <b>Anonymous Visitor</b> (Sam)
+                    </td>
+                    <td><span class="tag low">Low</span></td>
+                    <td><span class="tag medium">Med</span></td>
+                    <td>Expects industry-standard security regarding credential handling (BCrypt hashing). Easily
+                        frustrated by unhandled 401 exceptions or clunky login redirects.</td>
+                    <td><strong>Monitor (Design Focus):</strong> Ask QA to simulate guest navigation. Stress-test the
+                        Spring Security filter chain to ensure smooth redirects rather than generic server error pages.
+                    </td>
+                </tr>
+
+            </tbody>
+        </table>
+
+        <div style="background: #f8fafc; border-left: 4px solid #3b82f6; padding: 1.5rem; margin-top: 2rem;">
+            <p style="margin: 0;"><strong>📝 BA Note:</strong> Due to the heavy reliance on real-time Client-Server
+                streaming, the <b>Development Team</b> operates as a central pivot. Any discrepancy between the React
+                frontend logic and the Spring Boot backend WebSocket routing will immediately cascade into catastrophic
+                UX failure for the Key/End Users. Strict API consensus is mandatory.</p>
+        </div>
+    </div>
+</body>
+
+</html>

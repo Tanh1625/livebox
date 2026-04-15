@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ATP_ProjectCharter_LiveBox</title>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            color: #4a4a4a;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background: #e9ecef;
+        }
+        .document-wrapper {
+            background: #fff;
+            max-width: 850px;
+            margin: 40px auto;
+            padding: 60px 80px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            box-sizing: border-box;
+        }
+        h1 {
+            font-family: "Segoe UI", Arial, sans-serif;
+            font-size: 2.6em;
+            font-weight: 400;
+            color: #1e293b;
+            margin-bottom: 25px;
+            margin-top: 0;
+        }
+        .header-divider {
+            border-bottom: 2px solid #3b82f6;
+            margin-bottom: 35px;
+        }
+        h2 {
+            font-family: "Segoe UI", Arial, sans-serif;
+            font-weight: 400;
+            font-size: 1.8em;
+            color: #2563eb;
+            margin-top: 35px;
+            margin-bottom: 20px;
+        }
+        h3 {
+            font-family: "Segoe UI", Arial, sans-serif;
+            font-weight: 400;
+            font-size: 1.35em;
+            color: #475569;
+            margin-top: 25px;
+            margin-bottom: 12px;
+            border-bottom: 1px dashed #cbd5e1;
+            padding-bottom: 5px;
+        }
+        p {
+            margin-bottom: 18px;
+            font-size: 14.5px;
+            text-align: justify;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 25px;
+            font-size: 14.5px;
+        }
+        table, th, td {
+            border: 1px solid #cbd5e1;
+        }
+        th, td {
+            padding: 10px 15px;
+        }
+        th {
+            font-weight: 600;
+            background-color: #f1f5f9;
+            color: #334155;
+            text-align: center;
+        }
+        td {
+            color: #4a4a4a;
+        }
+        .overview-table td:first-child {
+            color: #0f172a;
+            font-weight: 600;
+            background-color: #f8fafc;
+            width: 35%;
+        }
+        .signatures {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+        .signature-block {
+            width: 45%;
+        }
+        .signature-line {
+            border-bottom: 1px solid #4a4a4a;
+            margin-bottom: 8px;
+            height: 40px;
+        }
+        .signature-name {
+            font-size: 14.5px;
+            color: #4a4a4a;
+        }
+        .page-break {
+            margin-top: 60px;
+        }
+        @media print {
+            body { background: #fff; }
+            .document-wrapper { box-shadow: none; margin: 0; padding: 20px; }
+            .page-break { page-break-before: always; margin-top: 0; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="document-wrapper">
+    <!-- Header -->
+    <h1>Project Charter</h1>
+    <div class="header-divider"></div>
+
+    <!-- Overview Section -->
+    <h2>Project Overview</h2>
+    
+    <table class="overview-table">
+        <tbody>
+            <tr>
+                <td>Project Name:</td>
+                <td>LiveBox - Real-time Chat Ecosystem</td>
+            </tr>
+            <tr>
+                <td>Project Sponsor:</td>
+                <td>Chief Technology Officer (CTO)</td>
+            </tr>
+            <tr>
+                <td>Project Manager (PM/BA):</td>
+                <td>Senior System Business Analyst</td>
+            </tr>
+            <tr>
+                <td>Business Unit:</td>
+                <td>Product & Engineering Department</td>
+            </tr>
+            <tr>
+                <td>Expected Start Date:</td>
+                <td>01/05/2026</td>
+            </tr>
+            <tr>
+                <td>Expected Completion Date:</td>
+                <td>30/08/2026</td>
+            </tr>
+            <tr>
+                <td>Technology Stack:</td>
+                <td>ReactJS (TS), Spring Boot, PostgreSQL, WebSockets</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Description Section -->
+    <h2>Project Description</h2>
+    
+    <h3>1. Purpose (Business Case)</h3>
+    <p>The LiveBox project aims to construct a highly scalable, real-time communication platform parallel to Discord. The objective is to replace disparate legacy polling constraints with a persistent Client-Server architecture. By guaranteeing ultra-low latency (&lt; 200ms) and ensuring uninterrupted UX through Single Page Application (SPA) technologies, the platform attempts to serve 10k+ concurrent active subscribers seamlessly without state desynchronization.</p>
+
+    <h3>2. Scope Definitions</h3>
+    <p><strong>In-Scope (Deliverables):</strong> 
+    <br>- Provisioning infrastructure for Server & Channel structural entities (Text & Basic Voice Channels).
+    <br>- Sub-&lt;200ms Real-time Messaging engine governed by WebSocket protocols & Spring Boot Message Broker.
+    <br>- Robust Auth workflows relying on JWT encapsulated within HttpOnly cookies via Spring Security.
+    <br>- Deep UI optimizations utilizing React component re-rendering and Optimistic UI update patterns.</p>
+    
+    <p><strong>Out-of-Scope (Exclusions for Phase 1):</strong> 
+    <br>- Complex automated Bot integrations or third-party webhooks.
+    <br>- Advanced Video conferencing routing protocols (WebRTC multiparty arrays).
+    <br>- Custom animated Emoji processing pipelines.</p>
+
+    <!-- Page Break Simulation -->
+    <div class="page-break"></div>
+
+    <!-- Key Assets Section -->
+    <h3>3. Key Output Deliverables</h3>
+    <p>1. Modern responsive <b>Frontend Client</b> built efficiently via ReactJS (TypeScript).<br>
+       2. Robust <b>Backend Web API</b> deployed on Java Spring Boot environment.<br>
+       3. Centralized authoritative <b>Database System</b> utilizing PostgreSQL ensuring complete ACID compliance.<br>
+       4. Unified Technical Contracts (Agile User Stories, OpenAPI specs, ERDs, and Stakeholder Matrix mapping).</p>
+
+    <!-- Resources Section -->
+    <h3>4. Resource Allocation</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Engineering Team</th>
+                <th>Testing / QA</th>
+                <th>Infrastructure</th>
+                <th>Tools & Assets</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1x Senior BA / PM</td>
+                <td>1x Automation QA</td>
+                <td>PostgreSQL Replica DBs</td>
+                <td>Jira Agile Boards</td>
+            </tr>
+            <tr>
+                <td>2x Frontend (React TS)</td>
+                <td>1x Manual QA</td>
+                <td>Dedicated CI/CD Server</td>
+                <td>Figma Prototyping</td>
+            </tr>
+            <tr>
+                <td>3x Backend (Spring Boot)</td>
+                <td></td>
+                <td>WebSocket Load Balancer</td>
+                <td>Git / GitHub Repos</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Schedule Section -->
+    <h3>5. High-Level Schedule</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Key Milestones</th>
+                <th>Duration Phase</th>
+                <th>Dependencies</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Business Analysis & Architecture Blueprint</td>
+                <td>May 01 - May 20</td>
+                <td>Stakeholder Signatures</td>
+            </tr>
+            <tr>
+                <td>Sprint 1-2: Core DB, JWT Auth, Base UI</td>
+                <td>May 21 - Jun 20</td>
+                <td>API DTO Contracts finalized</td>
+            </tr>
+            <tr>
+                <td>Sprint 3-4: WebSocket Engine, Workspace Logic</td>
+                <td>Jun 21 - Jul 31</td>
+                <td>Completion of Base Services</td>
+            </tr>
+            <tr>
+                <td>UAT, Security Audits & Production Go-Live</td>
+                <td>Aug 01 - Aug 30</td>
+                <td>QA Sign-off & Load Testing Passed</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Risks Section -->
+    <h3>6. Risk Management Plan</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Identified Architecture Risks</th>
+                <th>Impact</th>
+                <th>BA/Dev Mitigation Strategy</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>WebSocket connection drops destroying UI State</td>
+                <td>High</td>
+                <td>Implementation of robust Auto-reconnect strategies on the React Client. Leveraging Optimistic UI to queue pending message payloads while network stabilizes.</td>
+            </tr>
+            <tr>
+                <td>Security flaws during Authentication flows</td>
+                <td>High</td>
+                <td>Strict compliance with Spring Security interceptors. Mandating BCrypt hashing for persistency and intercepting all 401 exceptions on Frontend SPA routers automatically.</td>
+            </tr>
+            <tr>
+                <td>Data inconsistency during heavy concurrent writes</td>
+                <td>Medium</td>
+                <td>Deferring to PostgreSQL's native locking mechanisms ensuring transactions remain ACID compliant across active server workspaces globally.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Approval Section -->
+    <h2>Approval and Signatures</h2>
+    <div class="signatures">
+        <div class="signature-block">
+            <div class="signature-line"></div>
+            <div class="signature-name">CTO / Project Sponsor</div>
+        </div>
+        <div class="signature-block">
+            <div class="signature-line"></div>
+            <div class="signature-name">Senior BA / Project Manager</div>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Goals - LiveBox Project</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0f172a;
+            --accent: #3b82f6; 
+            --text-main: #334155;
+            --border: #e2e8f0;
+        }
+        body { font-family: 'Inter', sans-serif; background-color: #f1f5f9; color: var(--text-main); line-height: 1.6; padding: 2rem; margin: 0; }
+        .doc-container { max-width: 900px; margin: 0 auto; background: white; padding: 4rem; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); border-top: 6px solid var(--accent); border-radius: 8px; }
+        .header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid var(--border); padding-bottom: 1.5rem; margin-bottom: 2rem; }
+        .title { font-size: 2.2rem; margin: 0 0 0.5rem 0; color: var(--primary); }
+        .status-draft { display: inline-block; background: #eff6ff; color: #1e40af; padding: 0.2rem 0.6rem; border-radius: 4px; font-size: 0.85rem; font-weight: bold; border: 1px solid #bfdbfe;}
+        h2 { color: var(--primary); font-size: 1.4rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-top: 2.5rem; }
+        .grid-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 1.5rem; }
+        .card { border: 1px solid var(--border); padding: 1.5rem; border-radius: 8px; background: #f8fafc; }
+        .card h3 { color: #1d4ed8; margin-top: 0; display: flex; align-items: center; gap: 0.5rem;}
+        .metric-badge { background: #dbeafe; color: #1e3a8a; padding: 0.3rem 0.6rem; border-radius: 4px; font-weight: bold; font-size: 1.2rem; display: inline-block; margin-bottom: 1rem;}
+        ul { padding-left: 1.5rem; margin-bottom: 0;}
+    </style>
+</head>
+<body>
+    <div class="doc-container">
+        <div class="header">
+            <div>
+                <h1 class="title">Business Goals & System KPIs</h1>
+                <div style="color: #64748b; font-size: 1.1rem;">As-Is Constraints & To-Be Objectives for the LiveBox Real-time Chat Platform</div>
+            </div>
+            <div>
+                <span class="status-draft">Version: v1.0 (Baseline)</span>
+            </div>
+        </div>
+
+        <h2>1. As-Is Context & Current Pain Points</h2>
+        <p>Derived from the project requirements and persona analysis of Admins, Authenticated Members, and External Visitors, the current communication methods suffer from three major bottlenecks:</p>
+        <ul>
+            <li><strong>High Latency & Resource Drain:</strong> Legacy HTTP polling mechanisms generate massive network overhead, causing message delivery delays, UI freezes, and excessive server load.</li>
+            <li><strong>Disjointed UX & State Desynchronization:</strong> Creating structural entities like Servers or Channels requires tedious form submissions and hard page reloads (F5) to update the view hierarchy.</li>
+            <li><strong>Security Vulnerabilities:</strong> Lack of granular Role-Based Access Control (RBAC) and fragile session persistence, leading to poor onboarding and unhandled 401 Unauthorized exceptions for API endpoints.</li>
+        </ul>
+
+        <h2>2. SMART Business & Technical Goals</h2>
+        <p>The LiveBox platform aims to resolve these issues by implementing a modern Client-Server architecture. The system must hit the following targets corresponding with the implementation phase:</p>
+
+        <div class="grid-cards">
+            <div class="card">
+                <h3>1. Ultra-Low Latency Messaging</h3>
+                <div class="metric-badge">&lt; 200ms Latency</div>
+                <p>Ensuring real-time conversational flows without breaking the immersion constraints of end users.</p>
+                <ul>
+                    <li><strong>Target:</strong> Maintain end-to-end text message broadcasting latency below 200ms across active subscribers.</li>
+                    <li><strong>LiveBox Solution:</strong> Replacing HTTP polling with persistent <b>WebSocket</b> connections via Spring Boot message brokers. The ReactJS SPA will utilize <b>Optimistic UI</b> patterns to instantly render pending state mutations while awaiting network ACKs.</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3>2. Seamless Workspace Provisioning</h3>
+                <div class="metric-badge">Zero Page Reloads (SPA)</div>
+                <p>Providing Community Admins with dynamic and intuitive structure management.</p>
+                <ul>
+                    <li><strong>Target:</strong> 100% elimination of full page refreshes when provisioning Servers or Text/Voice Channels.</li>
+                    <li><strong>LiveBox Solution:</strong> Mapping RESTful DTOs directly to PostgreSQL entities for persistence. The React (TypeScript) frontend will intercept these state mutations to instantly re-render the Sidebar component tree, ensuring seamless context switching.</li>
+                </ul>
+            </div>
+
+            <div class="card" style="grid-column: 1 / -1;">
+                <h3>3. Scalable Security & Data Integrity</h3>
+                <div class="metric-badge">Robust Authorization Pipeline</div>
+                <p>Securing the concurrent architecture to handle thousands of isolated tenant sessions securely without cross-contamination.</p>
+                <ul>
+                    <li><strong>Target:</strong> Guarantee zero unauthorized access to Private API routes and ensure isolated database transactions with complete ACID compliance during message insertions.</li>
+                    <li><strong>LiveBox Solution:</strong> Implementing <b>Spring Security</b> to issue stateless <b>JWTs</b> encapsulated inside secure HttpOnly cookies. API Gateways will gracefully intercept 401 statuses to redirect visitors, while PostgreSQL acts as the single source of truth for scalable Data Integrity.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div style="background: #eff6ff; border-left: 4px solid #3b82f6; padding: 1.5rem; margin-top: 2.5rem;">
+            <p style="margin: 0; color: #1e40af;"><strong>Project Oath:</strong> "LiveBox is not merely another chat application; it is a meticulously architected client-server ecosystem designed to provide an unbroken, real-time community experience at scale." - <i>Senior Systems BA</i></p>
+        </div>
+    </div>
+</body>
+</html>
