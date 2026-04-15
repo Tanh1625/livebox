@@ -74,7 +74,8 @@
                     <h3 class="section-title">Mục tiêu từ Hệ thống</h3>
                     <ul>
                         <li><span class="badge">Quản lý</span> Tạo server, phân kênh text và voice riêng biệt theo chủ đề.</li>
-                        <li><span class="badge">Phân quyền</span> Mời/kick thành viên, kiểm soát ai được vào kênh nào.</li>
+                        <li><span class="badge">Phân quyền</span> Mời thành viên qua invite link; kick/ban thành viên vi phạm.</li>
+                        <li><span class="badge">Kênh</span> Tạo, đổi tên, xóa kênh; thay đổi phản ánh realtime tới tất cả thành viên.</li>
                         <li><span class="badge">Realtime</span> Họp voice call ngay trong server mà không cần app ngoài.</li>
                     </ul>
 
@@ -100,16 +101,16 @@
 
                     <h3 class="section-title">Nỗi Đau (Pain-Points)</h3>
                     <ul>
-                        <li>Bị bỏ lỡ tin nhắn quan trọng vì notification đến trễ hoặc không có.</li>
+                        <li>Đang ở kênh A không biết kênh B có tin nhắn mới vì không có badge unread.</li>
                         <li>Voice call bị delay, tiếng vọng khiến trải nghiệm kém, đặc biệt khi nhiều người nói cùng lúc.</li>
                         <li>Khó tìm lại file hoặc link đã được chia sẻ trước đó trong một kênh dài.</li>
                     </ul>
 
                     <h3 class="section-title">Mục tiêu từ Hệ thống</h3>
                     <ul>
-                        <li><span class="badge">Realtime</span> Tin nhắn hiển thị tức thì không cần reload trang.</li>
-                        <li><span class="badge">Voice</span> Tham gia voice channel 1-click, âm thanh ổn định, thấy ai đang nói.</li>
-                        <li><span class="badge">UX</span> Thông báo unread rõ ràng, cuộn về tin nhắn chưa đọc dễ dàng.</li>
+                        <li><span class="badge">Realtime</span> Tin nhắn hiển thị tức thì không cần reload trang (WebSocket).</li>
+                        <li><span class="badge">Unread</span> Badge số tin nhắn chưa đọc theo kênh, tự xóa khi vào kênh.</li>
+                        <li><span class="badge">Voice</span> Tham gia voice channel 1-click, thấy speaking indicator ai đang nói.</li>
                     </ul>
 
                     <div class="tech-savvy">
@@ -141,7 +142,8 @@
 
                     <h3 class="section-title">Mục tiêu từ Hệ thống</h3>
                     <ul>
-                        <li><span class="badge">Onboarding</span> Đăng ký nhanh (email + password), vào server qua invite link ngay.</li>
+                        <li><span class="badge">Onboarding</span> Đăng ký chỉ cần email + password, hoàn thành trong ≤ 30 giây.</li>
+                        <li><span class="badge">Invite Link</span> Click link mời → tự động join server + redirect kênh #general.</li>
                         <li><span class="badge">Trực quan</span> Danh sách kênh và thành viên online rõ ràng ngay khi vào server.</li>
                         <li><span class="badge">Thân thiện</span> Giao diện tối giản, không bị overwhelm bởi quá nhiều tính năng.</li>
                     </ul>
