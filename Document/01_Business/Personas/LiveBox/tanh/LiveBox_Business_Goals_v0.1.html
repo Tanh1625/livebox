@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Goals - LiveBox Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0f172a;
+            --accent: #6366f1;
+            --text-main: #334155;
+            --border: #e2e8f0;
+        }
+        body { font-family: 'Inter', sans-serif; background-color: #f1f5f9; color: var(--text-main); line-height: 1.6; padding: 2rem; }
+        .doc-container { max-width: 900px; margin: 0 auto; background: white; padding: 4rem; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); border-top: 6px solid var(--accent); border-radius: 8px; }
+
+        /* Header */
+        .header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid var(--border); padding-bottom: 1.5rem; margin-bottom: 2rem; }
+        .title { font-size: 2.2rem; margin: 0 0 0.5rem 0; color: var(--primary); }
+        .status-draft { display: inline-block; background: #fefce8; color: #a16207; padding: 0.2rem 0.6rem; border-radius: 4px; font-size: 0.85rem; font-weight: bold; border: 1px solid #fef08a; }
+
+        h2 { color: var(--primary); font-size: 1.4rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-top: 2.5rem; }
+
+        /* Grid cards */
+        .grid-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 1.5rem; }
+        .card { border: 1px solid var(--border); padding: 1.5rem; border-radius: 8px; background: #f8fafc; }
+        .card h3 { color: #4338ca; margin-top: 0; display: flex; align-items: center; gap: 0.5rem; }
+        .metric-badge { background: #ede9fe; color: #4338ca; padding: 0.3rem 0.7rem; border-radius: 4px; font-weight: bold; font-size: 1.15rem; display: inline-block; margin-bottom: 1rem; }
+        ul { padding-left: 1.5rem; margin-bottom: 0; }
+
+        /* Personas linkage table */
+        .persona-table { width: 100%; border-collapse: collapse; margin-top: 1.5rem; font-size: 0.9rem; }
+        .persona-table th { background: var(--accent); color: white; padding: .55rem 1rem; text-align: left; }
+        .persona-table td { padding: .5rem 1rem; border-bottom: 1px solid var(--border); }
+        .persona-table tr:last-child td { border-bottom: none; }
+        .persona-table tr:nth-child(even) td { background: #f8fafc; }
+
+        .tag { display: inline-block; padding: .15rem .5rem; border-radius: 4px; font-size: .78rem; font-weight: 600; }
+        .tag-owner  { background: #fff7ed; color: #c2410c; }
+        .tag-member { background: #ede9fe; color: #4338ca; }
+        .tag-guest  { background: #f0fdfa; color: #0f766e; }
+
+        /* Quote box */
+        .quote-box { background: #eff6ff; border-left: 4px solid var(--accent); padding: 1.5rem; margin-top: 2.5rem; border-radius: 0 8px 8px 0; }
+        .quote-box p { margin: 0; color: #1e3a8a; }
+
+        /* Constraint section */
+        .constraint-list li { margin-bottom: .4rem; }
+    </style>
+</head>
+<body>
+    <div class="doc-container">
+
+        <!-- ── Document Header ── -->
+        <div class="header">
+            <div>
+                <h1 class="title">Danh sách Mục tiêu Kinh doanh (Business Goals & KPIs)</h1>
+                <div style="color: #64748b; font-size: 1.1rem;">Khảo sát hiện trạng (As-Is) & Mục tiêu hướng tới (To-Be) của Dự án <strong>LiveBox</strong> – Nền tảng Chat Thời gian Thực</div>
+            </div>
+            <div>
+                <span class="status-draft">Version: v0.1 (Draft)</span>
+            </div>
+        </div>
+
+        <!-- ── Section 1: As-Is Pain Points ── -->
+        <h2>1. Vấn đề Hiện tại (Pain Points – As-Is Context)</h2>
+        <p>Phân tích từ phỏng vấn 3 nhóm người dùng mục tiêu (<em>Server Owner, Active Member, New User</em>) và khảo sát các giải pháp chat nhóm hiện có trên thị trường (Zalo, Slack, Discord), chúng ta gặp <strong>4 điểm nghẽn chính</strong>:</p>
+        <ul>
+            <li><strong>Phân tán công cụ (Tool Fragmentation):</strong> Nhóm dự án phải dùng song song 3–4 ứng dụng (Zalo chat, Google Meet voice, Notion ghi chú, Drive lưu file) – gây gián đoạn luồng làm việc và mất thông tin.</li>
+            <li><strong>Thiếu không gian có cấu trúc (No Structured Space):</strong> Chat nhóm trên Zalo/Messenger rất hỗn loạn, không phân kênh theo chủ đề, khó tìm lại thảo luận cũ.</li>
+            <li><strong>Rào cản onboarding cao (High Entry Barrier):</strong> Discord bản gốc có UX phức tạp, người mới không quen công nghệ thường bỏ cuộc trước khi tham gia được server đầu tiên.</li>
+            <li><strong>Voice call không ổn định trong nước (Poor Domestic Voice Quality):</strong> Gọi voice qua các nền tảng nước ngoài thường bị giật lag do latency cao; thiếu chỉ báo trực quan ai đang nói.</li>
+        </ul>
+
+        <!-- ── Section 2: SMART Business Goals ── -->
+        <h2>2. Mục tiêu Kinh doanh (SMART Business Goals)</h2>
+        <p>LiveBox Phase 1 (dự kiến MVP sau <strong>3 tháng</strong>) phải chứng minh giá trị thông qua các KPI cụ thể sau:</p>
+
+        <div class="grid-cards">
+
+            <!-- BG-01 -->
+            <div class="card">
+                <h3>🚀 BG-01 · Tốc độ Onboarding</h3>
+                <div class="metric-badge">≤ 30 giây</div>
+                <p>Đây là rào cản đầu tiên của người dùng mới (Lan Anh). Nếu đăng ký – vào server mất hơn 1 phút, tỷ lệ bỏ cuộc tăng đột biến.</p>
+                <ul>
+                    <li><strong>Mục tiêu:</strong> Người dùng mới hoàn tất đăng ký (email + password) và tham gia server qua invite link trong <em>dưới 30 giây</em>, không cần xác thực email bắt buộc ở Phase 1.</li>
+                    <li><strong>LiveBox hỗ trợ:</strong> Flow đăng ký một màn hình, invite link tự động join + redirect <code>#general</code> (LB-101, LB-202).</li>
+                </ul>
+            </div>
+
+            <!-- BG-02 -->
+            <div class="card">
+                <h3>⚡ BG-02 · Độ trễ Messaging Realtime</h3>
+                <div class="metric-badge">&lt; 500ms</div>
+                <p>Trải nghiệm chat phải tức thì. Nếu tin nhắn hiển thị sau hơn 0.5 giây, người dùng cảm giác hệ thống "ì" và mất tin tưởng.</p>
+                <ul>
+                    <li><strong>Mục tiêu:</strong> 95th-percentile độ trễ broadcast tin nhắn qua WebSocket từ khi gửi đến khi tất cả client online trong kênh nhận được <em>dưới 500ms</em>.</li>
+                    <li><strong>LiveBox hỗ trợ:</strong> Kiến trúc WebSocket/STOMP trên Spring Boot, không thông qua polling (LB-301).</li>
+                </ul>
+            </div>
+
+            <!-- BG-03 -->
+            <div class="card">
+                <h3>🏠 BG-03 · Tập trung hóa Công cụ Nhóm</h3>
+                <div class="metric-badge">Thay thế ≥ 2 công cụ</div>
+                <p>Giải quyết bài toán "Tool Fragmentation" – nhóm mục tiêu xác nhận không cần mở Zalo chat + Google Meet khi đã dùng LiveBox.</p>
+                <ul>
+                    <li><strong>Mục tiêu:</strong> Nhóm người dùng mục tiêu (5–50 người) có thể <em>chat text, voice call, quản lý kênh chủ đề, và xem danh sách thành viên online</em> trong duy nhất LiveBox mà không cần mở thêm ứng dụng khác.</li>
+                    <li><strong>LiveBox hỗ trợ:</strong> Server + đa kênh text + voice channel + member list trong cùng một interface (LB-201, LB-302, LB-303, LB-401).</li>
+                </ul>
+            </div>
+
+            <!-- BG-04 -->
+            <div class="card">
+                <h3>🔔 BG-04 · Tin nhắn Deliver đầy đủ</h3>
+                <div class="metric-badge">100% deliver + badge chính xác</div>
+                <p>Minh Khoa thường bỏ lỡ tin nhắn quan trọng khi đang ở kênh khác. Unread management là tính năng giữ chân người dùng cốt lõi.</p>
+                <ul>
+                    <li><strong>Mục tiêu:</strong> 100% tin nhắn được deliver realtime qua WebSocket; badge unread cập nhật chính xác theo kênh; người dùng không phải reload trang để thấy tin mới.</li>
+                    <li><strong>LiveBox hỗ trợ:</strong> Badge unread theo kênh qua WebSocket + member list với presence indicator online/offline (LB-501, LB-303).</li>
+                </ul>
+            </div>
+
+            <!-- BG-05 full-width -->
+            <div class="card" style="grid-column: 1 / -1;">
+                <h3>🔐 BG-05 · Bảo mật & Kiểm soát Truy cập (Security & Access Control)</h3>
+                <div class="metric-badge">Zero unauthorized access</div>
+                <p>Anh Đạt cần sự an tâm rằng chỉ người được mời mới vào server của mình. Đây là yếu tố tin tưởng cốt lõi để nhóm doanh nghiệp nhỏ dùng LiveBox cho công việc thực.</p>
+                <ul>
+                    <li><strong>Mục tiêu:</strong> 100% API endpoint ở trạng thái authenticated; invite link có thời hạn hết hạn tự động (7 ngày); JWT Refresh Token hoạt động liền mạch không ngắt session; logout revoke token triệt để.</li>
+                    <li><strong>LiveBox hỗ trợ:</strong> Spring Security + JWT Access/Refresh Token (LB-102); logout revoke token (LB-103); invite code có TTL lưu DB (LB-202); kick/ban thành viên (LB-203); role Owner/Member phân quyền rõ ràng.</li>
+                </ul>
+            </div>
+
+        </div>
+
+        <!-- ── Section 3: Persona – Goal Mapping ── -->
+        <h2>3. Ánh xạ Persona ↔ Business Goal</h2>
+        <p>Mỗi Business Goal bắt nguồn từ ít nhất một Persona cụ thể – đảm bảo toàn bộ Backlog đều có người dùng thực sự đứng sau:</p>
+
+        <table class="persona-table">
+            <thead>
+                <tr>
+                    <th>Business Goal</th>
+                    <th>Persona chủ yếu</th>
+                    <th>User Stories liên quan</th>
+                    <th>Mức độ ưu tiên</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>BG-01 · Onboarding ≤ 30s</td>
+                    <td><span class="tag tag-guest">Lan Anh – New User</span></td>
+                    <td>LB-101, LB-202</td>
+                    <td>🔴 Must Have</td>
+                </tr>
+                <tr>
+                    <td>BG-02 · Latency &lt; 500ms</td>
+                    <td><span class="tag tag-member">Minh Khoa – Member</span></td>
+                    <td>LB-301</td>
+                    <td>🔴 Must Have</td>
+                </tr>
+                <tr>
+                    <td>BG-03 · Thay thế ≥ 2 công cụ</td>
+                    <td><span class="tag tag-owner">Anh Đạt – Owner</span> <span class="tag tag-member">Minh Khoa – Member</span></td>
+                    <td>LB-201, LB-302, LB-303, LB-401, LB-601</td>
+                    <td>🔴 Must Have</td>
+                </tr>
+                <tr>
+                    <td>BG-04 · 100% deliver + badge chính xác</td>
+                    <td><span class="tag tag-member">Minh Khoa – Member</span></td>
+                    <td>LB-501, LB-303</td>
+                    <td>🟠 Should Have</td>
+                </tr>
+                <tr>
+                    <td>BG-05 · Zero unauthorized access</td>
+                    <td><span class="tag tag-owner">Anh Đạt – Owner</span></td>
+                    <td>LB-102, LB-103, LB-202, LB-203</td>
+                    <td>🔴 Must Have</td>
+                </tr>
+                <tr>
+                    <td colspan="4" style="background:#f8fafc; font-size:.82rem; color:#64748b; font-style:italic;">Các story hỗ trợ chung: LB-204 (Leave Server), LB-601 (Profile) – không gắn trực tiếp BG nhưng cần cho trải nghiệm MVP</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- ── Section 4: Constraints ── -->
+        <h2>4. Ràng buộc & Giả định (Constraints & Assumptions)</h2>
+        <ul class="constraint-list">
+            <li><strong>Phạm vi Phase 1:</strong> Không bao gồm file sharing, screen share, hay mobile native app – chỉ Web (ReactJS).</li>
+            <li><strong>Người dùng đồng thời:</strong> Hệ thống Phase 1 thiết kế chịu tải tối đa <em>500 concurrent users</em> trên 1 instance Spring Boot.</li>
+            <li><strong>Database:</strong> PostgreSQL là nguồn dữ liệu duy nhất; không dùng cache Redis ở Phase 1.</li>
+            <li><strong>Voice:</strong> Voice channel dùng WebRTC, chấp nhận tối đa <em>20 người/phòng</em> ở Phase 1.</li>
+            <li><strong>Bảo mật:</strong> JWT không store server-side (stateless); Refresh Token lưu DB để hỗ trợ revoke.</li>
+        </ul>
+
+        <!-- ── Quote ── -->
+        <div class="quote-box">
+            <p><strong>Tuyên ngôn dự án:</strong> "LiveBox không phải bản sao Discord – LiveBox là công cụ giao tiếp <em>đúng chỗ, đúng lúc</em> cho nhóm nhỏ người Việt: đơn giản đến mức không cần hướng dẫn, nhanh đến mức không cần chờ đợi." – <em>BA Lead</em></p>
+        </div>
+
+    </div>
+</body>
+</html>

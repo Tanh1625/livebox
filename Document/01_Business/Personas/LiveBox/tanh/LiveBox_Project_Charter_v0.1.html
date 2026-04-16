@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LiveBox – Project Charter v0.1</title>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            color: #4a4a4a;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background: #e9ecef;
+        }
+        .document-wrapper {
+            background: #fff;
+            max-width: 850px;
+            margin: 40px auto;
+            padding: 60px 80px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            box-sizing: border-box;
+        }
+        h1 {
+            font-family: "Segoe UI", Arial, sans-serif;
+            font-size: 2.6em;
+            font-weight: 400;
+            color: #2c2c2c;
+            margin-bottom: 6px;
+            margin-top: 0;
+        }
+        .subtitle {
+            font-size: 1rem;
+            color: #6366f1;
+            font-weight: 600;
+            margin-bottom: 25px;
+        }
+        .header-divider {
+            border-bottom: 2px solid #aecdda;
+            margin-bottom: 35px;
+        }
+        h2 {
+            font-family: "Segoe UI", Arial, sans-serif;
+            font-weight: 400;
+            font-size: 1.8em;
+            color: #55b6c2;
+            margin-top: 35px;
+            margin-bottom: 20px;
+        }
+        h3 {
+            font-family: "Segoe UI", Arial, sans-serif;
+            font-weight: 400;
+            font-size: 1.35em;
+            color: #f78b7b;
+            margin-top: 25px;
+            margin-bottom: 12px;
+        }
+        p {
+            margin-bottom: 18px;
+            font-size: 14.5px;
+            text-align: justify;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 25px;
+            font-size: 14.5px;
+        }
+        table, th, td {
+            border: 1px solid #222;
+        }
+        th, td {
+            padding: 10px 15px;
+        }
+        th {
+            font-weight: 400;
+            color: #55b6c2;
+            text-align: center;
+        }
+        td {
+            color: #4a4a4a;
+        }
+        .overview-table td:first-child {
+            color: #55b6c2;
+            text-align: center;
+            width: 35%;
+        }
+        /* Risk levels */
+        .risk-high   { color: #991b1b; font-weight: 600; }
+        .risk-medium { color: #92400e; font-weight: 600; }
+        .risk-low    { color: #166534; font-weight: 600; }
+        /* Approval */
+        .signatures {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+        .signature-block { width: 45%; }
+        .signature-line {
+            border-bottom: 1px solid #4a4a4a;
+            margin-bottom: 8px;
+            height: 40px;
+        }
+        .signature-name { font-size: 14.5px; color: #4a4a4a; }
+        .page-break { margin-top: 60px; }
+        /* Scope lists */
+        ul { font-size: 14.5px; margin-top: 0; }
+        li { margin-bottom: 6px; }
+        /* Note box */
+        .note-box {
+            background: #f0f9ff;
+            border-left: 4px solid #6366f1;
+            padding: 14px 18px;
+            margin-top: 12px;
+            font-size: 14px;
+            color: #334155;
+        }
+        @media print {
+            body { background: #fff; }
+            .document-wrapper { box-shadow: none; margin: 0; padding: 20px; }
+            .page-break { page-break-before: always; margin-top: 0; }
+        }
+    </style>
+</head>
+<body>
+<div class="document-wrapper">
+
+    <!-- ── Header ── -->
+    <h1>Project Charter</h1>
+    <div class="subtitle">LiveBox – Nền tảng Chat Thời gian Thực (Real-time Chat Platform)</div>
+    <div class="header-divider"></div>
+
+    <!-- ── Project Overview ── -->
+    <h2>Project Overview</h2>
+    <table class="overview-table">
+        <tbody>
+            <tr>
+                <td>Project Name:</td>
+                <td><strong>LiveBox</strong> – Real-time Chat Platform (Discord-inspired)</td>
+            </tr>
+            <tr>
+                <td>Project Sponsor:</td>
+                <td>Nguyễn Thị Điệu (Faculty Advisor)</td>
+            </tr>
+            <tr>
+                <td>Project Manager (PM) / BA:</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>Project Type:</td>
+                <td>Dự án học thuật – Nhóm sinh viên tự phát triển (Vibe Coding)</td>
+            </tr>
+            <tr>
+                <td>Business Unit:</td>
+                <td>Khoa Công nghệ Thông tin – Môn học / Đồ án cá nhân</td>
+            </tr>
+            <tr>
+                <td>Expected Start Date:</td>
+                <td>16/04/2026</td>
+            </tr>
+            <tr>
+                <td>Expected Completion Date:</td>
+                <td>16/05/2026 <em>(Phase 1 MVP – 1 tháng)</em></td>
+            </tr>
+            <tr>
+                <td>Estimated Budget:</td>
+                <td>Không có ngân sách chính thức – sử dụng free-tier Cloud services (Render / Railway / Supabase)</td>
+            </tr>
+            <tr>
+                <td>Development Approach:</td>
+                <td>Vibe Coding (AI-assisted) + Agile Sprint (1-week sprints)</td>
+            </tr>
+            <tr>
+                <td>Document Version:</td>
+                <td>v0.1 – Draft (16/04/2026)</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- ── Project Description ── -->
+    <h2>Project Description</h2>
+
+    <h3>Purpose</h3>
+    <p>LiveBox được xây dựng nhằm mục đích học tập và thực hành công nghệ, đồng thời giải quyết bài toán thực tiễn: thiết kế một nền tảng chat thời gian thực hoàn chỉnh theo kiến trúc client–server hiện đại, tương tự Discord. Dự án cung cấp môi trường để nhóm sinh viên trải nghiệm toàn bộ vòng đời phát triển phần mềm – từ phân tích nghiệp vụ (BA), thiết kế hệ thống, lập trình, đến kiểm thử – dưới sự hướng dẫn của giảng viên.</p>
+    <p>Về phía người dùng, LiveBox cho phép tạo server riêng, tổ chức kênh chat theo chủ đề, nhắn tin thời gian thực và voice call ngay trong trình duyệt, mà không cần cài thêm ứng dụng bên ngoài (BG-03). Mục tiêu onboarding đặt ra là hoàn thành đăng ký trong ≤ 30 giây (BG-01) và độ trễ tin nhắn ≤ 500ms (BG-02).</p>
+
+    <h3>Scope</h3>
+    <p><strong>Bao gồm (In-scope – Phase 1 MVP):</strong></p>
+    <ul>
+        <li>Xác thực người dùng: Đăng ký, Đăng nhập, Đăng xuất an toàn với JWT Access / Refresh Token (LB-101, LB-102, LB-103).</li>
+        <li>Quản lý Server: Tạo server, mời thành viên qua invite link có TTL 7 ngày, kick/ban thành viên, rời server (LB-201 → LB-204).</li>
+        <li>Messaging: Gửi/nhận tin nhắn realtime qua WebSocket/STOMP, quản lý kênh text, danh sách thành viên online (LB-301 → LB-303).</li>
+        <li>Voice Channel: Tham gia voice call 1-click qua WebRTC, tối đa 20 người/phòng, speaking indicator (LB-401).</li>
+        <li>Thông báo & Profile: Badge unread theo kênh, cập nhật avatar và display name (LB-501, LB-601).</li>
+        <li>Tài liệu BA: User Personas, User Stories (13 stories / 6 Epics), Business Goals, Stakeholder Matrix, Project Charter.</li>
+    </ul>
+    <p><strong>Không bao gồm (Out-of-scope – Phase 1):</strong></p>
+    <ul>
+        <li>Ứng dụng mobile native (iOS / Android).</li>
+        <li>Chia sẻ file / hình ảnh trong kênh chat.</li>
+        <li>Emoji reaction và thread / reply tin nhắn.</li>
+        <li>Hệ thống moderation tự động (AI spam filter).</li>
+        <li>Persistent voice recording / screen sharing.</li>
+        <li>Redis hoặc bất kỳ cache layer nào (Phase 1 dùng PostgreSQL trực tiếp).</li>
+    </ul>
+
+    <div class="page-break"></div>
+
+    <h3>Key Deliverables</h3>
+    <p>1. <strong>Frontend Web App</strong> – ReactJS (TypeScript): giao diện server sidebar, kênh chat, voice channel UI, trang profile.<br>
+       2. <strong>Backend REST API + WebSocket Server</strong> – Spring Boot + Spring Security + JWT + WebSocket/STOMP.<br>
+       3. <strong>Database Schema</strong> – PostgreSQL: bảng users, servers, channels, messages, memberships, invite_codes.<br>
+       4. <strong>Bộ tài liệu BA đầy đủ</strong>: User Personas v0.1, User Stories v0.1 (13 stories), Business Goals v0.1, Stakeholder Matrix v0.1, Project Charter v0.1.<br>
+       5. <strong>Môi trường Demo</strong> – Deploy lên free-tier cloud (Render / Railway + Supabase), có URL public để demo với giảng viên.</p>
+
+    <!-- ── Resources ── -->
+    <h3>Resources</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Team Members</th>
+                <th>Tools / Workspace</th>
+                <th>Infrastructure</th>
+                <th>Ghi chú</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1 BA / PM (nhóm trưởng)</td>
+                <td>VS Code + Cursor AI (Vibe Coding)</td>
+                <td>Render / Railway (Backend free-tier)</td>
+                <td>Vibe Coding = AI-assisted dev</td>
+            </tr>
+            <tr>
+                <td>1–2 Fullstack Developer</td>
+                <td>GitHub + Jira / Notion (quản lý sprint)</td>
+                <td>Supabase / Neon (PostgreSQL free-tier)</td>
+                <td>Không thuê server riêng</td>
+            </tr>
+            <tr>
+                <td>Giảng viên hướng dẫn (Reviewer)</td>
+                <td>Figma (UI wireframe, nếu cần)</td>
+                <td>Cloudflare / Ngrok (STUN/TURN WebRTC)</td>
+                <td>Review mỗi cuối sprint</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- ── Schedule ── -->
+    <h3>Schedule – Phase 1 Milestones (4 Sprints × 1 tuần)</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Sprint / Milestone</th>
+                <th>Nội dung chính</th>
+                <th>Start Date</th>
+                <th>Completion Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Sprint 1</td>
+                <td>BA Documents hoàn chỉnh · Database Schema · Thiết kế UI wireframe cơ bản</td>
+                <td>16/04/2026</td>
+                <td>22/04/2026</td>
+            </tr>
+            <tr>
+                <td>Sprint 2</td>
+                <td>Authentication (LB-101→103) · Server + Invite Link (LB-201, LB-202) · Cơ sở hạ tầng Backend/DB</td>
+                <td>23/04/2026</td>
+                <td>29/04/2026</td>
+            </tr>
+            <tr>
+                <td>Sprint 3</td>
+                <td>Messaging realtime (LB-301→303) · Kick/Ban + Leave (LB-203, LB-204) · Unread badge (LB-501) · Profile (LB-601)</td>
+                <td>30/04/2026</td>
+                <td>07/05/2026</td>
+            </tr>
+            <tr>
+                <td>Sprint 4 / UAT</td>
+                <td>Voice Channel WebRTC (LB-401) · Bug fix · Deploy lên cloud · Demo với giảng viên</td>
+                <td>08/05/2026</td>
+                <td>16/05/2026</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- ── Risks ── -->
+    <h3>Risks</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Potential Risk</th>
+                <th>Perceived Impact</th>
+                <th>Proposed Mitigation Strategy</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>WebRTC không hoạt động trên môi trường free-tier (NAT traversal / TURN server)</td>
+                <td class="risk-high">Cao (High)</td>
+                <td>Tích hợp Cloudflare TURN miễn phí hoặc dùng Metered.ca TURN (free quota). Ưu tiên test voice từ Sprint 3, không để Sprint cuối mới phát hiện.</td>
+            </tr>
+            <tr>
+                <td>WebSocket bị timeout / disconnect trên Render free-tier (inactivity sleep)</td>
+                <td class="risk-high">Cao (High)</td>
+                <td>Dùng keep-alive ping hoặc chuyển sang Railway (ít sleep hơn). Thêm auto-reconnect logic ở phía client (React).</td>
+            </tr>
+            <tr>
+                <td>Scope creep – thêm tính năng ngoài Phase 1 (emoji, file sharing) trong quá trình code</td>
+                <td class="risk-medium">Trung bình (Medium)</td>
+                <td>BA giữ vững Scope bằng cách đóng băng User Stories Phase 1. Tính năng mới ghi nhận vào Phase 2 Backlog, không implement ngay.</td>
+            </tr>
+            <tr>
+                <td>Vibe Coding tạo ra code quality thấp, khó maintain hoặc có lỗ hổng bảo mật JWT</td>
+                <td class="risk-medium">Trung bình (Medium)</td>
+                <td>Review code cuối mỗi sprint với giảng viên. Dùng Spring Security defaults cho JWT – không tự implement crypto. Có unit test cho luồng Auth.</td>
+            </tr>
+            <tr>
+                <td>Thiếu nhân lực / thời gian 1 tháng không đủ hoàn thành 13 User Stories</td>
+                <td class="risk-medium">Trung bình (Medium)</td>
+                <td>Ưu tiên Must-Have Stories trước (LB-101, LB-102, LB-201, LB-301, LB-401). Nếu trễ, cắt LB-601 (Profile) và LB-204 (Leave) sang Phase 2.</td>
+            </tr>
+            <tr>
+                <td>PostgreSQL trên Supabase free-tier bị suspend do inactivity</td>
+                <td class="risk-low">Thấp (Low)</td>
+                <td>Dùng Neon.tech thay thế (không tự suspend). Script seed data sẵn để restore nhanh khi cần demo.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- ── Approval ── -->
+    <h2>Approval and Signatures</h2>
+    <div class="signatures">
+        <div class="signature-block">
+            <div class="signature-line"></div>
+            <div class="signature-name">[Tên Giảng viên], Project Sponsor / Faculty Advisor</div>
+        </div>
+        <div class="signature-block">
+            <div class="signature-line"></div>
+            <div class="signature-name">[Tên Nhóm trưởng], Project Manager / BA Lead</div>
+        </div>
+    </div>
+
+    <div class="note-box">
+        📝 <strong>Ghi chú:</strong> Đây là tài liệu Project Charter cho dự án học thuật. Mọi thay đổi về phạm vi (Scope Change) cần được thảo luận và phê duyệt bởi giảng viên hướng dẫn trước khi áp dụng vào Sprint tiếp theo.
+    </div>
+
+</div>
+</body>
+</html>

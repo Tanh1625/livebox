@@ -41,6 +41,10 @@
         .bar { flex-grow: 1; background: #e2e8f0; height: 8px; border-radius: 4px; overflow: hidden; }
         .fill { background: var(--secondary); height: 100%; }
         .badge { background: #f1f5f9; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600; color: #334155; display: inline-block; margin-right: 0.5rem; margin-bottom: 0.5rem;}
+        /* Demographics grid */
+        .demo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .4rem .8rem; font-size: 0.88rem; margin-bottom: 1rem; }
+        .demo-grid dt { color: #64748b; font-weight: 600; }
+        .demo-grid dd { margin: 0; }
     </style>
 </head>
 <body>
@@ -61,6 +65,15 @@
                 <div class="p-body">
                     <div class="quote">"Tôi muốn một nơi để cả team mình vừa chat công việc, vừa hop call nhanh mà không cần cài thêm 3 app khác nhau."</div>
 
+                    <h3 class="section-title">Nhân khẩu học (Demographics)</h3>
+                    <dl class="demo-grid">
+                        <dt>Tuổi:</dt><dd>28 tuổi</dd>
+                        <dt>Nghề nghiệp:</dt><dd>Team Lead / Fullstack Dev tại startup</dd>
+                        <dt>Thiết bị:</dt><dd>Desktop (chính), Laptop khi WFH</dd>
+                        <dt>Tần suất:</dt><dd>Hàng ngày, 4–8 giờ online</dd>
+                        <dt>Team size:</dt><dd>Quản lý 2–3 server, mỗi server 5–20 thành viên</dd>
+                    </dl>
+
                     <h3 class="section-title">Hành vi & Tính cách</h3>
                     <p style="font-size: 0.95rem;">Lập trình viên hoặc leader nhóm dự án freelance, thường xuyên điều phối nhiều người cùng lúc. Quen thuộc với Discord, Slack. Muốn kiểm soát quyền truy cập và tổ chức kênh chat theo chủ đề rõ ràng.</p>
 
@@ -69,6 +82,7 @@
                         <li>Quản lý thành viên rải rác, khó phân quyền ai được vào kênh nào.</li>
                         <li>Phải chuyển đổi giữa nhiều ứng dụng (Zalo, Meet, Notion) trong cùng một buổi làm việc.</li>
                         <li>Mất lịch sử chat và file quan trọng khi thành viên rời nhóm.</li>
+                        <li>Không có cách kick/ban nhanh thành viên vi phạm quy tắc nhóm.</li>
                     </ul>
 
                     <h3 class="section-title">Mục tiêu từ Hệ thống</h3>
@@ -96,14 +110,24 @@
                 <div class="p-body">
                     <div class="quote">"Chat thì phải nhanh, voice phải ổn định – tôi ghét nhất là đang nói giữa chừng mà bị lag hoặc bị đứt kết nối."</div>
 
+                    <h3 class="section-title">Nhân khẩu học (Demographics)</h3>
+                    <dl class="demo-grid">
+                        <dt>Tuổi:</dt><dd>22 tuổi</dd>
+                        <dt>Nghề nghiệp:</dt><dd>Sinh viên CNTT năm cuối / Junior Dev</dd>
+                        <dt>Thiết bị:</dt><dd>Laptop (chính), điện thoại khi di chuyển</dd>
+                        <dt>Tần suất:</dt><dd>Hàng ngày, 6–10 giờ online</dd>
+                        <dt>Servers:</dt><dd>Tham gia 3–5 server cùng lúc</dd>
+                    </dl>
+
                     <h3 class="section-title">Hành vi & Tính cách</h3>
-                    <p style="font-size: 0.95rem;">Sinh viên CNTT hoặc gamer, tham gia nhiều server cùng lúc. Online thường xuyên, phản hồi tin nhắn nhanh. Thích các tính năng cảm xúc, emoji reaction, và biết mình đang được đọc hay chưa.</p>
+                    <p style="font-size: 0.95rem;">Sinh viên CNTT hoặc gamer, tham gia nhiều server cùng lúc. Online thường xuyên, phản hồi tin nhắn nhanh. Cần biết rõ ai đang online, kênh nào có tin mới, và muốn thể hiện cá tính qua avatar/display name.</p>
 
                     <h3 class="section-title">Nỗi Đau (Pain-Points)</h3>
                     <ul>
                         <li>Đang ở kênh A không biết kênh B có tin nhắn mới vì không có badge unread.</li>
                         <li>Voice call bị delay, tiếng vọng khiến trải nghiệm kém, đặc biệt khi nhiều người nói cùng lúc.</li>
                         <li>Khó tìm lại file hoặc link đã được chia sẻ trước đó trong một kênh dài.</li>
+                        <li>Không thể tự rời khỏi server không còn muốn tham gia.</li>
                     </ul>
 
                     <h3 class="section-title">Mục tiêu từ Hệ thống</h3>
@@ -111,6 +135,7 @@
                         <li><span class="badge">Realtime</span> Tin nhắn hiển thị tức thì không cần reload trang (WebSocket).</li>
                         <li><span class="badge">Unread</span> Badge số tin nhắn chưa đọc theo kênh, tự xóa khi vào kênh.</li>
                         <li><span class="badge">Voice</span> Tham gia voice channel 1-click, thấy speaking indicator ai đang nói.</li>
+                        <li><span class="badge">Profile</span> Cập nhật avatar và display name cá nhân.</li>
                     </ul>
 
                     <div class="tech-savvy">
@@ -129,6 +154,15 @@
                 </div>
                 <div class="p-body">
                     <div class="quote">"Tôi chỉ muốn vào xem thử cộng đồng như thế nào – đừng bắt tôi đăng ký cả chục bước mới vào được."</div>
+
+                    <h3 class="section-title">Nhân khẩu học (Demographics)</h3>
+                    <dl class="demo-grid">
+                        <dt>Tuổi:</dt><dd>20 tuổi</dd>
+                        <dt>Nghề nghiệp:</dt><dd>Sinh viên năm 2 / Nhân viên mới đi làm</dd>
+                        <dt>Thiết bị:</dt><dd>Điện thoại (chính), laptop khi học/làm</dd>
+                        <dt>Tần suất:</dt><dd>1–2 lần/tuần, khi được mời</dd>
+                        <dt>Kinh nghiệm:</dt><dd>Chưa dùng Discord/Slack, quen Zalo/Messenger</dd>
+                    </dl>
 
                     <h3 class="section-title">Hành vi & Tính cách</h3>
                     <p style="font-size: 0.95rem;">Sinh viên hoặc người đi làm mới tiếp cận nền tảng chat theo nhóm. Không quen Discord, cần UI đơn giản và trực quan. Được bạn bè invite link vào server, lần đầu sử dụng hệ thống.</p>

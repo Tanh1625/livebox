@@ -90,7 +90,7 @@
     <!-- ── Header ── -->
     <div class="header">
         <h1>📋 User Stories – LiveBox Platform</h1>
-        <p>Tài liệu User Stories theo chuẩn Agile (BDD Acceptance Criteria) cho dự án nền tảng chat thời gian thực LiveBox. Phiên bản v0.1 – Sprint Planning Backlog.</p>
+        <p>Tài liệu User Stories theo chuẩn Agile (BDD Acceptance Criteria) cho dự án nền tảng chat thời gian thực LiveBox. Phiên bản v0.2 – Sprint Planning Backlog.</p>
     </div>
 
     <!-- ── Epic nav ── -->
@@ -100,6 +100,7 @@
         <a class="epic-pill" href="#epic-channel">💬 Channel & Messaging</a>
         <a class="epic-pill" href="#epic-voice">🎙️ Voice Channel</a>
         <a class="epic-pill" href="#epic-notif">🔔 Notification</a>
+        <a class="epic-pill" href="#epic-profile">👤 User Profile</a>
     </div>
 
     <!-- ══════════════════════════════════════
@@ -200,6 +201,45 @@
                     <span class="badge p-high">Priority: High</span>
                     <span class="badge">Persona: All Users</span>
                     <span class="badge">Tech: JWT Refresh Token</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- LB-103 (NEW) -->
+        <div class="story-card">
+            <div class="card-header guest">
+                <span class="ticket-id">LB-103</span>
+                <span class="card-title">Đăng xuất an toàn</span>
+            </div>
+            <div class="card-body">
+                <div class="story-stmt">
+                    <span>As a</span> người dùng đã đăng nhập,<br>
+                    <span>I want to</span> đăng xuất khỏi hệ thống và vô hiệu hóa phiên làm việc hiện tại,<br>
+                    <span>So that</span> không ai có thể truy cập tài khoản của tôi trên thiết bị này sau khi tôi rời đi.
+                </div>
+                <div class="ac-title">Acceptance Criteria (BDD)</div>
+
+                <div class="ac-block">
+                    <div class="ac-label">AC1: Đăng xuất thành công</div>
+                    <table class="bdd-table">
+                        <tr><td>Given</td><td>Tôi đã đăng nhập và nhấn vào avatar → menu dropdown</td></tr>
+                        <tr><td>When</td><td>Tôi nhấn "Đăng xuất"</td></tr>
+                        <tr><td>Then</td><td>Hệ thống xóa Access Token + Refresh Token khỏi localStorage, revoke Refresh Token trên server, đóng kết nối WebSocket, chuyển hướng về trang Login</td></tr>
+                    </table>
+                </div>
+
+                <div class="ac-block">
+                    <div class="ac-label">AC2: Token bị revoke không thể tái sử dụng</div>
+                    <table class="bdd-table">
+                        <tr><td>Given</td><td>Tôi đã đăng xuất</td></tr>
+                        <tr><td>When</td><td>Một request sử dụng Refresh Token cũ gọi đến API <code>/auth/refresh</code></td></tr>
+                        <tr><td>Then</td><td>Server trả về HTTP 401 Unauthorized, không cấp token mới</td></tr>
+                    </table>
+                </div>
+                <div class="meta-row">
+                    <span class="badge p-high">Priority: High</span>
+                    <span class="badge">Persona: All Users</span>
+                    <span class="badge">Tech: JWT revoke + WebSocket disconnect</span>
                 </div>
             </div>
         </div>
@@ -306,6 +346,93 @@
                 </div>
             </div>
         </div>
+
+        <!-- LB-203 (NEW) -->
+        <div class="story-card">
+            <div class="card-header owner">
+                <span class="ticket-id">LB-203</span>
+                <span class="card-title">Kick / Ban thành viên khỏi server</span>
+            </div>
+            <div class="card-body">
+                <div class="story-stmt">
+                    <span>As a</span> Server Owner (Anh Đạt),<br>
+                    <span>I want to</span> kick hoặc ban thành viên vi phạm quy tắc khỏi server,<br>
+                    <span>So that</span> tôi duy trì được môi trường giao tiếp lành mạnh và an toàn cho cộng đồng.
+                </div>
+                <div class="ac-title">Acceptance Criteria (BDD)</div>
+
+                <div class="ac-block">
+                    <div class="ac-label">AC1: Kick thành viên</div>
+                    <table class="bdd-table">
+                        <tr><td>Given</td><td>Tôi là Owner, mở danh sách thành viên và click vào một Member</td></tr>
+                        <tr><td>When</td><td>Tôi chọn "Kick" và xác nhận trong dialog</td></tr>
+                        <tr><td>Then</td><td>Thành viên bị xóa khỏi server ngay lập tức, server biến mất khỏi sidebar của họ, nhưng họ có thể join lại qua invite link mới</td></tr>
+                    </table>
+                </div>
+
+                <div class="ac-block">
+                    <div class="ac-label">AC2: Ban thành viên (vĩnh viễn)</div>
+                    <table class="bdd-table">
+                        <tr><td>Given</td><td>Tôi là Owner, mở danh sách thành viên và click vào một Member</td></tr>
+                        <tr><td>When</td><td>Tôi chọn "Ban" và xác nhận</td></tr>
+                        <tr><td>Then</td><td>Thành viên bị xóa khỏi server và bị chặn vĩnh viễn – mọi invite link đều không cho phép họ join lại</td></tr>
+                    </table>
+                </div>
+
+                <div class="ac-block">
+                    <div class="ac-label">AC3: Không thể kick/ban chính mình</div>
+                    <table class="bdd-table">
+                        <tr><td>Given</td><td>Tôi là Owner và xem profile của chính mình trong member list</td></tr>
+                        <tr><td>When</td><td>Tôi mở context menu</td></tr>
+                        <tr><td>Then</td><td>Các nút "Kick" và "Ban" bị ẩn hoặc disabled</td></tr>
+                    </table>
+                </div>
+                <div class="meta-row">
+                    <span class="badge p-high">Priority: High</span>
+                    <span class="badge">Persona: Anh Đạt – Server Owner</span>
+                    <span class="badge">Tech: REST API + WebSocket broadcast</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- LB-204 (NEW) -->
+        <div class="story-card">
+            <div class="card-header member">
+                <span class="ticket-id">LB-204</span>
+                <span class="card-title">Rời khỏi server (Leave Server)</span>
+            </div>
+            <div class="card-body">
+                <div class="story-stmt">
+                    <span>As a</span> thành viên (Minh Khoa),<br>
+                    <span>I want to</span> tự rời khỏi server mà tôi không còn muốn tham gia,<br>
+                    <span>So that</span> sidebar của tôi chỉ hiển thị các server tôi thực sự hoạt động.
+                </div>
+                <div class="ac-title">Acceptance Criteria (BDD)</div>
+
+                <div class="ac-block">
+                    <div class="ac-label">AC1: Rời server thành công</div>
+                    <table class="bdd-table">
+                        <tr><td>Given</td><td>Tôi right-click vào icon server trong sidebar</td></tr>
+                        <tr><td>When</td><td>Tôi chọn "Rời server" và xác nhận trong dialog</td></tr>
+                        <tr><td>Then</td><td>Tôi bị xóa khỏi danh sách thành viên, server biến mất khỏi sidebar, danh sách member cập nhật realtime cho mọi người</td></tr>
+                    </table>
+                </div>
+
+                <div class="ac-block">
+                    <div class="ac-label">AC2: Owner không thể rời server</div>
+                    <table class="bdd-table">
+                        <tr><td>Given</td><td>Tôi là Owner duy nhất của server</td></tr>
+                        <tr><td>When</td><td>Tôi cố chọn "Rời server"</td></tr>
+                        <tr><td>Then</td><td>Hiển thị thông báo: <em>"Bạn là Owner duy nhất. Hãy chuyển quyền Owner hoặc xóa server trước khi rời."</em></td></tr>
+                    </table>
+                </div>
+                <div class="meta-row">
+                    <span class="badge p-med">Priority: Medium</span>
+                    <span class="badge">Persona: Minh Khoa – Active Member</span>
+                    <span class="badge">Tech: REST API + WebSocket</span>
+                </div>
+            </div>
+        </div>
     </section>
 
     <!-- ══════════════════════════════════════
@@ -397,6 +524,54 @@
                     <span class="badge p-med">Priority: Medium</span>
                     <span class="badge">Persona: Anh Đạt – Server Owner</span>
                     <span class="badge">Tech: REST + WebSocket broadcast</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- LB-303 (NEW) -->
+        <div class="story-card">
+            <div class="card-header member">
+                <span class="ticket-id">LB-303</span>
+                <span class="card-title">Xem danh sách thành viên và trạng thái online</span>
+            </div>
+            <div class="card-body">
+                <div class="story-stmt">
+                    <span>As a</span> người dùng mới (Lan Anh) hoặc thành viên (Minh Khoa),<br>
+                    <span>I want to</span> xem danh sách tất cả thành viên trong server và biết ai đang online,<br>
+                    <span>So that</span> tôi biết cộng đồng có active không và có thể tương tác với ai ngay lúc này.
+                </div>
+                <div class="ac-title">Acceptance Criteria (BDD)</div>
+
+                <div class="ac-block">
+                    <div class="ac-label">AC1: Hiển thị member list panel</div>
+                    <table class="bdd-table">
+                        <tr><td>Given</td><td>Tôi đang ở bất kỳ kênh text nào trong server</td></tr>
+                        <tr><td>When</td><td>Tôi click icon "Danh sách thành viên" ở toolbar hoặc panel tự mở mặc định</td></tr>
+                        <tr><td>Then</td><td>Panel phải hiển thị hai nhóm: "Online" (dot xanh) và "Offline" (dot xám), sắp xếp theo display name A→Z</td></tr>
+                    </table>
+                </div>
+
+                <div class="ac-block">
+                    <div class="ac-label">AC2: Cập nhật trạng thái realtime</div>
+                    <table class="bdd-table">
+                        <tr><td>Given</td><td>Panel member list đang mở</td></tr>
+                        <tr><td>When</td><td>Một thành viên đăng nhập hoặc đăng xuất</td></tr>
+                        <tr><td>Then</td><td>Thành viên đó di chuyển giữa nhóm Online/Offline trong ≤ 3 giây mà không cần reload</td></tr>
+                    </table>
+                </div>
+
+                <div class="ac-block">
+                    <div class="ac-label">AC3: Hiển thị role Owner</div>
+                    <table class="bdd-table">
+                        <tr><td>Given</td><td>Panel member list đang mở</td></tr>
+                        <tr><td>When</td><td>Server có Owner và Member</td></tr>
+                        <tr><td>Then</td><td>Owner được hiển thị với badge/icon đặc biệt (vương miện hoặc màu khác) để phân biệt</td></tr>
+                    </table>
+                </div>
+                <div class="meta-row">
+                    <span class="badge p-med">Priority: Medium</span>
+                    <span class="badge">Persona: Lan Anh + Minh Khoa</span>
+                    <span class="badge">Tech: WebSocket presence</span>
                 </div>
             </div>
         </div>
@@ -503,23 +678,68 @@
                         <tr><td>Then</td><td>Badge biến mất, hệ thống đánh dấu tất cả tin nhắn là "đã đọc" trong DB</td></tr>
                     </table>
                 </div>
+                <div class="meta-row">
+                    <span class="badge p-med">Priority: Medium</span>
+                    <span class="badge">Persona: Minh Khoa – Active Member</span>
+                    <span class="badge">Tech: WebSocket + PostgreSQL read receipts</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══════════════════════════════════════
+         EPIC 6 – USER PROFILE
+    ══════════════════════════════════════ -->
+    <section class="epic" id="epic-profile">
+        <div class="epic-title">👤 Epic 6 – User Profile</div>
+
+        <!-- LB-601 (NEW) -->
+        <div class="story-card">
+            <div class="card-header member">
+                <span class="ticket-id">LB-601</span>
+                <span class="card-title">Cập nhật hồ sơ cá nhân (avatar & display name)</span>
+            </div>
+            <div class="card-body">
+                <div class="story-stmt">
+                    <span>As a</span> thành viên (Minh Khoa),<br>
+                    <span>I want to</span> cập nhật ảnh đại diện và tên hiển thị của mình,<br>
+                    <span>So that</span> các thành viên khác dễ dàng nhận diện tôi trong server.
+                </div>
+                <div class="ac-title">Acceptance Criteria (BDD)</div>
 
                 <div class="ac-block">
-                    <div class="ac-label">AC3: Hiển thị trạng thái online/offline</div>
+                    <div class="ac-label">AC1: Đổi display name</div>
                     <table class="bdd-table">
-                        <tr><td>Given</td><td>Tôi xem danh sách thành viên trong server</td></tr>
-                        <tr><td>When</td><td>Một thành viên đăng nhập hoặc đăng xuất</td></tr>
-                        <tr><td>Then</td><td>Dot xanh (online) / xám (offline) bên avatar cập nhật trong ≤ 3 giây với tất cả thành viên đang online</td></tr>
+                        <tr><td>Given</td><td>Tôi mở Settings → Profile</td></tr>
+                        <tr><td>When</td><td>Tôi nhập tên mới (1–50 ký tự) và nhấn "Lưu"</td></tr>
+                        <tr><td>Then</td><td>Display name cập nhật trên tất cả server tôi tham gia; các tin nhắn mới hiển thị tên mới, tin nhắn cũ giữ nguyên tên lúc gửi</td></tr>
+                    </table>
+                </div>
+
+                <div class="ac-block">
+                    <div class="ac-label">AC2: Upload avatar</div>
+                    <table class="bdd-table">
+                        <tr><td>Given</td><td>Tôi đang ở trang Profile</td></tr>
+                        <tr><td>When</td><td>Tôi upload ảnh PNG/JPG ≤ 2MB</td></tr>
+                        <tr><td>Then</td><td>Ảnh hiển thị preview tròn; sau khi lưu, avatar mới xuất hiện ở header, member list, và bên cạnh tin nhắn của tôi</td></tr>
+                    </table>
+                </div>
+
+                <div class="ac-block">
+                    <div class="ac-label">AC3: Validation tên trống</div>
+                    <table class="bdd-table">
+                        <tr><td>Given</td><td>Tôi xóa hết ký tự trong field display name</td></tr>
+                        <tr><td>When</td><td>Tôi nhấn "Lưu"</td></tr>
+                        <tr><td>Then</td><td>Hiển thị lỗi: <em>"Tên hiển thị không được để trống."</em> và không lưu thay đổi</td></tr>
                     </table>
                 </div>
                 <div class="meta-row">
                     <span class="badge p-med">Priority: Medium</span>
                     <span class="badge">Persona: Minh Khoa – Active Member</span>
-                    <span class="badge">Tech: WebSocket presence + PostgreSQL read receipts</span>
+                    <span class="badge">Tech: REST API + File Upload</span>
                 </div>
             </div>
         </div>
-
     </section>
 
 </div>
