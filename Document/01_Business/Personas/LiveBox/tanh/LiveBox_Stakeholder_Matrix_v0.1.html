@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stakeholder Matrix - LiveBox Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0f172a;
+            --accent:  #6366f1;
+            --text-main: #334155;
+            --border: #e2e8f0;
+        }
+        body { font-family: 'Inter', sans-serif; background-color: #f1f5f9; color: var(--text-main); line-height: 1.6; padding: 2rem; }
+        .doc-container { max-width: 1100px; margin: 0 auto; background: white; padding: 4rem; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); border-top: 6px solid var(--accent); border-radius: 8px; }
+
+        /* ── Header ── */
+        .header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid var(--border); padding-bottom: 1.5rem; margin-bottom: 2rem; }
+        .title { font-size: 2.2rem; margin: 0 0 0.5rem 0; color: var(--primary); }
+        .status-draft { display: inline-block; background: #fefce8; color: #a16207; padding: 0.2rem 0.6rem; border-radius: 4px; font-size: 0.85rem; font-weight: bold; border: 1px solid #fef08a; }
+
+        h2 { color: var(--primary); font-size: 1.4rem; margin-top: 2rem; margin-bottom: .5rem; }
+
+        /* ── Table ── */
+        table { width: 100%; border-collapse: collapse; margin-top: 1.5rem; font-size: .9rem; }
+        th, td { border: 1px solid var(--border); padding: 1rem; text-align: left; vertical-align: top; }
+        th { background: #f8fafc; color: var(--primary); font-weight: 600; }
+        tr:nth-child(even) td { background: #fafafa; }
+
+        /* ── Tags ── */
+        .tag { display: inline-block; padding: 0.2rem 0.6rem; border-radius: 4px; font-size: 0.8rem; font-weight: 600; text-align: center; min-width: 50px; }
+        .high   { background: #fee2e2; color: #991b1b; }
+        .medium { background: #fef3c7; color: #92400e; }
+        .low    { background: #dcfce7; color: #166534; }
+        .role { background: #e0e7ff; color: #3730a3; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.82rem; font-weight: 600; display: inline-block; margin-bottom: 0.4rem; }
+
+        /* ── Quadrant legend ── */
+        .quadrant-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1.5rem 0; }
+        .q-box { border: 1px solid var(--border); border-radius: 8px; padding: 1rem 1.25rem; background: #f8fafc; }
+        .q-box h4 { margin: 0 0 .3rem 0; font-size: .9rem; color: var(--primary); }
+        .q-box p  { margin: 0; font-size: .82rem; color: #64748b; }
+
+        /* ── BA Note ── */
+        .ba-note { background: #eff6ff; border-left: 4px solid var(--accent); padding: 1.5rem; margin-top: 2rem; border-radius: 0 8px 8px 0; }
+        .ba-note p { margin: 0; }
+
+        /* ── Story ref ── */
+        code { background: #f1f5f9; padding: .1rem .35rem; border-radius: 4px; font-size: .82rem; }
+    </style>
+</head>
+<body>
+<div class="doc-container">
+
+    <!-- ── Document Header ── -->
+    <div class="header">
+        <div>
+            <h1 class="title">Stakeholder Matrix</h1>
+            <div style="color: #64748b; font-size: 1.1rem;">Phân tích & Phân loại các Bên liên quan – Dự án <strong>LiveBox</strong> · Nền tảng Chat Thời gian Thực</div>
+        </div>
+        <div>
+            <span class="status-draft">Version: v0.1 (Draft)</span>
+        </div>
+    </div>
+
+    <!-- ── Scope note ── -->
+    <p>Dự án LiveBox là nền tảng chat thời gian thực quy mô nhỏ-vừa (MVP Phase 1: tối đa 500 concurrent users), phát triển bởi một nhóm kỹ thuật nhỏ. Các bên liên quan được xác định dựa trên ba nguồn: <em>User Personas, User Stories và Business Goals v0.1</em>.</p>
+
+    <!-- ── Quadrant legend ── -->
+    <h2>Power / Interest Grid – Sơ đồ phân loại</h2>
+    <div class="quadrant-grid">
+        <div class="q-box">
+            <h4>🔴 Power Cao + Interest Cao → <em>Manage Closely</em></h4>
+            <p>Làm việc sát sao: cung cấp thông tin thường xuyên, xin phê duyệt trực tiếp, cảnh báo rủi ro sớm.</p>
+        </div>
+        <div class="q-box">
+            <h4>🟠 Power Cao + Interest Thấp → <em>Keep Satisfied</em></h4>
+            <p>Đảm bảo hài lòng: báo cáo ngắn gọn định kỳ, không làm họ bị bất ngờ.</p>
+        </div>
+        <div class="q-box">
+            <h4>🔵 Power Thấp + Interest Cao → <em>Keep Informed</em></h4>
+            <p>Cập nhật thông tin: thu thập phản hồi liên tục, thiết kế UX đáp ứng nhu cầu nhóm này.</p>
+        </div>
+        <div class="q-box">
+            <h4>⚪ Power Thấp + Interest Thấp → <em>Monitor</em></h4>
+            <p>Theo dõi: không tốn nhiều nguồn lực, chỉ cần nhận thức rằng nhóm này tồn tại.</p>
+        </div>
+    </div>
+
+    <!-- ── Main Table ── -->
+    <h2>Bảng Phân tích Stakeholder</h2>
+    <table>
+        <thead>
+            <tr>
+                <th width="20%">Stakeholder / Vai trò</th>
+                <th width="9%">Power</th>
+                <th width="9%">Interest</th>
+                <th width="31%">Mục tiêu & Kỳ vọng</th>
+                <th width="31%">Chiến lược BA</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            <!-- 1. Product Owner / Project Sponsor -->
+            <tr>
+                <td>
+                    <span class="role">Sponsor / Decider</span><br>
+                    <b>Product Owner</b><br>
+                    <small style="color:#64748b;">Người định hướng sản phẩm, phân bổ ngân sách & phạm vi Phase 1</small>
+                </td>
+                <td><span class="tag high">Cao</span></td>
+                <td><span class="tag high">Cao</span></td>
+                <td>
+                    Cần MVP được deliver đúng hạn (3 tháng). Kỳ vọng hệ thống đạt 5 Business Goals đã định (<code>BG-01 → BG-05</code>). Quan tâm đến adoption rate và khả năng mở rộng Phase 2 (file sharing, mobile app).
+                </td>
+                <td>
+                    <strong>Manage Closely:</strong> Cập nhật tiến độ hàng tuần (Sprint Review). Xin phê duyệt trực tiếp khi thay đổi scope. Cảnh báo sớm nếu BG-02 (latency &lt; 500ms) hoặc BG-05 (security) có rủi ro.
+                </td>
+            </tr>
+
+            <!-- 2. Dev Team Lead / Tech Lead -->
+            <tr>
+                <td>
+                    <span class="role">Tech Lead</span><br>
+                    <b>Backend / Frontend Lead</b><br>
+                    <small style="color:#64748b;">Quyết định kiến trúc: Spring Boot, WebSocket/STOMP, ReactJS, PostgreSQL</small>
+                </td>
+                <td><span class="tag high">Cao</span></td>
+                <td><span class="tag high">Cao</span></td>
+                <td>
+                    Cần Acceptance Criteria rõ ràng trước khi code (không ambiguous). Quan tâm đến Non-Functional Requirements: threshold ≤ 500ms (<code>LB-301</code>), số concurrent user (500), voice room limit (20 người). Cần BA làm rõ edge case bảo mật JWT (<code>LB-102, LB-103</code>).
+                </td>
+                <td>
+                    <strong>Manage Closely:</strong> Review BDD Acceptance Criteria cùng Dev trước Sprint bắt đầu. Cung cấp tài liệu NFR (Non-Functional Requirements) đầy đủ về throughput, latency, storage. Pair session để giải thích flow phức tạp: Invite Link TTL, WebSocket reconnect.
+                </td>
+            </tr>
+
+            <!-- 3. Server Owner – Anh Đạt -->
+            <tr>
+                <td>
+                    <span class="role">Primary User</span><br>
+                    <b>Server Owner</b><br>
+                    <small style="color:#64748b;">Anh Đạt, 28t – Team Lead / Freelance Dev. Người tạo & quản trị server.</small>
+                </td>
+                <td><span class="tag medium">Trung</span></td>
+                <td><span class="tag high">Cao</span></td>
+                <td>
+                    Cần tạo server nhanh, phân kênh theo chủ đề, mời thành viên qua link (<code>LB-201, LB-202</code>). Phải có khả năng kick/ban thành viên (<code>LB-203</code>) và quản lý kênh realtime (<code>LB-302</code>). Không muốn dùng app ngoài cho voice call (<code>LB-401</code>).
+                </td>
+                <td>
+                    <strong>Keep Informed:</strong> Phỏng vấn sâu để xác nhận flow tạo server và phân quyền. Cho test prototype luồng Invite Link → Join Server → Kênh mặc định. Thu thập feedback về UX của member list panel (<code>LB-303</code>).
+                </td>
+            </tr>
+
+            <!-- 4. Active Member – Minh Khoa -->
+            <tr>
+                <td>
+                    <span class="role">Core User</span><br>
+                    <b>Active Member</b><br>
+                    <small style="color:#64748b;">Minh Khoa, 22t – SV CNTT / Junior Dev. Tham gia 3–5 server, online hàng ngày.</small>
+                </td>
+                <td><span class="tag low">Thấp</span></td>
+                <td><span class="tag high">Cao</span></td>
+                <td>
+                    Đòi hỏi tin nhắn realtime ≤ 500ms (<code>LB-301</code>), badge unread chính xác (<code>LB-501</code>), voice ổn định với speaking indicator (<code>LB-401</code>). Cần profile cá nhân (avatar, display name – <code>LB-601</code>) và có thể tự rời server (<code>LB-204</code>).
+                </td>
+                <td>
+                    <strong>Keep Informed:</strong> Là đối tượng chịu ảnh hưởng nhiều nhất khi BG-02 (latency) hoặc BG-04 (unread) không đạt. Yêu cầu QA tester đóng vai Minh Khoa để stress-test WebSocket và voice channel với 10+ người đồng thời.
+                </td>
+            </tr>
+
+            <!-- 5. New User – Lan Anh -->
+            <tr>
+                <td>
+                    <span class="role">Casual User</span><br>
+                    <b>New / Guest User</b><br>
+                    <small style="color:#64748b;">Lan Anh, 20t – SV năm 2, dùng điện thoại là chính, không quen Discord.</small>
+                </td>
+                <td><span class="tag low">Thấp</span></td>
+                <td><span class="tag medium">Trung</span></td>
+                <td>
+                    Cần onboarding siêu đơn giản: đăng ký ≤ 30s (<code>LB-101</code>), vào server qua invite link không cần thao tác phức tạp (<code>LB-202</code>). Giao diện tối giản, thấy ngay ai online và kênh nào active (<code>LB-303</code>).
+                </td>
+                <td>
+                    <strong>Monitor (Design Focus):</strong> Nhờ QA Tester hoặc user test thực tế (cold start) để đo thời gian từ lúc mở URL invite đến khi gõ được tin nhắn đầu tiên. Mục tiêu: &lt; 60 giây toàn bộ flow.
+                </td>
+            </tr>
+
+            <!-- 6. QA / Tester -->
+            <tr>
+                <td>
+                    <span class="role">QA / Tester</span><br>
+                    <b>Quality Assurance Engineer</b><br>
+                    <small style="color:#64748b;">Người verify Acceptance Criteria và NFR trước khi release.</small>
+                </td>
+                <td><span class="tag medium">Trung</span></td>
+                <td><span class="tag medium">Trung</span></td>
+                <td>
+                    Cần BDD Acceptance Criteria có threshold đo được (latency, timeout, max file size). Cần môi trường test staging với WebSocket và WebRTC hoạt động. Quan tâm đến edge case: token hết hạn (<code>LB-102 AC3</code>), invite link expired (<code>LB-202 AC3</code>), browser block micro (<code>LB-401 AC4</code>).
+                </td>
+                <td>
+                    <strong>Consult:</strong> Cung cấp Test Scenarios từ User Stories. Yêu cầu QA ưu tiên test WebSocket reconnect và JWT refresh flow. Họp kickoff QA để walk-through 13 User Stories và xác nhận coverage.
+                </td>
+            </tr>
+
+            <!-- 7. DevOps / Infrastructure -->
+            <tr>
+                <td>
+                    <span class="role">IT / Constraint</span><br>
+                    <b>DevOps / Infrastructure</b><br>
+                    <small style="color:#64748b;">Người triển khai, vận hành server, cấu hình môi trường production.</small>
+                </td>
+                <td><span class="tag medium">Trung</span></td>
+                <td><span class="tag medium">Trung</span></td>
+                <td>
+                    Cần biết giới hạn tải: 500 concurrent users, 20 người/voice room. Database: PostgreSQL duy nhất (không Redis Phase 1). Yêu cầu WebSocket server tương thích với reverse proxy (Nginx/Traefik). Phải hỗ trợ WebRTC STUN/TURN config cho voice.
+                </td>
+                <td>
+                    <strong>Consult:</strong> Cung cấp tài liệu Constraints (từ Business Goals Section 4) và kiến trúc component diagram sớm. Xác nhận STUN/TURN server configuration cho WebRTC trước Sprint voice channel. Cảnh báo nếu thay đổi tech stack ảnh hưởng deployment.
+                </td>
+            </tr>
+
+        </tbody>
+    </table>
+
+    <!-- ── Power/Interest Summary ── -->
+    <h2>Tóm tắt Phân loại theo Chiến lược</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Chiến lược</th>
+                <th>Stakeholder</th>
+                <th>Lý do</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>🔴 Manage Closely</strong></td>
+                <td>Product Owner, Tech Lead</td>
+                <td>Quyết định scope, kiến trúc và phê duyệt release – sai ở đây = dự án fail</td>
+            </tr>
+            <tr>
+                <td><strong>🔵 Keep Informed</strong></td>
+                <td>Server Owner (Anh Đạt), Active Member (Minh Khoa)</td>
+                <td>Người dùng chính – UX/functionality phải phục vụ đúng nhu cầu của họ</td>
+            </tr>
+            <tr>
+                <td><strong>⚪ Monitor</strong></td>
+                <td>New User (Lan Anh)</td>
+                <td>Người dùng tiềm năng – onboarding flow cần đơn giản, đo bằng cold-start test</td>
+            </tr>
+            <tr>
+                <td><strong>🟡 Consult</strong></td>
+                <td>QA Engineer, DevOps</td>
+                <td>Ảnh hưởng kỹ thuật quan trọng nhưng không drive business direction</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- ── BA Note ── -->
+    <div class="ba-note">
+        <p><strong>📝 BA Note:</strong> Đặc thù của dự án LiveBox Phase 1 là <em>không có internal HR organization</em> như ATS – toàn bộ stakeholder đều xoay quanh trải nghiệm người dùng cuối và nhóm kỹ thuật. Rủi ro cao nhất nằm ở <strong>Tech Lead</strong>: nếu Acceptance Criteria không rõ threshold kỹ thuật (WebSocket latency, WebRTC config), Dev team sẽ build sai thứ tự ưu tiên. BA cần dành ít nhất <em>1 buổi Refinement/Sprint</em> để walk-through User Stories với Dev trước khi code.</p>
+    </div>
+
+</div>
+</body>
+</html>
