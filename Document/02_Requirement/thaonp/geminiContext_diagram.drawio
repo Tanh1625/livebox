@@ -1,0 +1,51 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.6.6 Chrome/144.0.7559.236 Electron/40.8.4 Safari/537.36" version="29.6.6">
+  <diagram id="LiveBox-Context" name="LiveBox Context Diagram">
+    <mxGraphModel dx="2216" dy="963" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="2" parent="1" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#dae8fc;strokeColor=#6c8ebf;strokeWidth=3;" value="&lt;b&gt;LIVEBOX SYSTEM&lt;/b&gt;&lt;br&gt;(Real-time Chat Ecosystem)" vertex="1">
+          <mxGeometry height="200" width="200" x="314" y="240" as="geometry" />
+        </mxCell>
+        <mxCell id="3" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" value="&lt;b&gt;Community Admin&lt;/b&gt;&lt;br&gt;(Alex)" vertex="1">
+          <mxGeometry height="60" width="140" x="-40" y="310" as="geometry" />
+        </mxCell>
+        <mxCell id="4" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" value="&lt;b&gt;Authenticated Member&lt;/b&gt;&lt;br&gt;(Jamie)" vertex="1">
+          <mxGeometry height="60" width="140" x="770" y="320" as="geometry" />
+        </mxCell>
+        <mxCell id="5" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="&lt;b&gt;Anonymous Visitor&lt;/b&gt;&lt;br&gt;(Sam)" vertex="1">
+          <mxGeometry height="60" width="140" x="344" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="6" edge="1" parent="1" style="curved=1;endArrow=classic;html=1;entryX=0.28;entryY=0.1;entryDx=0;entryDy=0;entryPerimeter=0;" target="2" value="Credentials /&lt;div&gt;&amp;nbsp;Register Data&lt;/div&gt;">
+          <mxGeometry height="50" relative="1" width="50" x="-0.25" as="geometry">
+            <mxPoint as="offset" />
+            <mxPoint x="370" y="100" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="7" edge="1" parent="1" source="2" style="curved=1;endArrow=classic;html=1;exitX=0.671;exitY=0.048;entryX=0.75;entryY=1;exitDx=0;exitDy=0;exitPerimeter=0;" target="5" value="JWT&amp;nbsp;&lt;div&gt;(HttpOnly Cookie)&lt;/div&gt;">
+          <mxGeometry height="50" relative="1" width="50" x="-0.146" y="-1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="8" edge="1" parent="1" source="3" style="endArrow=classic;html=1;exitX=1;exitY=0.25;entryX=0.041;entryY=0.452;entryDx=0;entryDy=0;entryPerimeter=0;" target="2" value="Provision Servers/Channels (DTOs)">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="310" y="330" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="9" edge="1" parent="1" source="2" style="endArrow=classic;html=1;entryX=1;entryY=0.75;exitX=0.015;exitY=0.568;exitDx=0;exitDy=0;exitPerimeter=0;" target="3" value="Real-time State Sync (Sidebar)">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="300" y="355" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="10" edge="1" parent="1" source="4" style="endArrow=classic;html=1;exitX=0;exitY=0.25;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="2" value="WS Message Payload / Voice Stream">
+          <mxGeometry height="50" relative="1" width="50" as="geometry" />
+        </mxCell>
+        <mxCell id="11" edge="1" parent="1" style="endArrow=classic;html=1;entryX=0;entryY=0.75;" target="4" value="Broadcasted Messages / ACKs">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="510" y="370" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

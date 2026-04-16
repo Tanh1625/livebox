@@ -1,0 +1,46 @@
+<mxfile host="app.diagrams.net" type="device">
+  <diagram id="Provision-Fixed" name="Provision Fixed">
+    <mxGraphModel dx="1000" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="L_Admin" value="Admin (Alex)" style="swimlane;html=1;startSize=20;" vertex="1" parent="1">
+          <mxGeometry x="40" y="40" width="200" height="600" as="geometry" />
+        </mxCell>
+        <mxCell id="start_p" value="" style="ellipse;html=1;fillColor=#000000;" vertex="1" parent="L_Admin">
+          <mxGeometry x="85" y="40" width="30" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="action_p" value="Submit Create Form" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="L_Admin">
+          <mxGeometry x="40" y="100" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="end_p" value="" style="ellipse;html=1;shape=endState;fillColor=#000000;" vertex="1" parent="L_Admin">
+          <mxGeometry x="85" y="540" width="30" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="L_React" value="React Client" style="swimlane;html=1;startSize=20;" vertex="1" parent="1">
+          <mxGeometry x="240" y="40" width="240" height="600" as="geometry" />
+        </mxCell>
+        <mxCell id="post_p" value="POST /api/servers" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="L_React">
+          <mxGeometry x="40" y="100" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="update_p" value="UI State Update" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;" vertex="1" parent="L_React">
+          <mxGeometry x="40" y="450" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="L_Back" value="Backend" style="swimlane;html=1;startSize=20;" vertex="1" parent="1">
+          <mxGeometry x="480" y="40" width="240" height="600" as="geometry" />
+        </mxCell>
+        <mxCell id="dec_p" value="Is Admin?" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="L_Back">
+          <mxGeometry x="80" y="200" width="80" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="save_p" value="Save to DB" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="L_Back">
+          <mxGeometry x="40" y="350" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="p_e1" source="start_p" target="action_p" edge="1" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="p_e2" source="action_p" target="post_p" edge="1" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="p_e3" source="post_p" target="dec_p" edge="1" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="p_e4" value="[Đúng]" source="dec_p" target="save_p" edge="1" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="p_e5" source="save_p" target="update_p" edge="1" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="p_e6" source="update_p" target="end_p" edge="1" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

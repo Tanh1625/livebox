@@ -1,0 +1,90 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.6.6 Chrome/144.0.7559.236 Electron/40.8.4 Safari/537.36" version="29.6.6">
+  <diagram id="Chat-Fixed-V2" name="Chat Swimlane V2">
+    <mxGraphModel dx="1042" dy="722" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="L_User" parent="1" style="swimlane;html=1;startSize=20;" value="Member (Jamie)" vertex="1">
+          <mxGeometry height="600" width="200" x="40" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="s_c" parent="L_User" style="ellipse;html=1;fillColor=#000000;" value="" vertex="1">
+          <mxGeometry height="30" width="30" x="85" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="a_c" parent="L_User" style="rounded=1;whiteSpace=wrap;html=1;" value="Press Enter" vertex="1">
+          <mxGeometry height="40" width="120" x="40" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="show_retry" parent="L_User" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;" value="View Reconnecting Status" vertex="1">
+          <mxGeometry height="40" width="120" x="40" y="320" as="geometry" />
+        </mxCell>
+        <mxCell id="e_c" parent="L_User" style="ellipse;html=1;shape=endState;fillColor=#000000;" value="" vertex="1">
+          <mxGeometry height="30" width="30" x="85" y="455" as="geometry" />
+        </mxCell>
+        <mxCell id="L_Client" parent="1" style="swimlane;html=1;startSize=20;" value="React App" vertex="1">
+          <mxGeometry height="600" width="240" x="240" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="f_opt" parent="L_Client" style="rounded=1;whiteSpace=wrap;html=1;" value="Optimistic Render (Pending)" vertex="1">
+          <mxGeometry height="40" width="160" x="40" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="dec_c" parent="L_Client" style="rhombus;whiteSpace=wrap;html=1;" value="Socket Connected?" vertex="1">
+          <mxGeometry height="80" width="80" x="80" y="200" as="geometry" />
+        </mxCell>
+        <mxCell id="f_reconnect" parent="L_Client" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;" value="Trigger Auto-reconnect" vertex="1">
+          <mxGeometry height="40" width="160" x="40" y="320" as="geometry" />
+        </mxCell>
+        <mxCell id="f_ack" parent="L_Client" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;" value="Mark Message as Sent" vertex="1">
+          <mxGeometry height="40" width="160" x="40" y="450" as="geometry" />
+        </mxCell>
+        <mxCell id="L_Socket" parent="1" style="swimlane;html=1;startSize=20;" value="WS Broker" vertex="1">
+          <mxGeometry height="600" width="240" x="480" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="b_broad" parent="L_Socket" style="rounded=1;whiteSpace=wrap;html=1;" value="Broadcast to Topic" vertex="1">
+          <mxGeometry height="40" width="160" x="40" y="350" as="geometry" />
+        </mxCell>
+        <mxCell id="c_e1" edge="1" parent="1" source="s_c" target="a_c">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c_e2" edge="1" parent="1" source="a_c" target="f_opt">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c_e3" edge="1" parent="1" source="f_opt" target="dec_c">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c_e4" edge="1" parent="1" source="dec_c" target="b_broad" value="[Đúng]">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="600" y="280" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c_e5" edge="1" parent="1" source="b_broad" target="f_ack">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="600" y="510" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c_e6" edge="1" parent="1" source="f_ack" target="e_c">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c_e7" edge="1" parent="1" source="dec_c" target="show_retry" value="[Sai]">
+          <mxGeometry relative="1" x="-0.7" y="10" as="geometry">
+            <Array as="points">
+              <mxPoint x="140" y="280" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c_e8" edge="1" parent="1" source="show_retry" target="f_reconnect">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c_e9" edge="1" parent="1" source="f_reconnect" target="e_c">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="360" y="440" />
+              <mxPoint x="140" y="440" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

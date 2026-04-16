@@ -1,0 +1,75 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.6.6 Chrome/144.0.7559.236 Electron/40.8.4 Safari/537.36" version="29.6.6">
+  <diagram id="Provision-Fixed-V2" name="Provision Fixed V2">
+    <mxGraphModel dx="1042" dy="722" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="L_Admin" parent="1" style="swimlane;html=1;startSize=20;" value="Admin (Alex)" vertex="1">
+          <mxGeometry height="430" width="200" x="40" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="start_p" parent="L_Admin" style="ellipse;html=1;fillColor=#000000;" value="" vertex="1">
+          <mxGeometry height="30" width="30" x="85" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="action_p" parent="L_Admin" style="rounded=1;whiteSpace=wrap;html=1;" value="Submit Create Form" vertex="1">
+          <mxGeometry height="40" width="120" x="40" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="show_err_p" parent="L_Admin" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;" value="Receive Permission Error" vertex="1">
+          <mxGeometry height="40" width="120" x="40" y="220" as="geometry" />
+        </mxCell>
+        <mxCell id="end_p" parent="L_Admin" style="ellipse;html=1;shape=endState;fillColor=#000000;" value="" vertex="1">
+          <mxGeometry height="30" width="30" x="85" y="355" as="geometry" />
+        </mxCell>
+        <mxCell id="L_React" parent="1" style="swimlane;html=1;startSize=20;" value="React Client" vertex="1">
+          <mxGeometry height="430" width="240" x="240" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="post_p" parent="L_React" style="rounded=1;whiteSpace=wrap;html=1;" value="POST /api/servers" vertex="1">
+          <mxGeometry height="40" width="160" x="40" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="update_p" parent="L_React" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;" value="UI State Update (Success)" vertex="1">
+          <mxGeometry height="40" width="160" x="40" y="350" as="geometry" />
+        </mxCell>
+        <mxCell id="L_Back" parent="1" style="swimlane;html=1;startSize=20;" value="Backend" vertex="1">
+          <mxGeometry height="430" width="240" x="480" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="dec_p" parent="L_Back" style="rhombus;whiteSpace=wrap;html=1;" value="Is Admin?" vertex="1">
+          <mxGeometry height="80" width="80" x="80" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="save_p" parent="L_Back" style="rounded=1;whiteSpace=wrap;html=1;" value="Save to DB" vertex="1">
+          <mxGeometry height="40" width="160" x="40" y="350" as="geometry" />
+        </mxCell>
+        <mxCell id="p_e1" edge="1" parent="1" source="start_p" target="action_p">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p_e2" edge="1" parent="1" source="action_p" target="post_p">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p_e3" edge="1" parent="1" source="post_p" target="dec_p">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p_e4" edge="1" parent="1" source="dec_p" style="entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" target="save_p" value="[Đúng]">
+          <mxGeometry relative="1" x="0.2632" y="30" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p_e5" edge="1" parent="1" source="save_p" target="update_p">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p_e6" edge="1" parent="1" source="update_p" target="end_p">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p_e7" edge="1" parent="1" source="dec_p" style="exitX=0.5;exitY=1;exitDx=0;exitDy=0;" target="show_err_p" value="[Sai]">
+          <mxGeometry relative="1" x="0.1667" y="-20" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="600" y="280" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p_e8" edge="1" parent="1" source="show_err_p" target="end_p">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
