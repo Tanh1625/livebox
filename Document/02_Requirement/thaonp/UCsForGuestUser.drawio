@@ -1,0 +1,64 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.6.6 Chrome/144.0.7559.236 Electron/40.8.4 Safari/537.36" version="29.6.6">
+  <diagram id="LiveBox-GuestUser-Final-Fixed" name="UCs for Guest User (Complete UML)">
+    <mxGraphModel dx="1042" dy="722" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="boundary" parent="1" style="shape=rect;html=1;dashed=1;" value="" vertex="1">
+          <mxGeometry height="450" width="540" x="420" y="240" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_register" parent="boundary" style="ellipse;" value="Register Account" vertex="1">
+          <mxGeometry height="42.1875" width="176.66666666666669" x="44.080000000000005" y="73.56201923076922" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_login" parent="boundary" style="ellipse;" value="Login (Authenticate)" vertex="1">
+          <mxGeometry height="42.1875" width="176.66666666666669" x="44.08" y="245.83201923076925" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_validate" parent="boundary" style="ellipse;dashed=1;" value="Validate Input" vertex="1">
+          <mxGeometry height="35.15625" width="157.03" x="323.5" y="80.59326923076922" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_verify" parent="boundary" style="ellipse;dashed=1;" value="Verify Credentials" vertex="1">
+          <mxGeometry height="35.15625" width="157.03" x="323.5" y="249.34326923076924" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_token" parent="boundary" style="ellipse;dashed=1;" value="Generate JWT Token" vertex="1">
+          <mxGeometry height="35.15625" width="157.03" x="53.900000000000006" y="326.68701923076924" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_error" parent="boundary" style="ellipse;dashed=1;" value="Handle Validation / Auth Error" vertex="1">
+          <mxGeometry height="42.1875" width="196.3" x="303.87" y="168.21826923076924" as="geometry" />
+        </mxCell>
+        <mxCell id="2" edge="1" parent="boundary" source="uc_register" style="dashed=1;endArrow=open;" target="uc_login" value="&lt;&lt;include&gt;&gt;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="3" edge="1" parent="boundary" source="uc_register" style="dashed=1;endArrow=open;" target="uc_validate" value="&lt;&lt;include&gt;&gt;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="4" edge="1" parent="boundary" source="uc_login" style="dashed=1;endArrow=open;" target="uc_validate" value="&lt;&lt;include&gt;&gt;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="5" edge="1" parent="boundary" source="uc_login" style="dashed=1;endArrow=open;" target="uc_verify" value="&lt;&lt;include&gt;&gt;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6" edge="1" parent="boundary" source="uc_login" style="dashed=1;endArrow=open;" target="uc_token" value="&lt;&lt;include&gt;&gt;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="7" edge="1" parent="boundary" source="uc_error" style="dashed=1;endArrow=open;" target="uc_validate" value="&lt;&lt;extend&gt;&gt;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="8" edge="1" parent="boundary" source="uc_error" style="dashed=1;endArrow=open;" target="uc_verify" value="&lt;&lt;extend&gt;&gt;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="title" parent="boundary" style="text;html=1;align=center;fontSize=13;fontStyle=1;" value="LIVEBOX PLATFORM – ONBOARDING SYSTEM" vertex="1">
+          <mxGeometry height="28.125" width="320" x="100" y="17.312019230769227" as="geometry" />
+        </mxCell>
+        <mxCell id="actor" parent="boundary" style="shape=umlActor;" value="Guest User" vertex="1">
+          <mxGeometry height="69.23076923076923" width="40" x="-130" y="98.9826923076923" as="geometry" />
+        </mxCell>
+        <mxCell id="9" edge="1" parent="boundary" source="actor" style="endArrow=none;" target="uc_register">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="10" edge="1" parent="boundary" source="actor" style="endArrow=none;" target="uc_login">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

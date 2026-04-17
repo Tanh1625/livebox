@@ -1,0 +1,52 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.6.6 Chrome/144.0.7559.236 Electron/40.8.4 Safari/537.36" version="29.6.6">
+  <diagram id="LiveBox-ActiveMember-UC" name="UCs for Active Member (P02)">
+    <mxGraphModel dx="1097" dy="760" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="boundary" parent="1" style="shape=rect;html=1;verticalAlign=top;fontStyle=1;whiteSpace=wrap;fillColor=#f8fafc;strokeColor=#64748b;dashed=1;" value="LiveBox Platform (Core Communication Flow)" vertex="1">
+          <mxGeometry height="720" width="460" x="240" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="actor_member" parent="1" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fillColor=#eef2ff;strokeColor=#4338ca;fontStyle=1" value="Active Member&#xa;(Minh Khoa - P02)" vertex="1">
+          <mxGeometry height="80" width="40" x="60" y="340" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_301" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#0f172a;" value="UC-301: Real-time Messaging&#xa;(Send/Receive Text)" vertex="1">
+          <mxGeometry height="70" width="220" x="360" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_401" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#0f172a;" value="UC-401: Voice Interaction&#xa;(Join/Leave Voice Channel)" vertex="1">
+          <mxGeometry height="70" width="220" x="360" y="190" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_303" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#0f172a;" value="UC-303: Presence Tracking&#xa;(View Member Status)" vertex="1">
+          <mxGeometry height="70" width="220" x="360" y="300" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_501" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#0f172a;" value="UC-501: Unread Notification&#xa;(New Message Badge)" vertex="1">
+          <mxGeometry height="70" width="220" x="360" y="410" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_601" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#0f172a;" value="UC-601: Manage Profile&#xa;(Avatar &amp; Display Name)" vertex="1">
+          <mxGeometry height="70" width="220" x="360" y="520" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_204" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#0f172a;" value="UC-204: Exit Server" vertex="1">
+          <mxGeometry height="70" width="220" x="360" y="630" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_301" edge="1" parent="1" source="actor_member" style="endArrow=none;html=1;" target="uc_301">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_401" edge="1" parent="1" source="actor_member" style="endArrow=none;html=1;" target="uc_401">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_303" edge="1" parent="1" source="actor_member" style="endArrow=none;html=1;" target="uc_303">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_501" edge="1" parent="1" source="actor_member" style="endArrow=none;html=1;" target="uc_501">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_601" edge="1" parent="1" source="actor_member" style="endArrow=none;html=1;" target="uc_601">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_204" edge="1" parent="1" source="actor_member" style="endArrow=none;html=1;" target="uc_204">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

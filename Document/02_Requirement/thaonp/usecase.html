@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <title>LiveBox - User Requirements</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 40px;
+        }
+
+        h2,
+        h3,
+        h4 {
+            color: #2c3e50;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-bottom: 30px;
+        }
+
+        table,
+        th,
+        td {
+            border: 1px solid #333;
+        }
+
+        th,
+        td {
+            padding: 10px;
+            text-align: left;
+            vertical-align: top;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h2>1.3 User Requirements</h2>
+
+    <h3>1.3.1 Actors</h3>
+    <p>Based on the Project Context, the LiveBox Real-time Chat Platform interacts directly with three primary System
+        Actors:</p>
+
+    <table>
+        <tr>
+            <th>No.</th>
+            <th>Actor</th>
+            <th>Description & System Expectations</th>
+        </tr>
+        <tr>
+            <td>1</td>
+            <td>Server Owner (P01 - Primary User)</td>
+            <td>
+                Description: The creator and administrator of a Server. They have full control over the Server's
+                configuration, channels, and members.<br>
+                Responsibilities: Create Server, create/delete channels, generate invite links, and perform kick/ban
+                moderation actions.
+            </td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td>Active Member (P02 - Core User)</td>
+            <td>
+                Description: A regular user who has joined one or more Servers. They are the primary participants in the
+                real-time communication platform.<br>
+                Responsibilities: Send and receive real-time text messages, participate in WebRTC voice channels (max 20
+                users), and update their display name/avatar.
+            </td>
+        </tr>
+        <tr>
+            <td>3</td>
+            <td>Guest User (P03 - Casual User)</td>
+            <td>
+                Description: A user who has received an invite link but has not yet registered, or a newly registered
+                user who is just joining a Server for the first time.<br>
+                Responsibilities: Register an account (in under 30 seconds), log in, and join their first Server using
+                an invite code.
+            </td>
+        </tr>
+    </table>
+
+    <h3>1.3.2 Use Cases (UC)</h3>
+
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Use Case</th>
+            <th>Feature</th>
+            <th>Actors</th>
+            <th>Use Case Description</th>
+        </tr>
+        <tr>
+            <td>UC-101</td>
+            <td>Đăng ký tài khoản mới</td>
+            <td>Authentication & Onboarding</td>
+            <td>Guest User</td>
+            <td>tôi có thể bắt đầu sử dụng nền tảng ngay mà không bị cản trở bởi quy trình đăng ký phức tạp.</td>
+        </tr>
+        <tr>
+            <td>UC-102</td>
+            <td>Đăng nhập và duy trì phiên làm việc</td>
+            <td>Authentication & Onboarding</td>
+            <td>Server Owner, Active Member, Guest User</td>
+            <td>tôi không phải đăng nhập lại mỗi khi mở ứng dụng.</td>
+        </tr>
+        <tr>
+            <td>UC-103</td>
+            <td>Đăng xuất an toàn</td>
+            <td>Authentication & Onboarding</td>
+            <td>Server Owner, Active Member, Guest User</td>
+            <td>không ai có thể truy cập tài khoản của tôi trên thiết bị này sau khi tôi rời đi.</td>
+        </tr>
+        <tr>
+            <td>UC-201</td>
+            <td>Tạo server mới</td>
+            <td>Server Management</td>
+            <td>Server Owner, Guest User</td>
+            <td>tôi có không gian riêng để tổ chức cộng đồng hoặc nhóm làm việc của mình.</td>
+        </tr>
+        <tr>
+            <td>UC-202</td>
+            <td>Mời thành viên qua invite link</td>
+            <td>Server Management</td>
+            <td>Server Owner, Guest User</td>
+            <td>thành viên mới có thể tham gia nhanh mà không cần tôi thêm thủ công từng người.</td>
+        </tr>
+        <tr>
+            <td>UC-203</td>
+            <td>Kick / Ban thành viên khỏi server</td>
+            <td>Server Management</td>
+            <td>Server Owner, Guest User</td>
+            <td>tôi duy trì được môi trường giao tiếp lành mạnh và an toàn cho cộng đồng.</td>
+        </tr>
+        <tr>
+            <td>UC-204</td>
+            <td>Rời khỏi server (Leave Server)</td>
+            <td>Server Management</td>
+            <td>Active Member</td>
+            <td>sidebar của tôi chỉ hiển thị các server tôi thực sự hoạt động.</td>
+        </tr>
+        <tr>
+            <td>UC-301</td>
+            <td>Gửi và nhận tin nhắn thời gian thực</td>
+            <td>Channel & Real-time Messaging</td>
+            <td>Active Member</td>
+            <td>cuộc trò chuyện diễn ra tự nhiên, không cần reload trang.</td>
+        </tr>
+        <tr>
+            <td>UC-302</td>
+            <td>Tạo và quản lý kênh text trong server</td>
+            <td>Channel & Real-time Messaging</td>
+            <td>Server Owner, Guest User</td>
+            <td>tôi có thể tổ chức cuộc trò chuyện theo từng chủ đề rõ ràng.</td>
+        </tr>
+        <tr>
+            <td>UC-303</td>
+            <td>Xem danh sách thành viên và trạng thái online</td>
+            <td>Channel & Real-time Messaging</td>
+            <td>Active Member, Guest User</td>
+            <td>tôi biết cộng đồng có active không và có thể tương tác với ai ngay lúc này.</td>
+        </tr>
+        <tr>
+            <td>UC-401</td>
+            <td>Tham gia và rời voice channel</td>
+            <td>Voice Channel</td>
+            <td>Active Member</td>
+            <td>tôi có thể họp / trò chuyện trực tiếp ngay mà không cần app họp riêng.</td>
+        </tr>
+        <tr>
+            <td>UC-501</td>
+            <td>Thông báo tin nhắn chưa đọc</td>
+            <td>Notification & Presence</td>
+            <td>Active Member</td>
+            <td>tôi không bỏ lỡ tin nhắn quan trọng kể cả khi đang ở kênh khác.</td>
+        </tr>
+        <tr>
+            <td>UC-601</td>
+            <td>Cập nhật hồ sơ cá nhân (avatar & display name)</td>
+            <td>User Profile</td>
+            <td>Active Member</td>
+            <td>các thành viên khác dễ dàng nhận diện tôi trong server.</td>
+        </tr>
+    </table>
+
+    <h3>1.3.3 Use Case Diagrams</h3>
+
+    <p>
+        In this section, you need to provide the UC diagram(s) to show the actor-UCs and UC-UC relationships like the
+        sample below. You can have multiple UC diagrams for the system, each diagram is for one actor or one workflow.
+    </p>
+
+    <p>This diagram illustrates the capabilities of the Server Owner, whose main goals are managing the server,
+        channels, and members.</p>
+    <ul>
+        <li>UC-201: Tạo server mới</li>
+        <li>UC-202: Mời thành viên qua invite link</li>
+        <li>UC-203: Kick / Ban thành viên khỏi server</li>
+        <li>UC-302: Tạo và quản lý kênh text trong server</li>
+    </ul>
+    <p>[Insert Server Owner UC Diagram Here]</p>
+
+    <h4>1.3.3.1 UCs for Server Owner (P01)</h4>
+
+    <p>This diagram captures the core communication features used by regular active members in the server.</p>
+    <ul>
+        <li>UC-204: Rời khỏi server</li>
+        <li>UC-301: Gửi và nhận tin nhắn thời gian thực</li>
+        <li>UC-303: Xem danh sách thành viên và trạng thái online</li>
+        <li>UC-401: Tham gia và rời voice channel</li>
+        <li>UC-501: Thông báo tin nhắn chưa đọc</li>
+        <li>UC-601: Cập nhật hồ sơ cá nhân</li>
+        <li>UC-103: Đăng xuất an toàn</li>
+    </ul>
+    <p>[Insert Active Member UC Diagram Here]</p>
+
+    <h4>1.3.3.2 UCs for Active Member (P02)</h4>
+
+    <p>This diagram focuses on the onboarding flow for new or guest users entering the platform.</p>
+    <ul>
+        <li>UC-101: Đăng ký tài khoản mới</li>
+        <li>UC-102: Đăng nhập và duy trì phiên làm việc</li>
+    </ul>
+    <p>[Insert Guest User UC Diagram Here]</p>
+
+</body>
+
+</html>
