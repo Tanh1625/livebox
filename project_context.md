@@ -185,6 +185,17 @@
     <layer name="Dev Approach">Vibe Coding (AI-assisted) + Agile 1-week Sprints</layer>
   </tech_stack>
 
+  <coding_layer>
+    <architecture>Modular Monolith (Spring Boot 3.x)</architecture>
+    <layer_rules>
+      <rule name="Dependency Flow">Controller → Service → Repository (Strictly linear, no circular dependency)</rule>
+      <rule name="Data Segregation">Entities (Domain) cho Persistence; DTOs cho API Communication; Mapper (MapStruct) cho conversion</rule>
+      <rule name="Naming">PascalCase cho Classes; camelCase cho methods/vars; SCREAMING_SNAKE_CASE cho Constants</rule>
+      <rule name="Encapsulation">Mỗi Module (Auth, Server, Channel, Message) tự đóng gói logic và domain riêng biệt</rule>
+    </layer_rules>
+    <details_ref>AI_Context/coding_conventions.md</details_ref>
+  </coding_layer>
+
 </vision_and_scope>
 
 
