@@ -5,6 +5,13 @@ Epic,Channel & Real-time Messaging,,,
 Epic,Voice Channel,,,
 Epic,Notification & Presence,,,
 Epic,User Profile,,,
+Epic,Media & File Sharing,,,
+Epic,Mentions & Tagging,,,
+Epic,Settings & Preferences,,,
+Epic,Roles & Permissions,,,
+Epic,Infrastructure & DevOps,,,
+Epic,Architecture & Foundation,,,
+Epic,Testing & Quality Assurance,,,
 Story,[UC-101] Đăng ký tài khoản mới,"Như một Guest User, tôi muốn Đăng ký tài khoản mới, để tôi có thể bắt đầu sử dụng nền tảng ngay mà không bị cản trở bởi quy trình đăng ký phức tạp.",,Authentication & Onboarding
 Story,[UC-102] Đăng nhập và duy trì phiên làm việc,"Như một Server Owner, Active Member hoặc Guest User, tôi muốn Đăng nhập và duy trì phiên làm việc, để tôi không phải đăng nhập lại mỗi khi mở ứng dụng.",,Authentication & Onboarding
 Story,[UC-103] Đăng xuất an toàn,"Như một Server Owner, Active Member hoặc Guest User, tôi muốn Đăng xuất an toàn, để không ai có thể truy cập tài khoản của tôi trên thiết bị này sau khi tôi rời đi.",,Authentication & Onboarding
@@ -18,3 +25,14 @@ Story,[UC-303] Xem danh sách thành viên và trạng thái online,"Như một 
 Story,[UC-401] Tham gia và rời voice channel,"Như một Active Member, tôi muốn Tham gia và rời voice channel, để tôi có thể họp / trò chuyện trực tiếp ngay mà không cần app họp riêng.",,Voice Channel
 Story,[UC-501] Thông báo tin nhắn chưa đọc,"Như một Active Member, tôi muốn Thông báo tin nhắn chưa đọc, để tôi không bỏ lỡ tin nhắn quan trọng kể cả khi đang ở kênh khác.",,Notification & Presence
 Story,[UC-601] Cập nhật hồ sơ cá nhân (avatar & display name),"Như một Active Member, tôi muốn Cập nhật hồ sơ cá nhân (avatar & display name), để các thành viên khác dễ dàng nhận diện tôi trong server.",,User Profile
+Story,Chia sẻ tệp tin và hình ảnh vào text channel,"Là một Active Member, tôi muốn gửi hình ảnh, video và file tài liệu vào text channel, để minh họa và chia sẻ cho cộng đồng.",,Media & File Sharing
+Story,Sử dụng Mention để gắn thẻ thành viên,"Là một Active Member, tôi muốn tag (mention) @username trong kênh chat, để người đó nhận được thông báo đích danh.",,Mentions & Tagging
+Story,Cấu hình đầu vào/đầu ra âm thanh (Voice Channel),"Là người dùng, tôi muốn có tuỳ chọn thiết lập đầu vào/đầu ra âm thanh (Mic/Speaker), để đảm bảo tính năng Voice hoạt động đúng phần cứng.",,Settings & Preferences
+Story,Chia quyền Admin và Moderator cho Server,"Là một Server Owner, tôi muốn chỉ định quyền (Admin, Moderator) cho một vài thành viên, để họ hỗ trợ quản lý channel/ban user khi tôi đi vắng.",,Roles & Permissions
+Task,Thiết lập các môi trường dự án (Dev / Staging / Production),,,Infrastructure & DevOps
+Task,Thiết lập luồng CI/CD Pipeline tự động,,,Infrastructure & DevOps
+Task,Cấu hình Cloud Server và Database (PostgreSQL),,,Infrastructure & DevOps
+Task,"[POC] Nghiên cứu và xây dựng WebRTC Voice Channel","Nghiên cứu và làm Proof of Concept cho luồng WebRTC Voice, đánh giá hiệu năng và giảm rủi ro kỹ thuật.",,Architecture & Foundation
+Task,Thiết lập WebSockets cho Real-time Messaging,"Khởi tạo cấu trúc source code và WebSocket server để hỗ trợ luồng chat thời gian thực.",,Architecture & Foundation
+Task,Load Test cho Voice Channel và Real-time Messaging,,,Testing & Quality Assurance
+Task,Viết Automation Test cho các luồng API Core,,,Testing & Quality Assurance

@@ -415,3 +415,25 @@
   </rule>
 
 </output_rules>
+
+
+<!-- ================================================================
+     PILLAR 5 – CODING LAYER (NEW)
+     Định nghĩa các tiêu chuẩn lập trình và nguyên tắc kiến trúc
+     (Clean Architecture). Chi tiết tham khảo file:
+     - Backend: AI_Context/backend_coding_conventions.md
+     - Frontend: AI_Context/frontend_coding_conventions.md
+================================================================ -->
+<coding_layer>
+  <architecture_rules>
+    <rule id="CODE-01">Backend (Modular Monolith & MVC): Gom nhóm thư mục theo Bounded Context vào thư mục 'module' (VD: auth, server, channel, message) và phân mảnh MVC bên trong. Các Shared Kernel đưa ra thư mục 'common'.</rule>
+    <rule id="CODE-02">Backend Dependency Flow: Controller ➔ Service ➔ Repository. Tuyệt đối không gọi vượt cấp làm phát sinh Circular Dependency.</rule>
+    <rule id="CODE-03">Frontend (Feature-Sliced Design): Cấu trúc thư mục Frontend phải có sự tương đồng (mirror) với Bounded Contexts của Backend (auth, server, channel, message) nằm trong thư mục 'features'.</rule>
+  </architecture_rules>
+
+  <implementation_standards>
+    <standard id="CODE-04">Naming: Backend Class (PascalCase), API (kebab-case, plural). Frontend Components (PascalCase), Hooks (camelCase).</standard>
+    <standard id="CODE-05">Data Transfer: Backend không trả Entity trực tiếp ra API. Frontend sử dụng TypeScript type definition khớp 1-1 với Backend DTO.</standard>
+    <standard id="CODE-06">Framework Best Practices: Backend dùng Constructor Injection (Lombok), cấm @Data Entity. Frontend dùng Zustand (Global State), Functional Components, cấm sử dụng class component và type 'any'.</standard>
+  </implementation_standards>
+</coding_layer>
