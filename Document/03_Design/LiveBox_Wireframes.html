@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LiveBox - Low Fidelity Wireframes</title>
+<style>
+    :root {
+        --wf-bg: #f5f5f5;
+        --wf-card: #ffffff;
+        --wf-border: #333333;
+        --wf-text: #333333;
+        --wf-gray: #dddddd;
+        --wf-gray-dark: #aaaaaa;
+        --wf-font: 'Courier New', Courier, monospace;
+    }
+
+    body {
+        background-color: #e0e0e0;
+        font-family: var(--wf-font);
+        color: var(--wf-text);
+        margin: 0;
+        padding: 40px;
+    }
+
+    .section-title {
+        font-size: 32px;
+        font-weight: bold;
+        margin-top: 60px;
+        margin-bottom: 20px;
+        text-align: center;
+        color: var(--wf-border);
+        text-transform: uppercase;
+        letter-spacing: 2px;
+    }
+
+    .screen-title {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 10px;
+        border-bottom: 2px dashed var(--wf-border);
+        padding-bottom: 5px;
+    }
+
+    .wireframe-container {
+        margin-bottom: 60px;
+        background-color: var(--wf-bg);
+        border: 2px solid var(--wf-border);
+        position: relative;
+        box-shadow: 5px 5px 0px 0px rgba(0,0,0,0.2);
+    }
+
+    /* --- COMMON COMPONENTS --- */
+    .box-placeholder {
+        background-color: var(--wf-gray);
+        border: 1px solid var(--wf-gray-dark);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--wf-border);
+        position: relative;
+        overflow: hidden;
+    }
+    .img-placeholder::before, .img-placeholder::after {
+        content: '';
+        position: absolute;
+        width: 141%; 
+        height: 1px;
+        background-color: var(--wf-gray-dark);
+        top: 50%;
+        left: 50%;
+    }
+    .img-placeholder::before { transform: translate(-50%, -50%) rotate(45deg); }
+    .img-placeholder::after { transform: translate(-50%, -50%) rotate(-45deg); }
+
+    .btn {
+        background-color: var(--wf-gray-dark);
+        border: 1px solid var(--wf-border);
+        text-align: center;
+        padding: 10px;
+        font-weight: bold;
+        cursor: not-allowed;
+    }
+    .input-field {
+        background-color: var(--wf-card);
+        border: 1px solid var(--wf-border);
+        padding: 10px;
+        color: #777;
+    }
+
+    /* --- LAYOUTS --- */
+    .screen-auth {
+        width: 1000px;
+        height: 600px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .auth-card {
+        width: 400px;
+        background-color: var(--wf-card);
+        border: 2px solid var(--wf-border);
+        padding: 30px;
+        box-sizing: border-box;
+    }
+    .auth-tabs {
+        display: flex;
+        border-bottom: 2px solid var(--wf-border);
+        margin-bottom: 20px;
+    }
+    .auth-tab {
+        flex: 1;
+        text-align: center;
+        padding: 10px;
+        border: 2px solid var(--wf-border);
+        border-bottom: none;
+        background-color: var(--wf-gray);
+    }
+    .auth-tab.active {
+        background-color: var(--wf-card);
+        font-weight: bold;
+        border-bottom: 2px solid var(--wf-card);
+        margin-bottom: -2px;
+    }
+
+    .screen-app {
+        width: 1200px;
+        height: 700px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: row;
+        border: 2px solid var(--wf-border);
+    }
+    
+    .col-server { width: 80px; background-color: var(--wf-gray); border-right: 2px solid var(--wf-border); display: flex; flex-direction: column; align-items: center; padding-top: 20px; }
+    .server-icon { width: 50px; height: 50px; border-radius: 50%; border: 2px solid var(--wf-border); background-color: var(--wf-card); margin-bottom: 15px; }
+    .server-icon.active { border-width: 4px; }
+    
+    .col-channel { width: 240px; background-color: var(--wf-card); border-right: 2px solid var(--wf-border); display: flex; flex-direction: column; }
+    .channel-header { height: 60px; border-bottom: 2px solid var(--wf-border); display: flex; align-items: center; padding: 0 15px; font-weight: bold; font-size: 18px; }
+    .channel-section { padding: 15px; flex: 1; }
+    .channel-item { margin-bottom: 10px; display: flex; justify-content: space-between; }
+    .badge { background-color: var(--wf-border); color: var(--wf-card); padding: 2px 6px; border-radius: 10px; font-size: 12px; }
+    .user-profile-bottom { height: 60px; border-top: 2px solid var(--wf-border); background-color: var(--wf-gray); display: flex; align-items: center; padding: 0 15px; }
+    .avatar-small { width: 30px; height: 30px; border-radius: 50%; border: 1px solid var(--wf-border); margin-right: 10px; background-color: var(--wf-card); }
+
+    .col-chat { flex: 1; display: flex; flex-direction: column; background-color: var(--wf-bg); }
+    .chat-header { height: 60px; border-bottom: 2px solid var(--wf-border); background-color: var(--wf-card); display: flex; align-items: center; padding: 0 20px; font-weight: bold; font-size: 18px; }
+    .chat-body { flex: 1; padding: 20px; overflow-y: hidden; }
+    .chat-message { display: flex; margin-bottom: 20px; }
+    .msg-content { margin-left: 15px; }
+    .msg-name { font-weight: bold; margin-bottom: 5px; }
+    
+    .chat-input-area { padding: 20px; border-top: 2px solid var(--wf-border); background-color: var(--wf-card); display: flex; }
+    .chat-input-area .input-field { flex: 1; margin-right: 10px; border-radius: 5px;}
+
+    .col-members { width: 240px; background-color: var(--wf-card); border-left: 2px solid var(--wf-border); }
+    .member-group { padding: 15px; font-weight: bold; border-bottom: 1px dashed var(--wf-gray-dark); }
+    .member-item { display: flex; align-items: center; padding: 10px 15px; }
+    .status-dot { width: 10px; height: 10px; border-radius: 50%; border: 1px solid var(--wf-border); margin-right: 10px; }
+    .status-online { background-color: var(--wf-border); }
+    .status-offline { background-color: transparent; }
+
+    /* --- MODALS --- */
+    .screen-modal {
+        width: 1000px;
+        height: 600px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: var(--wf-bg);
+        position: relative;
+    }
+    .modal-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; }
+    .modal-card { width: 500px; background-color: var(--wf-card); border: 2px solid var(--wf-border); box-shadow: 5px 5px 0px 0px rgba(0,0,0,0.2); display: flex; flex-direction: column; }
+    .modal-header { padding: 20px; border-bottom: 2px solid var(--wf-border); font-weight: bold; font-size: 18px; display: flex; justify-content: space-between; }
+    .modal-body { padding: 20px; display: flex; flex-direction: column; align-items: center; }
+    .modal-footer { padding: 20px; border-top: 2px solid var(--wf-border); display: flex; justify-content: flex-end; background-color: var(--wf-gray); }
+    .btn-primary { background-color: var(--wf-border); color: var(--wf-card); cursor: not-allowed; }
+    .btn-secondary { background-color: var(--wf-card); color: var(--wf-border); margin-right: 10px; cursor: not-allowed; }
+    .btn-danger { border-color: red; color: red; margin-right: auto; cursor: not-allowed; }
+
+</style>
+</head>
+<body>
+
+    <div class="section-title">A. ONBOARDING & AUTHENTICATION</div>
+
+    <!-- 1. LANDING PAGE -->
+    <div class="screen-title">1. SCR-LANDING-01: Landing Page (Product Overview)</div>
+    <div class="wireframe-container screen-auth" style="flex-direction: column; align-items: stretch; justify-content: flex-start; height: 800px;">
+        <div style="height: 80px; border-bottom: 2px solid var(--wf-border); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; background-color: var(--wf-card);">
+            <div class="box-placeholder img-placeholder" style="width: 150px; height: 40px;">[ LOGO ]</div>
+            <div>
+                <span style="margin-right: 20px; font-weight: bold; cursor: not-allowed;">Login</span>
+                <span class="btn btn-primary" style="padding: 10px 20px;">Get Started</span>
+            </div>
+        </div>
+        <div style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px;">
+            <h1 style="font-size: 48px; margin-bottom: 20px; max-width: 800px;">Imagine a place where you can talk and hang out.</h1>
+            <p style="font-size: 20px; color: var(--wf-gray-dark); margin-bottom: 40px; max-width: 600px;">LiveBox is the easiest way to talk over voice, video, and text. Hang out with your friends and communities.</p>
+            <div class="btn btn-primary" style="padding: 15px 40px; font-size: 18px;">Get Started for Free</div>
+            <div class="box-placeholder img-placeholder" style="width: 800px; height: 400px; margin-top: 40px;">[ App Interface Preview Image ]</div>
+        </div>
+    </div>
+
+    <!-- 2. LOGIN -->
+    <div class="screen-title">2. SCR-LOGIN-01: Login Screen (Credential Entry)</div>
+    <div class="wireframe-container screen-auth">
+        <div class="auth-card">
+            <div class="box-placeholder img-placeholder" style="height: 60px; margin-bottom: 20px;">[ LOGO ]</div>
+            <div style="text-align: center; font-size: 20px; font-weight: bold; margin-bottom: 20px;">Welcome back!</div>
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; margin-bottom: 5px;">Email (*)</label>
+                <div class="input-field">[ Type your email... ]</div>
+            </div>
+            <div style="margin-bottom: 25px;">
+                <label style="display: block; margin-bottom: 5px;">Password (*)</label>
+                <div class="input-field">[ Type your password... ]</div>
+                <div style="text-align: right; font-size: 12px; margin-top: 5px; text-decoration: underline;">Forgot your password?</div>
+            </div>
+            <div class="btn btn-primary" style="width: 100%; box-sizing: border-box;">[ BTN-LOGIN ] Login</div>
+            <div style="text-align: center; margin-top: 20px; font-size: 14px;">
+                Need an account? <span style="text-decoration: underline; font-weight: bold;">Register</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. REGISTER -->
+    <div class="screen-title">3. SCR-REGISTER-01: Register Screen (New Account Form)</div>
+    <div class="wireframe-container screen-auth">
+        <div class="auth-card" style="width: 440px;">
+            <div class="box-placeholder img-placeholder" style="height: 60px; margin-bottom: 20px;">[ LOGO ]</div>
+            <div style="text-align: center; font-size: 20px; font-weight: bold; margin-bottom: 5px;">Create an account</div>
+            <div style="text-align: center; font-size: 12px; color: var(--wf-gray-dark); margin-bottom: 20px;">Fast onboarding — takes less than 30 seconds</div>
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; margin-bottom: 5px;">Display Name (*)</label>
+                <div class="input-field">[ e.g. Lan Anh ]</div>
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; margin-bottom: 5px;">Email (*)</label>
+                <div class="input-field">[ e.g. lananh@example.com ]</div>
+            </div>
+            <div style="margin-bottom: 25px;">
+                <label style="display: block; margin-bottom: 5px;">Password (*) — min. 6 characters</label>
+                <div class="input-field">[ ••••••••• ]</div>
+            </div>
+            <div class="btn btn-primary" style="width: 100%; box-sizing: border-box;">[ BTN-REGISTER ] Create Account</div>
+            <div style="text-align: center; margin-top: 15px; font-size: 12px; color: var(--wf-gray-dark);">
+                By registering, you agree to our Terms of Service.
+            </div>
+            <div style="text-align: center; margin-top: 10px; font-size: 14px;">
+                Already have an account? <span style="text-decoration: underline; font-weight: bold;">Login</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. FORGOT PASSWORD -->
+    <div class="screen-title">4. SCR-FORGOT-01: Forgot Password (Email Recovery)</div>
+    <div class="wireframe-container screen-auth">
+        <div class="auth-card">
+            <div style="text-align: center; font-size: 20px; font-weight: bold; margin-bottom: 10px;">Reset Your Password</div>
+            <div style="text-align: center; font-size: 14px; color: var(--wf-gray-dark); margin-bottom: 20px;">
+                Enter your email address and we'll send you a link to reset your password.
+            </div>
+            <div style="margin-bottom: 25px;">
+                <label style="display: block; margin-bottom: 5px;">Email (*)</label>
+                <div class="input-field">[ Type your email... ]</div>
+            </div>
+            <div class="btn btn-primary" style="width: 100%; box-sizing: border-box; margin-bottom: 15px;">[ BTN-SUBMIT ] Send Recovery Link</div>
+            <div style="text-align: center; font-size: 12px; text-decoration: underline;">Back to Login</div>
+        </div>
+    </div>
+
+    <!-- 5. AUTH ERROR -->
+    <div class="screen-title">5. SCR-AUTH-ERR-01: Auth Error Screen (Validation Failures)</div>
+    <div class="wireframe-container screen-auth">
+        <div class="auth-card">
+            <div class="box-placeholder img-placeholder" style="height: 60px; margin-bottom: 20px;">[ LOGO ]</div>
+            <div style="text-align: center; font-size: 20px; font-weight: bold; margin-bottom: 20px;">Welcome back!</div>
+
+            <!-- Email field with inline error -->
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; margin-bottom: 5px;">Email (*)</label>
+                <div class="input-field" style="border-color: red;">[ invalid@email ]</div>
+                <div style="color: red; font-size: 12px; margin-top: 4px;">⚠ Please enter a valid email address.</div>
+            </div>
+
+            <!-- Password field with inline error -->
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; margin-bottom: 5px;">Password (*)</label>
+                <div class="input-field" style="border-color: red;">[ ••• ]</div>
+                <div style="color: red; font-size: 12px; margin-top: 4px;">⚠ Password must be at least 6 characters.</div>
+            </div>
+
+            <!-- Global API error toast (shown below form) -->
+            <div style="background-color: #fee2e2; border: 1px solid red; padding: 10px; margin-bottom: 15px; font-size: 13px; color: red;">
+                ❌ COMP-TOAST-ERROR: "Invalid credentials. Please check your email and password."
+            </div>
+
+            <div class="btn btn-primary" style="width: 100%; box-sizing: border-box;">[ BTN-LOGIN ] Retry Login</div>
+            <div style="text-align: center; margin-top: 10px; font-size: 12px; text-decoration: underline;">Forgot your password?</div>
+        </div>
+    </div>
+
+    <div class="section-title">B. CORE APPLICATION</div>
+
+    <!-- 6. SERVER LIST / DASHBOARD HOME -->
+    <div class="screen-title">6. SCR-SERVER-LIST-01: Server List Screen (Dashboard Home)</div>
+    <div class="wireframe-container screen-app">
+        <!-- Server icon column -->
+        <div class="col-server">
+            <div class="server-icon img-placeholder active"></div>
+            <div class="server-icon img-placeholder"></div>
+            <div style="border-top: 2px solid var(--wf-border); width: 50px; margin: 10px 0;"></div>
+            <div class="server-icon" style="display:flex; justify-content:center; align-items:center; font-size:24px;">+</div>
+        </div>
+        <!-- Main content: welcome panel for no-server-selected state -->
+        <div class="col-chat" style="background-color: var(--wf-card); align-items: center; justify-content: center; padding: 60px;">
+            <div class="box-placeholder img-placeholder" style="width: 120px; height: 120px; border-radius: 50%; margin-bottom: 30px;">[ Icon ]</div>
+            <h2 style="margin-bottom: 15px; text-align: center;">Welcome to LiveBox!</h2>
+            <p style="text-align: center; color: var(--wf-gray-dark); margin-bottom: 40px; max-width: 400px;">You're not in any server yet. Join one using an invite link or create your own.</p>
+            <div style="display: flex; gap: 20px;">
+                <div class="btn btn-primary" style="padding: 12px 30px;">+ Create a Server</div>
+                <div class="btn btn-secondary" style="padding: 12px 30px;">Join via Invite Link</div>
+            </div>
+        </div>
+        <!-- User profile strip at bottom of channel col -->
+        <div style="position: absolute; bottom: 0; left: 80px; width: 240px; display: flex; align-items: center; padding: 0 15px; height: 60px; background-color: var(--wf-gray); border-top: 2px solid var(--wf-border); border-right: 2px solid var(--wf-border);">
+            <div class="avatar-small img-placeholder"></div>
+            <div style="flex:1;"><div style="font-weight:bold; font-size:14px;">Lan Anh</div><div style="font-size:12px;">#1234</div></div>
+            <div style="font-size:18px;">⚙️</div>
+        </div>
+    </div>
+
+    <!-- 7. MAIN APP -->
+    <div class="screen-title">7. SCR-APP-01: Main Application Layout (Chat & Voice)</div>
+    <div class="wireframe-container screen-app">
+        <div class="col-server">
+            <div class="server-icon img-placeholder active"></div>
+            <div class="server-icon img-placeholder"></div>
+            <div class="server-icon img-placeholder"></div>
+            <div style="border-top: 2px solid var(--wf-border); width: 50px; margin: 10px 0;"></div>
+            <div class="server-icon" style="display:flex; justify-content:center; align-items:center; font-size:24px;">+</div>
+        </div>
+        <div class="col-channel">
+            <div class="channel-header">[ Server Name ] ▼</div>
+            <div class="channel-section">
+                <div style="font-weight:bold; margin-bottom:10px;">TEXT CHANNELS</div>
+                <div class="channel-item" style="font-weight:bold;"><span># general</span><span class="badge">3</span></div>
+                <div class="channel-item"><span># announcements</span></div>
+                <div class="channel-item"><span># dev-team</span></div>
+
+                <div style="font-weight:bold; margin-top:30px; margin-bottom:10px;">VOICE CHANNELS</div>
+                <div class="channel-item"><span>🔊 meeting-room-1</span></div>
+                <div style="margin-left: 20px; font-size: 14px; display:flex; align-items:center;">
+                    <div class="avatar-small img-placeholder" style="width:20px;height:20px;"></div>
+                    <span>Anh Đạt (Owner)</span>
+                </div>
+                <div style="margin-left: 20px; font-size: 14px; display:flex; align-items:center; margin-top:5px;">
+                    <div class="avatar-small img-placeholder" style="width:20px;height:20px; border-width:2px;"></div>
+                    <span style="font-weight:bold;">Minh Khoa (Speaking)</span>
+                </div>
+            </div>
+            <div class="user-profile-bottom">
+                <div class="avatar-small img-placeholder"></div>
+                <div style="flex:1;"><div style="font-weight:bold; font-size:14px;">Lan Anh</div><div style="font-size:12px;">#1234</div></div>
+                <div style="font-size:18px;">⚙️</div>
+            </div>
+        </div>
+        <div class="col-chat">
+            <div class="chat-header">
+                <span style="font-size:24px; margin-right:10px;">#</span> general
+                <div style="margin-left:auto; font-size:14px; border:1px solid var(--wf-border); padding:2px 5px;">Search...</div>
+            </div>
+            <div class="chat-body">
+                <div class="chat-message">
+                    <div class="avatar-small img-placeholder" style="width:40px;height:40px;"></div>
+                    <div class="msg-content">
+                        <div class="msg-name">Anh Đạt <span style="font-weight:normal; font-size:12px;">Yesterday at 10:00 AM</span></div>
+                        <div>Welcome everyone to the new LiveBox server!</div>
+                    </div>
+                </div>
+                <div class="chat-message">
+                    <div class="avatar-small img-placeholder" style="width:40px;height:40px;"></div>
+                    <div class="msg-content">
+                        <div class="msg-name">Minh Khoa <span style="font-weight:normal; font-size:12px;">Today at 08:30 AM</span></div>
+                        <div>Hello! Testing the websocket connection. The latency seems very low (<500ms).</div>
+                    </div>
+                </div>
+            </div>
+            <div class="chat-input-area">
+                <div class="input-field">[ Type a message to #general... ]</div>
+                <div class="btn btn-primary" style="width:80px;">SEND</div>
+            </div>
+        </div>
+        <div class="col-members">
+            <div class="member-group">ONLINE (2)</div>
+            <div class="member-item"><div class="status-dot status-online"></div><div class="avatar-small img-placeholder"></div><span>Anh Đạt [Owner]</span></div>
+            <div class="member-item"><div class="status-dot status-online"></div><div class="avatar-small img-placeholder"></div><span>Minh Khoa</span></div>
+            <div class="member-group" style="margin-top: 10px;">OFFLINE (1)</div>
+            <div class="member-item" style="color:var(--wf-gray-dark);"><div class="status-dot status-offline"></div><div class="avatar-small img-placeholder"></div><span>Lan Anh</span></div>
+        </div>
+    </div>
+
+    <div class="section-title">C. SERVER & CHANNEL MANAGEMENT</div>
+
+    <!-- 5. CREATE SERVER MODAL -->
+    <div class="screen-title">5. MODAL-SVR-01: Create Server Modal</div>
+    <div class="wireframe-container screen-modal">
+        <div class="modal-overlay">
+            <div class="modal-card">
+                <div class="modal-header"><span>Create a Server</span><span>X</span></div>
+                <div class="modal-body">
+                    <div style="text-align: center; margin-bottom: 20px; font-size: 14px;">Give your new server a personality with a name and an icon.</div>
+                    <div class="box-placeholder img-placeholder" style="width: 100px; height: 100px; border-radius: 50%; margin-bottom: 20px;">
+                        <span style="background:var(--wf-card); padding:2px; z-index:1;">UPLOAD</span>
+                    </div>
+                    <div style="width: 100%; text-align: left;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: bold;">SERVER NAME (*)</label>
+                        <div class="input-field" style="width: 100%; box-sizing: border-box;">[ e.g. Anh Đạt's Server ]</div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="btn btn-secondary" style="padding: 10px 20px;">Back</div>
+                    <div class="btn btn-primary" style="padding: 10px 20px;">Create</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 6. CREATE CHANNEL MODAL -->
+    <div class="screen-title">6. MODAL-CHN-01: Create Channel</div>
+    <div class="wireframe-container screen-modal">
+        <div class="modal-overlay">
+            <div class="modal-card">
+                <div class="modal-header"><span>Create Channel</span><span>X</span></div>
+                <div class="modal-body" style="align-items: flex-start;">
+                    <label style="display: block; margin-bottom: 10px; font-weight: bold;">CHANNEL TYPE</label>
+                    <div style="display: flex; align-items: center; margin-bottom: 10px; width: 100%; padding: 10px; border: 1px solid var(--wf-border); border-radius: 5px; background-color: var(--wf-gray);">
+                        <input type="radio" checked style="margin-right: 15px;">
+                        <div><div style="font-weight: bold;"># Text Channel</div><div style="font-size: 12px;">Post messages, images, and emojis.</div></div>
+                    </div>
+                    <div style="display: flex; align-items: center; margin-bottom: 20px; width: 100%; padding: 10px; border: 1px solid var(--wf-gray-dark); border-radius: 5px; color: var(--wf-gray-dark);">
+                        <input type="radio" disabled style="margin-right: 15px;">
+                        <div><div style="font-weight: bold;">🔊 Voice Channel</div><div style="font-size: 12px;">Hang out together with voice and video.</div></div>
+                    </div>
+                    <label style="display: block; margin-bottom: 5px; font-weight: bold;">CHANNEL NAME</label>
+                    <div style="display: flex; width: 100%; align-items: center;">
+                        <span style="font-size: 24px; color: var(--wf-gray-dark); margin-right: 10px;">#</span>
+                        <div class="input-field" style="width: 100%; box-sizing: border-box;">[ new-channel ]</div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="btn btn-secondary" style="padding: 10px 20px;">Cancel</div>
+                    <div class="btn btn-primary" style="padding: 10px 20px;">Create Channel</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 7. INVITE MEMBER MODAL -->
+    <div class="screen-title">7. MODAL-INVITE-01: Invite Friends</div>
+    <div class="wireframe-container screen-modal">
+        <div class="modal-overlay">
+            <div class="modal-card">
+                <div class="modal-header"><span>Invite Friends to Anh Đạt's Server</span><span>X</span></div>
+                <div class="modal-body">
+                    <div style="text-align: left; margin-bottom: 20px; font-size: 14px; width: 100%;">Share this link with others to grant them access to this server.</div>
+                    <div style="width: 100%; text-align: left; display: flex; align-items: flex-end;">
+                        <div style="flex: 1;">
+                            <label style="display: block; margin-bottom: 5px; font-weight: bold; font-size: 12px; color: var(--wf-gray-dark);">INVITE LINK (Expires in 7 days)</label>
+                            <div class="input-field" style="width: 100%; box-sizing: border-box; background-color: var(--wf-gray);">https://livebox.local/invite/aBcD123XyZ</div>
+                        </div>
+                        <div class="btn btn-primary" style="padding: 10px 20px; margin-left: 10px; height: 40px; box-sizing: border-box;">Copy</div>
+                    </div>
+                </div>
+                <div class="modal-footer" style="justify-content: flex-start; font-size: 12px; color: var(--wf-gray-dark);">Only Server Owners can generate new invite links.</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section-title">D. MODERATION & CONTEXT ACTIONS</div>
+
+    <!-- 8. SERVER ADMIN -->
+    <div class="screen-title">8. MODAL-ADMIN-01: Server Admin (Moderation & Management)</div>
+    <div class="wireframe-container screen-app" style="height: 600px;">
+        <div class="col-channel" style="background-color: var(--wf-gray);">
+            <div class="channel-header" style="font-size: 16px;">Anh Đạt's Server - Settings</div>
+            <div class="channel-section">
+                <div class="channel-item" style="font-weight: bold; background-color: var(--wf-gray-dark); padding: 5px; color: white;">Overview</div>
+                <div class="channel-item" style="padding: 5px;">Roles</div>
+                <div class="channel-item" style="padding: 5px;">Members</div>
+                <div class="channel-item" style="padding: 5px;">Bans</div>
+            </div>
+            <div class="user-profile-bottom" style="color: red; font-weight: bold; justify-content: center; border-top: 1px dashed var(--wf-border);">Delete Server</div>
+        </div>
+        <div class="col-chat" style="background-color: var(--wf-card); padding: 40px;">
+            <h2>Server Overview</h2>
+            <div style="display: flex; align-items: flex-start; margin-top: 30px;">
+                <div class="box-placeholder img-placeholder" style="width: 100px; height: 100px; border-radius: 50%; margin-right: 40px;">
+                    <span style="background:var(--wf-card); padding:2px; z-index:1; font-size: 12px;">UPLOAD</span>
+                </div>
+                <div style="flex: 1;">
+                    <label style="display: block; margin-bottom: 5px; font-weight: bold;">SERVER NAME</label>
+                    <div class="input-field" style="width: 100%; box-sizing: border-box; margin-bottom: 20px;">[ Anh Đạt's Server ]</div>
+                    <div style="text-align: right;"><span class="btn btn-primary" style="padding: 10px 20px;">Save Changes</span></div>
+                </div>
+            </div>
+            <div style="margin-top: 40px; border-top: 1px solid var(--wf-gray); padding-top: 20px;">
+                <h3>Default Notification Settings</h3>
+                <div style="display: flex; margin-bottom: 10px;"><input type="radio" checked style="margin-right: 10px;"> All Messages</div>
+                <div style="display: flex;"><input type="radio" style="margin-right: 10px;"> Only @mentions</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 9. CONTEXT MENU -->
+    <div class="screen-title">9. COMP-MENU-01: Context Menus (Server/Channel/Member)</div>
+    <div class="wireframe-container screen-modal" style="height: 400px; background-color: var(--wf-card);">
+        <div style="position: relative; width: 100%; height: 100%;">
+            <div style="position: absolute; top: 20px; left: 50px; width: 220px; border: 2px solid var(--wf-border); background-color: var(--wf-card); box-shadow: 3px 3px 0px 0px rgba(0,0,0,0.2);">
+                <div style="padding: 10px 15px; border-bottom: 1px solid var(--wf-gray); font-size: 12px; font-weight: bold; color: var(--wf-gray-dark);">SERVER OPTIONS</div>
+                <div style="padding: 10px 15px; border-bottom: 1px solid var(--wf-gray);">Invite People...</div>
+                <div style="padding: 10px 15px; border-bottom: 1px solid var(--wf-gray);">Create Channel</div>
+                <div style="padding: 10px 15px; color: red; font-weight: bold;">Leave Server</div>
+            </div>
+            <div style="position: absolute; top: 20px; right: 50px; width: 200px; border: 2px solid var(--wf-border); background-color: var(--wf-card); box-shadow: 3px 3px 0px 0px rgba(0,0,0,0.2);">
+                <div style="padding: 10px 15px; border-bottom: 1px solid var(--wf-gray); font-size: 12px; font-weight: bold; color: var(--wf-gray-dark);">MEMBER OPTIONS</div>
+                <div style="padding: 10px 15px; border-bottom: 1px solid var(--wf-gray);">View Profile</div>
+                <div style="padding: 10px 15px; color: red; font-weight: bold;">Kick from Server</div>
+            </div>
+            <div style="position: absolute; bottom: 20px; width: 100%; text-align: center; color: var(--wf-gray-dark); font-size: 14px;">
+                (These context menus appear when clicking the Server Name or right-clicking a Member/Channel)
+            </div>
+        </div>
+    </div>
+
+    <!-- 10. DANGER CONFIRMATION -->
+    <div class="screen-title">10. MODAL-CONFIRM-01: Danger Action Confirmation</div>
+    <div class="wireframe-container screen-modal">
+        <div class="modal-overlay">
+            <div class="modal-card">
+                <div class="modal-header"><span style="color: red;">Leave 'Anh Đạt's Server'?</span><span>X</span></div>
+                <div class="modal-body" style="align-items: flex-start;">
+                    <div style="text-align: left; margin-bottom: 20px; font-size: 14px; width: 100%;">
+                        Are you sure you want to leave <strong>Anh Đạt's Server</strong>? You won't be able to rejoin unless you are invited again.
+                    </div>
+                    <div style="text-align: left; margin-bottom: 20px; font-size: 14px; width: 100%; border-top: 1px dashed var(--wf-gray-dark); padding-top: 20px; color: var(--wf-gray-dark);">
+                        <em>* If used for Kick: "Are you sure you want to kick <strong>Lan Anh</strong> from the server?"</em>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="btn btn-secondary" style="padding: 10px 20px;">Cancel</div>
+                    <div class="btn btn-danger" style="padding: 10px 20px; margin-right: 0; background-color: red; color: white;">Leave Server</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section-title">E. USER SETTINGS</div>
+
+    <!-- 11. USER PROFILE MODAL -->
+    <div class="screen-title">11. MODAL-USR-01: Profile Settings Modal</div>
+    <div class="wireframe-container screen-modal">
+        <div class="modal-overlay">
+            <div class="modal-card">
+                <div class="modal-header"><span>My Account</span><span>X</span></div>
+                <div class="modal-body">
+                    <div class="box-placeholder img-placeholder" style="width: 80px; height: 80px; border-radius: 50%; margin-bottom: 20px;">
+                        <span style="background:var(--wf-card); padding:2px; z-index:1;">EDIT</span>
+                    </div>
+                    <div style="width: 100%; text-align: left; margin-bottom: 15px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: bold;">DISPLAY NAME</label>
+                        <div class="input-field" style="width: 100%; box-sizing: border-box;">[ Lan Anh ]</div>
+                    </div>
+                    <div style="width: 100%; text-align: left;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: bold;">EMAIL</label>
+                        <div class="input-field" style="width: 100%; box-sizing: border-box; background-color: var(--wf-gray);">[ lananh@example.com ] (Read Only)</div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="btn btn-danger" style="padding: 10px 20px;">Logout</div>
+                    <div class="btn btn-secondary" style="padding: 10px 20px;">Cancel</div>
+                    <div class="btn btn-primary" style="padding: 10px 20px;">Save Changes</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
