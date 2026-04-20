@@ -1,0 +1,20 @@
+Issue Type,Summary,Description,Epic Name,Epic Link
+Epic,Authentication & Onboarding,,,
+Epic,Server Management,,,
+Epic,Channel & Real-time Messaging,,,
+Epic,Voice Channel,,,
+Epic,Notification & Presence,,,
+Epic,User Profile,,,
+Story,[UC-101] Đăng ký tài khoản mới,"Như một Guest User, tôi muốn Đăng ký tài khoản mới, để tôi có thể bắt đầu sử dụng nền tảng ngay mà không bị cản trở bởi quy trình đăng ký phức tạp.",,Authentication & Onboarding
+Story,[UC-102] Đăng nhập và duy trì phiên làm việc,"Như một Server Owner, Active Member hoặc Guest User, tôi muốn Đăng nhập và duy trì phiên làm việc, để tôi không phải đăng nhập lại mỗi khi mở ứng dụng.",,Authentication & Onboarding
+Story,[UC-103] Đăng xuất an toàn,"Như một Server Owner, Active Member hoặc Guest User, tôi muốn Đăng xuất an toàn, để không ai có thể truy cập tài khoản của tôi trên thiết bị này sau khi tôi rời đi.",,Authentication & Onboarding
+Story,[UC-201] Tạo server mới,"Như một Server Owner hoặc Guest User, tôi muốn Tạo server mới, để tôi có không gian riêng để tổ chức cộng đồng hoặc nhóm làm việc của mình.",,Server Management
+Story,[UC-202] Mời thành viên qua invite link,"Như một Server Owner hoặc Guest User, tôi muốn Mời thành viên qua invite link, để thành viên mới có thể tham gia nhanh mà không cần tôi thêm thủ công từng người.",,Server Management
+Story,[UC-203] Kick / Ban thành viên khỏi server,"Như một Server Owner hoặc Guest User, tôi muốn Kick / Ban thành viên khỏi server, để tôi duy trì được môi trường giao tiếp lành mạnh và an toàn cho cộng đồng.",,Server Management
+Story,[UC-204] Rời khỏi server (Leave Server),"Như một Active Member, tôi muốn Rời khỏi server (Leave Server), để sidebar của tôi chỉ hiển thị các server tôi thực sự hoạt động.",,Server Management
+Story,[UC-301] Gửi và nhận tin nhắn thời gian thực,"Như một Active Member, tôi muốn Gửi và nhận tin nhắn thời gian thực, để cuộc trò chuyện diễn ra tự nhiên, không cần reload trang.",,Channel & Real-time Messaging
+Story,[UC-302] Tạo và quản lý kênh text trong server,"Như một Server Owner hoặc Guest User, tôi muốn Tạo và quản lý kênh text trong server, để tôi có thể tổ chức cuộc trò chuyện theo từng chủ đề rõ ràng.",,Channel & Real-time Messaging
+Story,[UC-303] Xem danh sách thành viên và trạng thái online,"Như một Active Member hoặc Guest User, tôi muốn Xem danh sách thành viên và trạng thái online, để tôi biết cộng đồng có active không và có thể tương tác với ai ngay lúc này.",,Channel & Real-time Messaging
+Story,[UC-401] Tham gia và rời voice channel,"Như một Active Member, tôi muốn Tham gia và rời voice channel, để tôi có thể họp / trò chuyện trực tiếp ngay mà không cần app họp riêng.",,Voice Channel
+Story,[UC-501] Thông báo tin nhắn chưa đọc,"Như một Active Member, tôi muốn Thông báo tin nhắn chưa đọc, để tôi không bỏ lỡ tin nhắn quan trọng kể cả khi đang ở kênh khác.",,Notification & Presence
+Story,[UC-601] Cập nhật hồ sơ cá nhân (avatar & display name),"Như một Active Member, tôi muốn Cập nhật hồ sơ cá nhân (avatar & display name), để các thành viên khác dễ dàng nhận diện tôi trong server.",,User Profile
