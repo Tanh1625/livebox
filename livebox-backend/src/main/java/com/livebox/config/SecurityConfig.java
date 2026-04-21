@@ -60,6 +60,7 @@ public class SecurityConfig {
                         .requestMatchers("/invites/**").permitAll()
                         // WebSocket handshake (STOMP)
                         .requestMatchers("/ws/**").permitAll()
+                        .requestMatchers("/servers/**").permitAll()
                         // Everything else requires a valid JWT
                         .anyRequest().authenticated()
                 );
