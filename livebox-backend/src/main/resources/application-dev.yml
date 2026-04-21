@@ -1,0 +1,31 @@
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+  # ── DataSource (dev defaults — override in .env or IDE run config) ─────────
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/livebox_dev}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:postgres}
+
+  # ── JPA / Hibernate (verbose for development) ────────────────────────────────
+  jpa:
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+
+  # ── Flyway (allow destructive clean in dev only) ─────────────────────────────
+  flyway:
+    clean-disabled: false         # Permitted in dev; NEVER set false in prod
+
+# ── Logging (verbose for development) ────────────────────────────────────────
+logging:
+  level:
+    root: INFO
+    com.livebox: DEBUG
+    org.springframework.security: DEBUG
+    org.springframework.web.socket: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE

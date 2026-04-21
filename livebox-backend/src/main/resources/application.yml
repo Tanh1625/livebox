@@ -1,0 +1,60 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /api/v1
+
+spring:
+  application:
+    name: livebox-backend
+
+  # ── DataSource ──────────────────────────────────────────────────────────────
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/livebox}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
+
+  # ── JPA / Hibernate ─────────────────────────────────────────────────────────
+  jpa:
+    hibernate:
+      ddl-auto: validate          # Flyway owns the schema; Hibernate only validates
+    open-in-view: false           # Disable OSIV — avoids lazy-load pitfalls in controllers
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: false
+        show_sql: false
+
+  # ── Flyway ──────────────────────────────────────────────────────────────────
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+    clean-disabled: true          # Safety: disallow destructive clean in production
+
+  # ── Security (JWT) ─ never hardcode real secrets here ─────────────────────
+  security:
+    jwt:
+      secret-key: ${JWT_SECRET_KEY:change-me-in-production-must-be-at-least-256-bits}
+      access-token-expiration-ms: ${JWT_ACCESS_EXPIRY_MS:3600000}        # 1 hour
+      refresh-token-expiration-ms: ${JWT_REFRESH_EXPIRY_MS:604800000}    # 7 days
+
+  # ── Jackson ─────────────────────────────────────────────────────────────────
+  jackson:
+    property-naming-strategy: LOWER_CAMEL_CASE
+    deserialization:
+      fail-on-unknown-properties: false
+    serialization:
+      write-dates-as-timestamps: false
+
+  # ── File Upload ─────────────────────────────────────────────────────────────
+  servlet:
+    multipart:
+      max-file-size: 2MB          # C05 – avatar ≤ 2 MB
+      max-request-size: 2MB
+
+# ── Logging (base) ──────────────────────────────────────────────────────────
+logging:
+  level:
+    root: INFO
+    com.livebox: INFO
