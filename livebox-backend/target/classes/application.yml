@@ -9,15 +9,15 @@ spring:
 
   # ── DataSource ──────────────────────────────────────────────────────────────
   datasource:
-    url: ${DB_URL:jdbc:postgresql://localhost:5432/livebox}
-    username: ${DB_USERNAME:postgres}
-    password: ${DB_PASSWORD:postgres}
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
 
   # ── JPA / Hibernate ─────────────────────────────────────────────────────────
   jpa:
     hibernate:
-      ddl-auto: validate          # Flyway owns the schema; Hibernate only validates
+      ddl-auto: none          # Flyway owns the schema; Hibernate only validates
     open-in-view: false           # Disable OSIV — avoids lazy-load pitfalls in controllers
     properties:
       hibernate:
