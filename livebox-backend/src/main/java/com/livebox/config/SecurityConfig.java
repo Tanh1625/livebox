@@ -34,9 +34,11 @@ import org.springframework.web.cors.CorsConfigurationSource;
 public class SecurityConfig {
 
     private final CorsConfigurationSource corsConfigurationSource;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
-    public SecurityConfig(CorsConfigurationSource corsConfigurationSource) {
+    public SecurityConfig(CorsConfigurationSource corsConfigurationSource, JwtAuthenticationFilter jwtAuthenticationFilter) {
         this.corsConfigurationSource = corsConfigurationSource;
+        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
 
     @Bean
@@ -55,18 +57,19 @@ public class SecurityConfig {
                 // Authorization rules
                 .authorizeHttpRequests(auth -> auth
                         // Auth endpoints are open
-                        .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/api/v1/auth/**").permitAll()
                         // Invite link validation before authentication
-                        .requestMatchers("/invites/**").permitAll()
+                        .requestMatchers("/api/v1/invites/**").permitAll()
                         // WebSocket handshake (STOMP)
                         .requestMatchers("/ws/**").permitAll()
-                        .requestMatchers("/servers/**").permitAll()
+                        // Swagger UI
+                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                         // Everything else requires a valid JWT
                         .anyRequest().authenticated()
                 );
 
-        // Note: JwtAuthenticationFilter will be registered here in Sprint 1
-        // http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+        // Register JwtAuthenticationFilter before standard auth filter
+        http.addFilterBefore(jwtAuthenticationFilter, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

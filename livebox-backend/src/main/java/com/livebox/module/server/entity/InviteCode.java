@@ -3,6 +3,8 @@ package com.livebox.module.server.entity;
 import com.livebox.common.entity.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -14,6 +16,8 @@ import lombok.Setter;
 import java.time.Instant;
 
 @Entity
+@SQLDelete(sql = "UPDATE invite_codes SET is_deleted = true, deleted_at = CURRENT_TIMESTAMP WHERE id = ?")
+@SQLRestriction("is_deleted = false")
 @Table(name = "invite_codes")
 @Getter
 @Setter

@@ -26,7 +26,7 @@ import java.util.List;
  * </ul>
  */
 @Configuration
-@EnableJpaAuditing
+@EnableJpaAuditing(auditorAwareRef = "securityAuditorAware")
 public class AppConfig {
 
     // ─────────────────────────────────────────────────────────────────────────
