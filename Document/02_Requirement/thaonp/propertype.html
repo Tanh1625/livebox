@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LiveBox Ultra Prototype - Blue & Neon Edition</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        .bg-blue-gradient {
+            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 50%, #06b6d4 100%);
+        }
+
+        .text-neon {
+            color: #f472b6;
+        }
+
+        /* Pink neon accent */
+        .bg-neon {
+            background-color: #f472b6;
+        }
+
+        .shadow-neon {
+            box-shadow: 0 10px 15px -3px rgba(244, 114, 182, 0.2), 0 4px 6px -4px rgba(244, 114, 182, 0.2);
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-slate-50 text-slate-900">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState } = React;
+
+        const App = () => {
+            const [view, setView] = useState('landing'); // landing, login, register, forgot, auth-error, app, app-empty
+            const [modal, setModal] = useState(null); // create-server, create-channel, invite, user-settings, confirm-danger, server-admin
+
+            // --- 1. LANDING PAGE ---
+            const Landing = () => (
+                <div className="min-h-screen bg-white">
+                    <nav className="flex justify-between items-center px-10 py-6 sticky top-0 bg-white/80 backdrop-blur-lg z-50 border-b border-blue-50">
+                        <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-xl shadow-blue-200">
+                                <i className="fas fa-bolt-lightning text-xl"></i>
+                            </div>
+                            <span className="text-2xl font-extrabold tracking-tighter text-blue-900">LIVEBOX</span>
+                        </div>
+                        <div className="flex gap-8 items-center">
+                            <button onClick={() => setView('login')} className="font-bold text-slate-600 hover:text-blue-600">Login</button>
+                            <button onClick={() => setView('register')} className="bg-blue-600 text-white px-8 py-3 rounded-2xl font-bold hover:bg-blue-700 transition shadow-lg shadow-blue-200">Get Started</button>
+                        </div>
+                    </nav>
+                    <div className="max-w-7xl mx-auto px-6 py-20 flex flex-col items-center text-center">
+                        <h1 className="text-7xl font-extrabold leading-tight text-slate-900 max-w-4xl">
+                            Imagine a place where you can <span className="bg-gradient-to-r from-blue-600 to-cyan-400 bg-clip-text text-transparent">talk and hang out.</span>
+                        </h1>
+                        <p className="mt-8 text-xl text-slate-500 max-w-2xl leading-relaxed">
+                            LiveBox is the easiest way to talk over voice, video, and text. Hang out with your friends and communities in a modern, blue-tinted space.
+                        </p>
+                        <button onClick={() => setView('app-empty')} className="mt-12 bg-slate-900 text-white px-12 py-5 rounded-[2rem] text-xl font-bold hover:scale-105 transition-all shadow-2xl flex items-center gap-3">
+                            Open LiveBox in your browser <i className="fas fa-arrow-right text-sm"></i>
+                        </button>
+                        <div className="mt-20 w-full relative">
+                            <div className="absolute inset-0 bg-blue-400 blur-[120px] opacity-20 rounded-full animate-pulse"></div>
+                            <img src="https://images.unsplash.com/photo-1614850523296-e84e09ad8a74?auto=format&fit=crop&q=80&w=1200" className="relative rounded-[3rem] shadow-2xl border-8 border-white animate-float" />
+                        </div>
+                    </div>
+                </div>
+            );
+
+            // --- AUTH COMPONENTS (Login, Register, etc) ---
+            const AuthBox = ({ title, desc, children, footer, err = false }) => (
+                <div className="min-h-screen bg-blue-gradient flex items-center justify-center p-6">
+                    <div className="bg-white w-full max-w-md rounded-[3rem] shadow-2xl p-12 relative overflow-hidden">
+                        {err && <div className="absolute top-0 left-0 w-full h-2 bg-pink-500"></div>}
+                        <div className="text-center mb-8">
+                            <div className="text-4xl font-black text-blue-600 mb-2">LIVEBOX</div>
+                            <h2 className="text-2xl font-bold text-slate-800">{title}</h2>
+                            <p className="text-slate-400 text-sm mt-2">{desc}</p>
+                        </div>
+                        {children}
+                        <div className="mt-8 text-center text-sm text-slate-500">{footer}</div>
+                    </div>
+                </div>
+            );
+
+            // --- MAIN APP INTERFACE ---
+            const AppMain = ({ isEmpty = false }) => (
+                <div className="flex h-screen bg-white overflow-hidden">
+                    {/* Server Sidebar */}
+                    <div className="w-20 bg-blue-900 flex flex-col items-center py-6 gap-4 shadow-inner overflow-y-auto no-scrollbar">
+                        <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-blue-700 font-black shadow-lg cursor-pointer hover:rounded-xl transition-all">LB</div>
+                        <div className="w-8 h-0.5 bg-blue-700 rounded-full"></div>
+                        <div onClick={() => setView('app')} className="w-12 h-12 bg-blue-700/50 text-blue-100 rounded-3xl flex items-center justify-center cursor-pointer hover:bg-blue-600 hover:rounded-xl transition-all">AD</div>
+                        <div onClick={() => setModal('create-server')} className="w-12 h-12 bg-emerald-500 text-white rounded-3xl flex items-center justify-center cursor-pointer hover:rounded-xl transition-all"><i className="fas fa-plus"></i></div>
+                    </div>
+
+                    {/* Channel Sidebar */}
+                    {!isEmpty && (
+                        <div className="w-64 bg-slate-50 border-r border-slate-100 flex flex-col">
+                            <div onClick={() => setModal('server-admin')} className="h-16 px-4 flex items-center justify-between font-extrabold text-slate-900 border-b border-slate-100 cursor-pointer hover:bg-slate-100 transition">
+                                Anh Đạt's Server <i className="fas fa-chevron-down text-xs"></i>
+                            </div>
+                            <div className="flex-1 p-3 space-y-6 overflow-y-auto custom-scrollbar">
+                                <div>
+                                    <div className="flex justify-between items-center px-2 mb-2">
+                                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Text Channels</span>
+                                        <i onClick={() => setModal('create-channel')} className="fas fa-plus text-[10px] text-slate-400 cursor-pointer hover:text-blue-600"></i>
+                                    </div>
+                                    <div className="space-y-0.5">
+                                        <div className="bg-blue-600 text-white px-3 py-2.5 rounded-xl flex justify-between items-center shadow-md shadow-blue-200">
+                                            <span className="font-semibold"><i className="fas fa-hashtag mr-2 opacity-70"></i> general</span>
+                                            <span className="bg-pink-500 text-[10px] px-1.5 rounded-full">3</span>
+                                        </div>
+                                        <div className="text-slate-500 px-3 py-2.5 rounded-xl hover:bg-slate-200 cursor-pointer transition italic"># announcements</div>
+                                        <div className="text-slate-500 px-3 py-2.5 rounded-xl hover:bg-slate-200 cursor-pointer transition"># dev-team</div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div className="flex justify-between items-center px-2 mb-2">
+                                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Voice Channels</span>
+                                    </div>
+                                    <div className="text-slate-500 px-3 py-2.5 rounded-xl hover:bg-slate-200 cursor-pointer transition flex items-center gap-2 font-medium">
+                                        <i className="fas fa-volume-high text-sm"></i> meeting-room-1
+                                    </div>
+                                    <div className="ml-8 mt-2 space-y-2">
+                                        <div className="flex items-center gap-2 text-xs font-bold text-slate-600"><div className="w-5 h-5 bg-orange-400 rounded-lg"></div> Anh Đạt</div>
+                                        <div className="flex items-center gap-2 text-xs font-bold text-blue-600"><div className="w-5 h-5 bg-blue-400 rounded-lg outline outline-2 outline-blue-500 outline-offset-1"></div> Minh Khoa</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="p-3 bg-white border-t border-slate-100 flex items-center gap-3">
+                                <div onClick={() => setModal('user-settings')} className="w-10 h-10 bg-gradient-to-tr from-pink-500 to-rose-400 rounded-xl shadow-md cursor-pointer hover:scale-105 transition border-2 border-white"></div>
+                                <div className="flex-1 overflow-hidden">
+                                    <div className="text-xs font-extrabold text-slate-900 truncate">Lan Anh</div>
+                                    <div className="text-[10px] text-green-500 font-bold">#1234</div>
+                                </div>
+                                <div className="flex gap-2 text-slate-400">
+                                    <i className="fas fa-microphone text-sm cursor-pointer hover:text-blue-600"></i>
+                                    <i onClick={() => setModal('user-settings')} className="fas fa-gear text-sm cursor-pointer hover:text-blue-600"></i>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Chat Area */}
+                    <div className="flex-1 flex flex-col bg-white">
+                        {isEmpty ? (
+                            <div className="flex-1 flex flex-col items-center justify-center p-12 text-center bg-blue-50/30">
+                                <div className="w-32 h-32 bg-white rounded-[2.5rem] shadow-2xl flex items-center justify-center text-5xl text-blue-200 mb-8 border border-blue-100"><i className="fas fa-compass"></i></div>
+                                <h2 className="text-4xl font-black text-slate-900 mb-4">Welcome to LiveBox!</h2>
+                                <p className="text-slate-500 max-w-sm mb-10 leading-relaxed">You're not in any server yet. Join one using an invite link or create your own community.</p>
+                                <div className="flex gap-4">
+                                    <button onClick={() => setModal('create-server')} className="bg-blue-600 text-white px-8 py-4 rounded-2xl font-bold shadow-xl shadow-blue-200 hover:bg-blue-700 transition">Create a Server</button>
+                                    <button className="bg-white border-2 border-slate-200 px-8 py-4 rounded-2xl font-bold text-slate-600 hover:bg-slate-50 transition">Join via Invite</button>
+                                </div>
+                            </div>
+                        ) : (
+                            <React.Fragment>
+                                <div className="h-16 px-6 flex items-center justify-between border-b border-slate-50">
+                                    <div className="flex items-center gap-2">
+                                        <span className="text-slate-300 text-2xl font-light">#</span>
+                                        <span className="font-extrabold text-slate-900">general</span>
+                                    </div>
+                                    <div className="flex gap-6 text-slate-400">
+                                        <div className="relative"><input type="text" placeholder="Search..." className="bg-slate-100 px-4 py-1.5 rounded-full text-xs outline-none focus:ring-2 ring-blue-500 w-40" /></div>
+                                        <i onClick={() => setModal('invite')} className="fas fa-user-plus cursor-pointer hover:text-blue-600"></i>
+                                        <i className="fas fa-bell cursor-pointer hover:text-blue-600"></i>
+                                    </div>
+                                </div>
+                                <div className="flex-1 p-8 overflow-y-auto custom-scrollbar space-y-8">
+                                    <div className="flex items-start gap-4">
+                                        <div className="w-12 h-12 bg-orange-100 text-orange-600 rounded-2xl flex items-center justify-center font-bold">AD</div>
+                                        <div>
+                                            <div className="flex items-baseline gap-2">
+                                                <span className="font-bold text-slate-900 hover:underline cursor-pointer">Anh Đạt</span>
+                                                <span className="text-[10px] font-bold text-slate-400">Yesterday at 10:00 AM</span>
+                                            </div>
+                                            <p className="mt-1 text-slate-700 leading-relaxed bg-slate-50 px-4 py-3 rounded-2xl rounded-tl-none border border-slate-100">Welcome everyone to the new LiveBox server! 🎉</p>
+                                        </div>
+                                    </div>
+                                    <div className="flex items-start gap-4">
+                                        <div className="w-12 h-12 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center font-bold">MK</div>
+                                        <div>
+                                            <div className="flex items-baseline gap-2">
+                                                <span className="font-bold text-slate-900 hover:underline cursor-pointer">Minh Khoa</span>
+                                                <span className="text-[10px] font-bold text-slate-400">Today at 08:30 AM</span>
+                                            </div>
+                                            <div className="mt-1 text-slate-700 leading-relaxed bg-blue-50 px-4 py-3 rounded-2xl rounded-tl-none border border-blue-100">
+                                                Hello! Testing the websocket connection. The latency seems very low (<span className="text-blue-600 font-bold">&lt;500ms</span>).
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="p-6">
+                                    <div className="bg-slate-100 p-2 rounded-[2rem] flex items-center border-2 border-transparent focus-within:border-blue-300 focus-within:bg-white transition-all shadow-inner focus-within:shadow-xl focus-within:shadow-blue-100">
+                                        <button className="w-12 h-12 text-slate-400 hover:text-blue-600 transition"><i className="fas fa-circle-plus text-xl"></i></button>
+                                        <input type="text" placeholder="Type a message to #general..." className="flex-1 bg-transparent px-4 py-2 outline-none font-medium text-slate-700" />
+                                        <button className="bg-blue-600 text-white px-6 py-2.5 rounded-full font-bold shadow-lg shadow-blue-200 hover:bg-blue-700 transition">SEND</button>
+                                    </div>
+                                </div>
+                            </React.Fragment>
+                        )}
+                    </div>
+
+                    {/* Member Sidebar */}
+                    {!isEmpty && (
+                        <div className="w-60 bg-white border-l border-slate-100 p-4 hidden lg:block">
+                            <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-6">Online — 2</div>
+                            <div className="space-y-4">
+                                <div className="flex items-center gap-3 group cursor-pointer hover:bg-slate-50 p-2 rounded-xl transition">
+                                    <div className="relative"><div className="w-10 h-10 bg-orange-400 rounded-xl"></div><div className="absolute -bottom-1 -right-1 w-3.5 h-3.5 bg-green-500 border-4 border-white rounded-full"></div></div>
+                                    <div className="font-bold text-sm text-slate-700 group-hover:text-blue-600">Anh Đạt <span className="block text-[9px] text-orange-500 uppercase">Owner</span></div>
+                                </div>
+                                <div className="flex items-center gap-3 group cursor-pointer hover:bg-slate-50 p-2 rounded-xl transition">
+                                    <div className="relative"><div className="w-10 h-10 bg-blue-400 rounded-xl"></div><div className="absolute -bottom-1 -right-1 w-3.5 h-3.5 bg-green-500 border-4 border-white rounded-full"></div></div>
+                                    <div className="font-bold text-sm text-slate-700 group-hover:text-blue-600">Minh Khoa</div>
+                                </div>
+                            </div>
+                            <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-10 mb-6">Offline — 1</div>
+                            <div className="flex items-center gap-3 grayscale opacity-50">
+                                <div className="w-10 h-10 bg-slate-300 rounded-xl"></div>
+                                <div className="font-bold text-sm text-slate-700">Lan Anh</div>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            );
+
+            // --- MODALS ---
+            const ModalWrapper = ({ title, children, footer, danger = false, onClose }) => (
+                <div className="fixed inset-0 bg-blue-900/40 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
+                    <div className="bg-white w-full max-w-lg rounded-[2.5rem] shadow-2xl overflow-hidden border border-white">
+                        <div className={`p-6 flex justify-between items-center ${danger ? 'bg-rose-50 text-rose-600' : 'bg-blue-50 text-blue-900'}`}>
+                            <span className="font-black text-lg uppercase tracking-tight">{title}</span>
+                            <i onClick={onClose} className="fas fa-xmark cursor-pointer hover:rotate-90 transition-all"></i>
+                        </div>
+                        <div className="p-8">{children}</div>
+                        <div className="px-8 py-6 bg-slate-50 border-t border-slate-100 flex justify-end gap-4">{footer}</div>
+                    </div>
+                </div>
+            );
+
+            return (
+                <div className="antialiased">
+                    {/* Render Views */}
+                    {view === 'landing' && <Landing />}
+
+                    {view === 'login' && (
+                        <AuthBox title="Welcome back!" desc="We're so excited to see you again!" footer={<span>Need an account? <button onClick={() => setView('register')} className="text-blue-600 font-bold hover:underline">Register</button></span>}>
+                            <div className="space-y-4">
+                                <div><label className="text-[10px] font-black text-slate-400 uppercase ml-2">Email</label><input className="w-full mt-1 p-4 bg-slate-100 rounded-2xl outline-none focus:ring-2 ring-blue-500 transition" placeholder="example@livebox.com" /></div>
+                                <div><label className="text-[10px] font-black text-slate-400 uppercase ml-2">Password</label><input className="w-full mt-1 p-4 bg-slate-100 rounded-2xl outline-none focus:ring-2 ring-blue-500 transition" type="password" placeholder="••••••••" /></div>
+                                <button onClick={() => setView('forgot')} className="text-[10px] font-bold text-blue-600 hover:underline block text-right mt-1">Forgot your password?</button>
+                                <button onClick={() => setView('app')} className="w-full py-4 bg-blue-600 text-white rounded-[1.5rem] font-bold shadow-xl shadow-blue-200 hover:bg-blue-700 transition-all mt-4">Login</button>
+                                <button onClick={() => setView('auth-error')} className="w-full py-2 text-[10px] text-slate-300 font-bold hover:text-slate-500">Simulate Error View</button>
+                            </div>
+                        </AuthBox>
+                    )}
+
+                    {view === 'register' && (
+                        <AuthBox title="Create an account" desc="Fast onboarding — takes less than 30 seconds" footer={<span>Already have an account? <button onClick={() => setView('login')} className="text-blue-600 font-bold hover:underline">Login</button></span>}>
+                            <div className="space-y-4">
+                                <div><label className="text-[10px] font-black text-slate-400 uppercase ml-2">Display Name</label><input className="w-full mt-1 p-4 bg-slate-100 rounded-2xl outline-none focus:ring-2 ring-blue-500 transition" placeholder="e.g. Lan Anh" /></div>
+                                <div><label className="text-[10px] font-black text-slate-400 uppercase ml-2">Email</label><input className="w-full mt-1 p-4 bg-slate-100 rounded-2xl outline-none focus:ring-2 ring-blue-500 transition" placeholder="lananh@example.com" /></div>
+                                <div><label className="text-[10px] font-black text-slate-400 uppercase ml-2">Password (Min 6 chars)</label><input className="w-full mt-1 p-4 bg-slate-100 rounded-2xl outline-none focus:ring-2 ring-blue-500 transition" type="password" placeholder="••••••••" /></div>
+                                <button onClick={() => setView('app-empty')} className="w-full py-4 bg-blue-600 text-white rounded-[1.5rem] font-bold shadow-xl shadow-blue-200 hover:bg-blue-700 transition-all mt-4">Create Account</button>
+                                <p className="text-[10px] text-slate-400 text-center px-4 leading-relaxed mt-4">By registering, you agree to our <span className="text-blue-600">Terms of Service</span> and <span className="text-blue-600">Privacy Policy</span>.</p>
+                            </div>
+                        </AuthBox>
+                    )}
+
+                    {view === 'forgot' && (
+                        <AuthBox title="Reset Your Password" desc="Enter your email address and we'll send you a link to reset your password." footer={<button onClick={() => setView('login')} className="text-blue-600 font-bold hover:underline">Back to Login</button>}>
+                            <div className="space-y-4">
+                                <div><label className="text-[10px] font-black text-slate-400 uppercase ml-2">Email</label><input className="w-full mt-1 p-4 bg-slate-100 rounded-2xl outline-none focus:ring-2 ring-blue-500 transition" placeholder="Type your email..." /></div>
+                                <button className="w-full py-4 bg-blue-600 text-white rounded-[1.5rem] font-bold shadow-xl shadow-blue-200 hover:bg-blue-700 transition-all mt-4 uppercase tracking-wider">Send Recovery Link</button>
+                            </div>
+                        </AuthBox>
+                    )}
+
+                    {view === 'auth-error' && (
+                        <AuthBox err title="Authentication Error" desc="Something went wrong during your login." footer={<button onClick={() => setView('login')} className="text-blue-600 font-bold hover:underline">Back to Login</button>}>
+                            <div className="space-y-4">
+                                <div className="bg-rose-50 border border-rose-200 p-4 rounded-2xl flex items-center gap-3 text-rose-600 font-bold text-xs shadow-lg shadow-rose-100">
+                                    <i className="fas fa-circle-exclamation text-xl"></i>
+                                    Invalid credentials. Please check your email and password.
+                                </div>
+                                <div><label className="text-[10px] font-black text-rose-400 uppercase ml-2 tracking-tighter">Email</label><input className="w-full mt-1 p-4 bg-rose-50 rounded-2xl border-2 border-rose-200 outline-none focus:ring-2 ring-rose-500 transition text-rose-900" defaultValue="invalid@email" /></div>
+                                <div><label className="text-[10px] font-black text-rose-400 uppercase ml-2 tracking-tighter">Password</label><input className="w-full mt-1 p-4 bg-rose-50 rounded-2xl border-2 border-rose-200 outline-none focus:ring-2 ring-rose-500 transition text-rose-900" type="password" defaultValue="123" /></div>
+                                <button onClick={() => setView('login')} className="w-full py-4 bg-slate-900 text-white rounded-[1.5rem] font-bold shadow-xl hover:bg-slate-800 transition-all mt-4">Retry Login</button>
+                            </div>
+                        </AuthBox>
+                    )}
+
+                    {view === 'app' && <AppMain />}
+                    {view === 'app-empty' && <AppMain isEmpty />}
+
+                    {/* Modals */}
+                    {modal === 'create-server' && (
+                        <ModalWrapper title="Create a Server" onClose={() => setModal(null)} footer={<React.Fragment><button onClick={() => setModal(null)} className="font-bold text-slate-500 px-6">Back</button><button onClick={() => { setView('app'); setModal(null) }} className="bg-blue-600 text-white px-8 py-3 rounded-2xl font-bold shadow-lg shadow-blue-200 hover:bg-blue-700 transition">Create Server</button></React.Fragment>}>
+                            <div className="flex flex-col items-center">
+                                <div className="w-24 h-24 bg-blue-100 rounded-full border-4 border-dashed border-blue-400 flex flex-col items-center justify-center text-blue-500 cursor-pointer hover:bg-blue-50 transition mb-6 group">
+                                    <i className="fas fa-camera text-2xl group-hover:scale-110 transition"></i>
+                                    <span className="text-[10px] font-black mt-1">UPLOAD</span>
+                                </div>
+                                <div className="w-full text-center mb-6">
+                                    <h3 className="text-xl font-extrabold text-slate-900">Give your server a personality</h3>
+                                    <p className="text-slate-500 text-sm mt-1">Your server is where you and your friends hang out.</p>
+                                </div>
+                                <div className="w-full text-left">
+                                    <label className="text-[10px] font-black text-slate-400 uppercase ml-1">Server Name</label>
+                                    <input className="w-full mt-2 p-4 bg-slate-100 rounded-2xl outline-none focus:ring-2 ring-blue-500 transition font-bold" defaultValue="Anh Đạt's Server" />
+                                </div>
+                            </div>
+                        </ModalWrapper>
+                    )}
+
+                    {modal === 'create-channel' && (
+                        <ModalWrapper title="Create Channel" onClose={() => setModal(null)} footer={<React.Fragment><button onClick={() => setModal(null)} className="font-bold text-slate-500 px-6">Cancel</button><button onClick={() => setModal(null)} className="bg-blue-600 text-white px-8 py-3 rounded-2xl font-bold shadow-lg shadow-blue-200 hover:bg-blue-700 transition">Create Channel</button></React.Fragment>}>
+                            <div className="space-y-6">
+                                <label className="text-[10px] font-black text-slate-400 uppercase">Channel Type</label>
+                                <div className="bg-blue-50 border-2 border-blue-200 p-4 rounded-2xl flex items-center gap-4 cursor-pointer">
+                                    <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white"><i className="fas fa-hashtag text-xl"></i></div>
+                                    <div className="flex-1">
+                                        <div className="font-black text-blue-900">Text Channel</div>
+                                        <div className="text-[11px] text-blue-700">Send messages, images, and emojis.</div>
+                                    </div>
+                                    <i className="fas fa-circle-check text-blue-600 text-xl"></i>
+                                </div>
+                                <div className="bg-slate-50 border-2 border-slate-100 p-4 rounded-2xl flex items-center gap-4 cursor-pointer grayscale opacity-50">
+                                    <div className="w-10 h-10 bg-slate-300 rounded-xl flex items-center justify-center text-slate-600"><i className="fas fa-volume-high text-xl"></i></div>
+                                    <div className="flex-1">
+                                        <div className="font-black text-slate-900">Voice Channel</div>
+                                        <div className="text-[11px] text-slate-500">Hang out together with voice and video.</div>
+                                    </div>
+                                </div>
+                                <div className="pt-2">
+                                    <label className="text-[10px] font-black text-slate-400 uppercase ml-1">Channel Name</label>
+                                    <div className="flex items-center gap-2 mt-2 p-4 bg-slate-100 rounded-2xl">
+                                        <span className="text-slate-400 text-xl font-light">#</span>
+                                        <input className="bg-transparent flex-1 outline-none font-bold text-slate-700" defaultValue="new-channel" />
+                                    </div>
+                                </div>
+                            </div>
+                        </ModalWrapper>
+                    )}
+
+                    {modal === 'invite' && (
+                        <ModalWrapper title="Invite Friends" onClose={() => setModal(null)} footer={<div className="w-full text-center text-[10px] font-bold text-slate-400 uppercase italic">Only server owners can generate new links.</div>}>
+                            <div className="space-y-4">
+                                <p className="text-slate-600 text-sm leading-relaxed mb-6">Share this link with others to grant them access to <strong>Anh Đạt's Server</strong>.</p>
+                                <label className="text-[10px] font-black text-slate-400 uppercase ml-1">Invite Link (Expires in 7 days)</label>
+                                <div className="flex p-2 bg-slate-100 rounded-2xl border-2 border-slate-200">
+                                    <input className="flex-1 bg-transparent px-4 py-2 text-slate-500 font-bold text-sm outline-none" readOnly defaultValue="https://livebox.local/invite/aBcD123XyZ" />
+                                    <button className="bg-blue-600 text-white px-8 py-3 rounded-xl font-bold shadow-lg shadow-blue-200">Copy</button>
+                                </div>
+                            </div>
+                        </ModalWrapper>
+                    )}
+
+                    {modal === 'server-admin' && (
+                        <div className="fixed inset-0 bg-white z-[200] flex">
+                            <div className="w-64 bg-slate-100 flex flex-col p-8 pt-20">
+                                <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-6 px-4">Anh Đạt's Server Settings</div>
+                                <nav className="space-y-1">
+                                    <div className="bg-blue-600 text-white px-4 py-3 rounded-xl font-bold flex items-center gap-3"><i className="fas fa-eye text-sm"></i> Overview</div>
+                                    <div className="text-slate-500 px-4 py-3 rounded-xl hover:bg-slate-200 transition font-bold flex items-center gap-3 cursor-pointer"><i className="fas fa-user-shield text-sm"></i> Roles</div>
+                                    <div className="text-slate-500 px-4 py-3 rounded-xl hover:bg-slate-200 transition font-bold flex items-center gap-3 cursor-pointer"><i className="fas fa-users text-sm"></i> Members</div>
+                                </nav>
+                                <div className="mt-auto pt-8 border-t border-slate-200">
+                                    <div onClick={() => setModal('confirm-danger')} className="text-rose-600 px-4 py-3 rounded-xl hover:bg-rose-50 transition font-black flex items-center gap-3 cursor-pointer uppercase text-xs tracking-tight">Delete Server</div>
+                                    <button onClick={() => setModal(null)} className="w-full mt-4 p-4 bg-slate-200 text-slate-600 rounded-2xl font-bold">Close Settings</button>
+                                </div>
+                            </div>
+                            <div className="flex-1 p-20 max-w-4xl overflow-y-auto">
+                                <h2 className="text-3xl font-black text-slate-900 mb-12">Server Overview</h2>
+                                <div className="flex gap-12 items-start mb-16">
+                                    <div className="relative group cursor-pointer">
+                                        <div className="w-32 h-32 bg-blue-100 rounded-[2.5rem] shadow-xl flex items-center justify-center text-blue-400 border-4 border-white"><i className="fas fa-image text-3xl"></i></div>
+                                        <div className="absolute inset-0 bg-black/40 rounded-[2.5rem] flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-all font-black text-xs">CHANGE</div>
+                                    </div>
+                                    <div className="flex-1 space-y-6 pt-2">
+                                        <div><label className="text-[10px] font-black text-slate-400 uppercase ml-1">Server Name</label><input className="w-full mt-2 p-4 bg-slate-50 rounded-2xl border-2 border-slate-200 outline-none focus:ring-2 ring-blue-500 transition font-bold text-xl" defaultValue="Anh Đạt's Server" /></div>
+                                        <div className="flex justify-end"><button className="bg-blue-600 text-white px-10 py-3.5 rounded-2xl font-bold shadow-xl shadow-blue-100 hover:bg-blue-700 transition">Save Changes</button></div>
+                                    </div>
+                                </div>
+                                <div className="p-8 bg-blue-50 rounded-[2.5rem] border border-blue-100">
+                                    <h3 className="font-black text-blue-900 mb-4">Default Notification Settings</h3>
+                                    <div className="space-y-3">
+                                        <div className="flex items-center gap-3 p-4 bg-white rounded-2xl cursor-pointer border-2 border-blue-200"><i className="fas fa-circle-dot text-blue-600 text-xl"></i> <span className="font-bold text-slate-700">All Messages</span></div>
+                                        <div className="flex items-center gap-3 p-4 bg-white rounded-2xl cursor-pointer border-2 border-transparent grayscale"><i className="fas fa-circle text-slate-200 text-xl"></i> <span className="font-bold text-slate-400 italic">Only @mentions</span></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {modal === 'confirm-danger' && (
+                        <ModalWrapper danger title="Danger: Leave Server" onClose={() => setModal(null)} footer={<React.Fragment><button onClick={() => setModal(null)} className="font-bold text-slate-500 px-6">Cancel</button><button onClick={() => { setView('app-empty'); setModal(null) }} className="bg-rose-600 text-white px-8 py-3 rounded-2xl font-bold shadow-lg shadow-rose-200 hover:bg-rose-700 transition">Leave Server</button></React.Fragment>}>
+                            <div className="space-y-4">
+                                <div className="text-rose-600 text-xl font-extrabold mb-2">Are you absolutely sure?</div>
+                                <p className="text-slate-600 leading-relaxed">Are you sure you want to leave <strong>Anh Đạt's Server</strong>? You won't be able to rejoin unless you are invited again by an admin.</p>
+                                <div className="p-4 bg-rose-50 rounded-xl text-rose-500 text-xs font-bold leading-relaxed italic border-l-4 border-rose-500 mt-6">
+                                    Note: If you were the owner, you must transfer ownership or delete the server instead.
+                                </div>
+                            </div>
+                        </ModalWrapper>
+                    )}
+
+                    {modal === 'user-settings' && (
+                        <ModalWrapper title="My Account" onClose={() => setModal(null)} footer={<React.Fragment><button onClick={() => setView('landing')} className="text-rose-600 font-black px-6 hover:underline uppercase text-xs">Logout Account</button><div className="flex-1"></div><button onClick={() => setModal(null)} className="bg-blue-600 text-white px-8 py-3 rounded-2xl font-bold shadow-lg shadow-blue-200 hover:bg-blue-700 transition">Save Changes</button></React.Fragment>}>
+                            <div className="flex flex-col items-center">
+                                <div className="relative group cursor-pointer mb-8">
+                                    <div className="w-24 h-24 bg-gradient-to-tr from-pink-500 to-rose-400 rounded-full shadow-2xl flex items-center justify-center text-white border-4 border-white"><i className="fas fa-user text-3xl"></i></div>
+                                    <div className="absolute inset-0 bg-black/40 rounded-full flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-all font-black text-[10px]">EDIT IMAGE</div>
+                                </div>
+                                <div className="w-full space-y-6">
+                                    <div><label className="text-[10px] font-black text-slate-400 uppercase ml-1">Display Name</label><input className="w-full mt-2 p-4 bg-slate-100 rounded-2xl outline-none focus:ring-2 ring-blue-500 transition font-bold" defaultValue="Lan Anh" /></div>
+                                    <div><label className="text-[10px] font-black text-slate-400 uppercase ml-1">Email (Read Only)</label><input className="w-full mt-2 p-4 bg-slate-100 rounded-2xl outline-none cursor-not-allowed opacity-50 font-bold" readOnly defaultValue="lananh@livebox.com" /></div>
+                                </div>
+                            </div>
+                        </ModalWrapper>
+                    )}
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+
+</html>
