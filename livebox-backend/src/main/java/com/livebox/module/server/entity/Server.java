@@ -1,32 +1,34 @@
 package com.livebox.module.server.entity;
 
 import com.livebox.common.entity.BaseEntity;
-import com.livebox.module.auth.entity.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
+
+import java.util.UUID;
 
 @Entity
 @Table(name = "servers")
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@SuperBuilder
 public class Server extends BaseEntity {
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "owner_id", nullable = false)
-    private User owner;
-
-    @Column(name = "name", nullable = false, length = 255)
+    @Column(nullable = false, length = 100)
     private String name;
 
-    @Column(name = "avatar_url", length = 500)
+    @Column(name = "avatar_url")
     private String avatarUrl;
 
+    @Column(name = "owner_id", nullable = false)
+    private UUID ownerId;
 }
