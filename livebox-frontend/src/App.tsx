@@ -1,42 +1,11 @@
 import { useState } from 'react'
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
-import { CreateServerModal, CreateServerForm } from './features/server'
+import { Link } from 'react-router-dom'
 import reactLogo from './assets/react.svg'
 import viteLogo from './assets/vite.svg'
 import heroImg from './assets/hero.png'
 import './App.css'
 
-function TestCreateServer() {
-  const [isOpen, setIsOpen] = useState(true);
-
-  return (
-    <div className="p-10 w-full min-h-screen bg-[#313338] text-white">
-      <div className="mb-4">
-        <Link to="/" className="text-blue-400 hover:underline mb-4 inline-block">&larr; Back to Home</Link>
-        <h1 className="text-2xl font-bold">Preview: Create Server Feature</h1>
-      </div>
-      
-      <button 
-        onClick={() => setIsOpen(true)}
-        className="bg-[#5865F2] hover:bg-[#4752C4] px-4 py-2 rounded text-white font-bold transition-colors"
-      >
-        Open Create Server Modal
-      </button>
-
-      <CreateServerModal isOpen={isOpen} onClose={() => setIsOpen(false)}>
-        <CreateServerForm 
-          onSuccess={() => {
-            alert("✅ Created successfully! Check serverStore (or console).");
-            setIsOpen(false);
-          }} 
-          onCancel={() => setIsOpen(false)} 
-        />
-      </CreateServerModal>
-    </div>
-  )
-}
-
-function Home() {
+function App() {
   const [count, setCount] = useState(0)
 
   return (
@@ -110,17 +79,6 @@ function Home() {
       <div className="ticks"></div>
       <section id="spacer"></section>
     </>
-  )
-}
-
-function App() {
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/test/create-server" element={<TestCreateServer />} />
-      </Routes>
-    </BrowserRouter>
   )
 }
 

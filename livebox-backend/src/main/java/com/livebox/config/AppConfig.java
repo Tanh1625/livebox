@@ -41,8 +41,8 @@ public class AppConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
 
-        // React dev server (localhost:3000) — extend list for Vercel preview URLs in staging
-        config.setAllowedOrigins(List.of("http://localhost:3000"));
+        // React dev server (localhost:3000) & Vite dev server (localhost:5173)
+        config.setAllowedOrigins(List.of("http://localhost:3000", "http://localhost:5173"));
 
         // Standard HTTP methods for a RESTful + WebSocket upgrade handshake
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Invite Friends - LiveBox</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config" text="tailwind.config = { darkMode: 'class', theme: { extend: { colors: { primary: '#00E5FF', 'background-light': '#f5f8f8', 'background-dark': '#0f2123', 'on-surface': '#ecedf6', 'surface-container-low': '#10131a', 'surface-container-high': '#1c2028', 'surface-container-highest': '#22262f', 'on-surface-variant': '#a9abb3' }, fontFamily: { display: ['Plus Jakarta Sans'], body: ['Inter'] }, borderRadius: { DEFAULT: '1rem', lg: '2rem', xl: '3rem', full: '9999px' } } } }">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+                  "on-surface": "#ecedf6",
+                  "on-tertiary-container": "#001d3f",
+                  "secondary-dim": "#7e51ff",
+                  "surface-container-lowest": "#000000",
+                  "surface-container-low": "#10131a",
+                  "error-container": "#9f0519",
+                  "on-primary-fixed-variant": "#005762",
+                  "on-secondary-container": "#e4daff",
+                  "background": "#0b0e14",
+                  "secondary-fixed": "#d8caff",
+                  "on-primary-container": "#004d57",
+                  "primary": "#81ecff",
+                  "primary-fixed": "#00e3fd",
+                  "on-background": "#ecedf6",
+                  "on-primary-fixed": "#003840",
+                  "error": "#ff716c",
+                  "on-error-container": "#ffa8a3",
+                  "secondary-container": "#591adc",
+                  "on-tertiary-fixed-variant": "#003971",
+                  "on-surface-variant": "#a9abb3",
+                  "inverse-surface": "#f9f9ff",
+                  "tertiary-dim": "#5c9ffc",
+                  "surface-bright": "#282c36",
+                  "on-secondary-fixed": "#3b00a0",
+                  "inverse-on-surface": "#52555c",
+                  "secondary-fixed-dim": "#cabaff",
+                  "on-error": "#490006",
+                  "primary-container": "#00e3fd",
+                  "inverse-primary": "#006976",
+                  "primary-fixed-dim": "#00d4ec",
+                  "surface-dim": "#0b0e14",
+                  "surface-container-highest": "#22262f",
+                  "surface-variant": "#22262f",
+                  "primary-dim": "#00d4ec",
+                  "on-tertiary": "#002a55",
+                  "on-secondary": "#25006b",
+                  "tertiary-fixed-dim": "#65a4ff",
+                  "tertiary-fixed": "#80b2ff",
+                  "on-secondary-fixed-variant": "#591bdc",
+                  "on-tertiary-fixed": "#001835",
+                  "surface": "#0b0e14",
+                  "surface-tint": "#81ecff",
+                  "outline-variant": "#45484f",
+                  "tertiary-container": "#599cf9",
+                  "on-primary": "#005762",
+                  "error-dim": "#d7383b",
+                  "surface-container-high": "#1c2028",
+                  "tertiary": "#70aaff",
+                  "outline": "#73757d",
+                  "surface-container": "#161a21",
+                  "secondary": "#a68cff"
+          },
+          "borderRadius": {
+                  "DEFAULT": "1rem",
+                  "lg": "2rem",
+                  "xl": "3rem",
+                  "full": "9999px"
+          },
+          "fontFamily": {
+                  "headline": ["Plus Jakarta Sans"],
+                  "display": ["Plus Jakarta Sans"],
+                  "body": ["Inter"],
+                  "label": ["Inter"]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    .glass-morphism {
+      backdrop-filter: blur(40px);
+    }
+  </style>
+</head>
+<body class="bg-background text-on-surface font-body min-h-screen flex items-center justify-center p-6 selection:bg-primary selection:text-on-primary">
+<!-- Modal Backdrop -->
+<div class="fixed inset-0 bg-surface-container-lowest/80 backdrop-blur-sm z-40 flex items-center justify-center">
+<!-- Modal Card -->
+<div class="w-full glass-morphism bg-surface-container-low/90 rounded-lg overflow-hidden shadow-[0_20px_50px_rgba(0,229,255,0.08)] relative z-50 max-w-[480px]">
+<!-- TopAppBar Inspired Header (Non-Functional for Modal Close context) -->
+<div class="px-8 pt-8 pb-6">
+<div class="flex justify-between items-start mb-2">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-full bg-gradient-to-tr from-secondary to-primary p-[2px]">
+<div class="w-full h-full rounded-full bg-surface-container-low flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Stylized server icon with minimalist neon geometric shape representing Anh Đạt's Server in cyan and violet colors" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA8i3H-K-sO6ZfX3c8rt5HOqk9UPr84yH_0vJj-0ejc_nKPvrBPs2Gy92MXg3ZpwthGVMY5iM22Uq630Kv2iLbuE8CHv6UDguSfMrN3ItAnRNcKcoPfSHzcV7dCnl21Ut5tozL_vqP4Fg4rTkf1B921Onvrc9E64ODswpn5J_-aemFOssXQkuB2DHN1x86evl0uEhVyDmGGMZe17BVRFTYxvruLqOvJhnfNA4zePkN15Q0PkFZd1yre1jaTDjCr-IUxmbLIMEqAtbw"/>
+</div>
+</div>
+<div>
+<h2 class="font-headline font-bold text-2xl tracking-tight text-on-surface leading-tight">
+                  Invite Friends to <span class="text-primary italic">Anh Đạt's Server</span>
+</h2>
+</div>
+</div>
+<button class="text-on-surface-variant hover:text-on-surface transition-colors p-1">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+</div>
+<!-- Modal Body -->
+<div class="px-8 pb-8 space-y-6">
+<div class="space-y-3">
+<label class="font-label text-xs font-bold uppercase tracking-[0.1em] text-on-surface-variant block ml-1">
+            Invite Link
+          </label>
+<div class="flex items-center gap-2 w-full">
+<div class="flex-grow bg-surface-container-highest/50 border border-white/5 rounded-lg px-4 py-3 flex items-center justify-between group transition-all duration-300 focus-within:border-primary/50 overflow-hidden">
+<span class="text-on-surface/80 font-medium truncate text-sm">https://livebox.gg/invite/anhdat-server-pulse-2024</span>
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors text-xl ml-2">link</span>
+</div>
+<button class="whitespace-nowrap px-6 py-3 bg-primary text-background-dark font-bold rounded-lg hover:brightness-110 active:scale-95 transition-all shadow-[0_0_20px_rgba(0,229,255,0.3)] flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">content_copy</span>
+    Copy
+  </button>
+</div>
+</div>
+<!-- Quick Links Grid -->
+<div class="grid grid-cols-2 gap-4">
+<div class="p-4 rounded-lg bg-surface-container-high hover:bg-surface-bright transition-all cursor-pointer group">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">qr_code_2</span>
+<span class="text-sm font-semibold text-on-surface group-hover:text-secondary transition-colors">Show QR Code</span>
+</div>
+</div>
+<div class="p-4 rounded-lg bg-surface-container-high hover:bg-surface-bright transition-all cursor-pointer group">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-tertiary" style="font-variation-settings: 'FILL' 1;">share</span>
+<span class="text-sm font-semibold text-on-surface group-hover:text-tertiary transition-colors">Share Externally</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Modal Footer -->
+<div class="bg-surface-container-high/50 px-8 py-5 flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-outline text-lg">info</span>
+<p class="font-label text-sm font-medium text-on-surface-variant/80">
+          Only Server Owners can generate new invite links.
+        </p>
+</div>
+</div>
+<!-- Background Content Mock (The "Context") -->
+<div class="absolute inset-0 z-10 pointer-events-none opacity-20 overflow-hidden flex items-start justify-start p-10">
+<div class="w-full max-w-6xl mx-auto grid grid-cols-12 gap-8">
+<div class="col-span-3 h-screen bg-surface-container-low rounded-lg"></div>
+<div class="col-span-9 space-y-8">
+<div class="h-32 bg-surface-container-high rounded-lg w-3/4"></div>
+<div class="h-[500px] bg-surface-container-high rounded-lg w-full"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Decorative Glow -->
+<div class="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/10 blur-[120px] rounded-full z-0"></div>
+<div class="fixed bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-secondary/10 blur-[120px] rounded-full z-0"></div>
+</body></html>
