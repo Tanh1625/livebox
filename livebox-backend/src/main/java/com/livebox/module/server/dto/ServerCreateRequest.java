@@ -18,8 +18,4 @@ public class ServerCreateRequest {
 
     @Schema(example = "https://avatar.iran.liara.run/public/1", description = "Ảnh đại diện server")
     private String avatarUrl;
-
-    @Schema(example = "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11", description = "ID của chủ sở hữu server")
-    @NotNull(message = "Owner ID is required")
-    private UUID ownerId;
 }

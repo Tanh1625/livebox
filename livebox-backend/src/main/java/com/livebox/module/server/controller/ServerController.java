@@ -2,6 +2,7 @@ package com.livebox.module.server.controller;
 
 import com.livebox.common.dto.ApiResponse;
 import com.livebox.module.server.dto.ServerCreateRequest;
+import com.livebox.module.server.dto.ServerUpdateRequest;
 import com.livebox.module.server.dto.ServerResponse;
 import com.livebox.module.server.service.ServerService;
 import jakarta.validation.Valid;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -40,6 +42,14 @@ public class ServerController {
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<ServerResponse>> getServerById(@PathVariable UUID id) {
         return ResponseEntity.ok(ApiResponse.success(serverService.getServerById(id)));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiResponse<ServerResponse>> updateServer(
+            @PathVariable UUID id,
+            @Valid @RequestBody ServerUpdateRequest request) {
+        ServerResponse response = serverService.updateServer(id, request);
+        return ResponseEntity.ok(ApiResponse.success(response));
     }
 
     @DeleteMapping("/{id}")

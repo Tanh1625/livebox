@@ -1,5 +1,0 @@
--- V1__init_schema.sql
--- Placeholder: Sprint 1 will implement the full schema via Flyway.
--- All DDL changes must go through Flyway migration files.
--- spring.jpa.hibernate.ddl-auto=validate ensures Hibernate only validates
--- against whatever schema Flyway has already applied.

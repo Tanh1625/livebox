@@ -32,7 +32,7 @@ livebox-frontend/
 ## 2. Naming Conventions (Quy tắc Đặt tên)
 - **React Components (*.tsx):** `PascalCase`. (VD: `ServerSidebar.tsx`, `ChatInterface.tsx`).
 - **Custom Hooks (*.ts):** `camelCase` với tiền tố `use`. (VD: `useWebSocket.ts`, `useServerData.ts`).
-- **Types / Interfaces:** `PascalCase`. Không bắt buộc tiền tố `I`. Phải khớp với các định dạng DTO từ Backend. (VD: `type UserProfile = {...}`).
+- **Types / Interfaces:** `PascalCase`. Không bắt buộc tiền tố `I`. Phải khớp với các định dạng DTO từ Backend. (VD: `type UserProfile = {...}`).6
 - **Files thông thường (utils, API, store):** `camelCase`. (VD: `dateUtils.ts`, `authApi.ts`, `serverStore.ts`).
 - **CSS Classes:** Ưu tiên dùng utility-classes của TailwindCSS. Nếu cần custom class, dùng dạng `kebab-case`.
 
