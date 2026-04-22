@@ -58,3 +58,11 @@ logging:
   level:
     root: INFO
     com.livebox: INFO
+
+# ── SpringDoc / Swagger UI ────────────────────────────────────────────────────
+springdoc:
+  swagger-ui:
+    persistAuthorization: true        # Lưu token trong localStorage, không mất khi refresh trang
+    operationsSorter: method          # Sắp xếp các endpoint theo HTTP method
+    tagsSorter: alpha                 # Sắp xếp các tag theo bảng chữ cái
+    displayRequestDuration: true      # Hiển thị thời gian thực thi request
