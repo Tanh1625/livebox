@@ -3,11 +3,7 @@ spring:
     activate:
       on-profile: dev
 
-  # ── DataSource (dev defaults — override in .env or IDE run config) ─────────
-  datasource:
-    url: ${DB_URL:jdbc:postgresql://localhost:5432/livebox_dev}
-    username: ${DB_USERNAME:postgres}
-    password: ${DB_PASSWORD:postgres}
+  # ── DataSource configuration is inherited from application.yml ──────────────
 
   # ── JPA / Hibernate (verbose for development) ────────────────────────────────
   jpa:
@@ -29,3 +25,11 @@ logging:
     org.springframework.web.socket: DEBUG
     org.hibernate.SQL: DEBUG
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+
+# ── Custom Application Properties ──────────────────────────────────────────────
+livebox:
+  jwt:
+    # Use a secure randomly generated base64 256-bit key in production
+    secret: ${JWT_SECRET:404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970}
+    expiration: ${JWT_EXPIRATION:3600000} # 1 hour in ms
+    refresh-expiration: ${JWT_REFRESH_EXPIRATION:604800000} # 7 days in ms

@@ -3,7 +3,8 @@ package com.livebox.module.server.entity;
 import com.livebox.common.entity.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,6 +16,8 @@ import lombok.experimental.SuperBuilder;
 import java.util.UUID;
 
 @Entity
+@SQLDelete(sql = "UPDATE servers SET is_deleted = true, deleted_at = CURRENT_TIMESTAMP WHERE id = ?")
+@SQLRestriction("is_deleted = false")
 @Table(name = "servers")
 @Getter
 @Setter

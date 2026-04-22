@@ -3,6 +3,8 @@ package com.livebox.module.server.entity;
 import com.livebox.common.entity.BaseEntity;
 import com.livebox.module.auth.entity.User;
 import jakarta.persistence.Column;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
@@ -16,6 +18,8 @@ import lombok.Setter;
 import java.time.Instant;
 
 @Entity
+@SQLDelete(sql = "UPDATE memberships SET is_deleted = true, deleted_at = CURRENT_TIMESTAMP WHERE id = ?")
+@SQLRestriction("is_deleted = false")
 @Table(name = "memberships", uniqueConstraints = {
     @UniqueConstraint(name = "uq_membership_user_server", columnNames = {"user_id", "server_id"})
 })

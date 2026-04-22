@@ -5,6 +5,8 @@ import com.livebox.module.auth.entity.User;
 import com.livebox.module.channel.entity.Channel;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -17,6 +19,8 @@ import lombok.Setter;
 import java.time.Instant;
 
 @Entity
+@SQLDelete(sql = "UPDATE read_receipts SET is_deleted = true, deleted_at = CURRENT_TIMESTAMP WHERE id = ?")
+@SQLRestriction("is_deleted = false")
 @Table(name = "read_receipts", uniqueConstraints = {
     @UniqueConstraint(name = "uq_receipt_user_channel", columnNames = {"user_id", "channel_id"})
 })
