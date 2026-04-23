@@ -1,35 +1,45 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate, Link } from 'react-router-dom';
 import { Input } from '../../../components/ui/Input';
 import { Button } from '../../../components/ui/Button';
 import { authApi } from '../api/authApi';
-import { useAuthStore } from '../store/authStore';
 import { RegisterRequest } from '../types';
 
 export const RegisterForm: React.FC = () => {
-  const { register, handleSubmit, formState: { errors } } = useForm<RegisterRequest>();
+  const { register, handleSubmit, formState: { errors }, reset } = useForm<RegisterRequest>();
   const [isLoading, setIsLoading] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
 
-  const setToken = useAuthStore(state => state.setToken);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!showSuccessPopup) {
+      return;
+    }
+
+    const timeoutId = window.setTimeout(() => {
+      navigate('/login');
+    }, 2000);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+    };
+  }, [showSuccessPopup, navigate]);
 
   const onSubmit = async (data: RegisterRequest) => {
     try {
       setIsLoading(true);
       setServerError(null);
 
-      const response = await authApi.register(data);
-
-      if (response && response.accessToken) {
-        setToken(response.accessToken);
-        navigate('/servers/empty');
-      }
-    } catch (error: any) {
+      await authApi.register(data);
+      reset();
+      setShowSuccessPopup(true);
+    } catch (error : unknown) {
       console.error('Registration failed:', error);
-      setServerError(error.response?.data?.message || 'Failed to connect to the server. Please try again.');
+      setServerError((error as { response?: { data?: { message?: string } } }).response?.data?.message || 'Failed to connect to the server. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -62,6 +72,7 @@ export const RegisterForm: React.FC = () => {
             placeholder="Username"
             type="text"
             icon="person"
+            disabled={isLoading || showSuccessPopup}
             {...register('username', {
               required: 'Username is required',
               minLength: {
@@ -80,6 +91,7 @@ export const RegisterForm: React.FC = () => {
             placeholder="Email"
             type="email"
             icon="mail"
+            disabled={isLoading || showSuccessPopup}
             {...register('email', {
               required: 'Email is required',
               pattern: {
@@ -96,6 +108,7 @@ export const RegisterForm: React.FC = () => {
             icon="lock"
             actionIcon={showPassword ? "visibility_off" : "visibility"}
             onActionClick={() => setShowPassword(!showPassword)}
+            disabled={isLoading || showSuccessPopup}
             {...register('password', {
               required: 'Password is required',
               minLength: {
@@ -109,7 +122,7 @@ export const RegisterForm: React.FC = () => {
 
         {/* Actions */}
         <div className="flex flex-col gap-4">
-          <Button type="submit" isLoading={isLoading} className="w-full">
+          <Button type="submit" isLoading={isLoading} disabled={showSuccessPopup} className="w-full">
             Register
           </Button>
         </div>
@@ -125,6 +138,20 @@ export const RegisterForm: React.FC = () => {
           <Link to="/login" className="text-secondary font-semibold hover:underline ml-1">Login</Link>
         </p>
       </div>
+
+      {showSuccessPopup && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm px-6">
+          <div className="w-full max-w-sm rounded-2xl border border-primary/30 bg-surface-container p-6 shadow-[0_24px_64px_rgba(0,0,0,0.45)] text-center">
+            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-primary/20 text-primary">
+              <span className="material-symbols-outlined">check_circle</span>
+            </div>
+            <h2 className="text-xl font-bold text-on-surface">Dang ky thanh cong</h2>
+            <p className="mt-2 text-sm text-on-surface-variant font-body">
+              Nguoi dung da dang ky thanh cong. Ban se duoc chuyen den trang dang nhap sau 2 giay.
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

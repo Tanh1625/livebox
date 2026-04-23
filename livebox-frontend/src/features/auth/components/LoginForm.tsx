@@ -27,9 +27,9 @@ export const LoginForm: React.FC = () => {
         setToken(response.accessToken);
         navigate('/servers/empty');
       }
-    } catch (error: any) {
+    } catch (error : unknown) {
       console.error('Login failed:', error);
-      setServerError(error.response?.data?.message || 'Failed to connect to the server. Please try again.');
+      setServerError((error as { response?: { data?: { message?: string } } }).response?.data?.message || 'Failed to connect to the server. Please try again.');
     } finally {
       setIsLoading(false);
     }
