@@ -20,7 +20,7 @@ export const CreateServerScreen: React.FC = () => {
       const response = await serverApi.createServer(data);
 
       if (response && response.id) {
-        navigate(`/servers/${response.id}`);
+        navigate('/app/main');
       }
     } catch (error: any) {
       console.error('Create server failed:', error);

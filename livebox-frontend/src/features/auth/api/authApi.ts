@@ -7,12 +7,12 @@ export const authApi = {
     // Our interceptor returns response.data which is the ApiResponse.
     // So we need to handle that. Wait, if the interceptor returns response.data, 
     // it returns the ApiResponse structure. Let's assume ApiResponse has a `data` field.
-    const res = await axiosClient.post<any, { data: TokenResponse }>('/api/v1/auth/login', data);
+    const res = await axiosClient.post<unknown, { data: TokenResponse }>('/api/v1/auth/login', data);
     return res.data;
   },
 
   register: async (data: RegisterRequest): Promise<TokenResponse> => {
-    const res = await axiosClient.post<any, { data: TokenResponse }>('/api/v1/auth/register', data);
+    const res = await axiosClient.post<unknown, { data: TokenResponse }>('/api/v1/auth/register', data);
     return res.data;
   }
 };

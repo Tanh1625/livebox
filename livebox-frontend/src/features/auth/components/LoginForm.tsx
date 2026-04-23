@@ -6,6 +6,7 @@ import { Button } from '../../../components/ui/Button';
 import { authApi } from '../api/authApi';
 import { useAuthStore } from '../store/authStore';
 import { LoginRequest } from '../types';
+import { serverApi } from '../../server/api/serverApi';
 
 export const LoginForm: React.FC = () => {
   const { register, handleSubmit, formState: { errors } } = useForm<LoginRequest>();
@@ -25,6 +26,17 @@ export const LoginForm: React.FC = () => {
       
       if (response && response.accessToken) {
         setToken(response.accessToken);
+
+        try {
+          const joinedServers = await serverApi.getMyServers();
+          if (joinedServers.length > 0) {
+            navigate('/app/main');
+            return;
+          }
+        } catch (serverCheckError) {
+          console.warn('Could not check joined servers, fallback to empty state.', serverCheckError);
+        }
+
         navigate('/servers/empty');
       }
     } catch (error : unknown) {
