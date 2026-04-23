@@ -1,6 +1,8 @@
 package com.livebox.module.message.service;
 
 import com.livebox.common.exception.LiveBoxException;
+import com.livebox.common.security.MembershipGuard;
+import com.livebox.common.util.SecurityUtils;
 import com.livebox.module.auth.entity.User;
 import com.livebox.module.auth.repository.UserRepository;
 import com.livebox.module.channel.entity.Channel;
@@ -41,6 +43,7 @@ public class MessageService {
     private final ChannelRepository channelRepository;
     private final UserRepository userRepository;
     private final SimpMessagingTemplate messagingTemplate;
+    private final MembershipGuard membershipGuard;
 
     /**
      * SCRUM-53: Lấy lịch sử tin nhắn của Channel, phân trang.
@@ -52,8 +55,11 @@ public class MessageService {
      */
     @Transactional(readOnly = true)
     public Page<MessageResponse> getMessageHistory(UUID channelId, int page, int size) {
-        validateChannelExists(channelId);
-        Pageable pageable = PageRequest.of(page, Math.min(size, 100)); // Cap tối đa 100/trang
+        // 🔒 Security: chỉ member của server chứa channel mới được đọc lịch sử
+        UUID currentUserId = SecurityUtils.getCurrentUserId();
+        membershipGuard.requireChannelMembership(channelId, currentUserId);
+
+        Pageable pageable = PageRequest.of(page, Math.min(size, 100));
         return messageRepository.findByChannelIdOrderByCreatedAtDesc(channelId, pageable)
                 .map(MessageResponse::from);
     }
@@ -78,6 +84,9 @@ public class MessageService {
         User sender = userRepository.findByEmail(senderEmail)
                 .orElseThrow(() -> new LiveBoxException(HttpStatus.NOT_FOUND, "User not found: " + senderEmail));
 
+        // 🔒 Security: kiểm tra sender là member của server chứa channel
+        membershipGuard.requireMembership(channel.getServerId(), sender.getId());
+
         Message message = Message.builder()
                 .channel(channel)
                 .sender(sender)
@@ -87,7 +96,6 @@ public class MessageService {
         Message saved = messageRepository.save(message);
         MessageResponse response = MessageResponse.from(saved);
 
-        // SCRUM-55: Broadcast tin nhắn tới tất cả subscriber của channel
         String destination = "/topic/channels/" + channelId;
         messagingTemplate.convertAndSend(destination, response);
         log.debug("Broadcast message {} to {}", saved.getId(), destination);
@@ -95,9 +103,4 @@ public class MessageService {
         return response;
     }
 
-    private void validateChannelExists(UUID channelId) {
-        if (!channelRepository.existsById(channelId)) {
-            throw new LiveBoxException(HttpStatus.NOT_FOUND, "Channel not found: " + channelId);
-        }
-    }
 }
