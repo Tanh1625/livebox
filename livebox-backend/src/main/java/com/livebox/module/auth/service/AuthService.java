@@ -1,8 +1,9 @@
 package com.livebox.module.auth.service;
 
-import com.livebox.common.dto.ApiResponse;
+import com.livebox.common.exception.LiveBoxException;
 import com.livebox.config.JwtProvider;
 import com.livebox.module.auth.dto.LoginRequest;
+import com.livebox.module.auth.dto.LogoutRequest;
 import com.livebox.module.auth.dto.RefreshTokenRequest;
 import com.livebox.module.auth.dto.RegisterRequest;
 import com.livebox.module.auth.dto.TokenResponse;
@@ -12,6 +13,7 @@ import com.livebox.module.auth.repository.RefreshTokenRepository;
 import com.livebox.module.auth.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -38,7 +40,8 @@ public class AuthService {
     @Transactional
     public TokenResponse register(RegisterRequest request) {
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
-            throw new RuntimeException("Email is already in use");
+            // LB-101: Trả về 409 Conflict thay vì 500/400 generic
+            throw new LiveBoxException(HttpStatus.CONFLICT, "Email '" + request.getEmail() + "' is already in use.");
         }
 
         User user = User.builder()
@@ -60,7 +63,7 @@ public class AuthService {
         );
 
         User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new LiveBoxException(HttpStatus.NOT_FOUND, "User not found."));
 
         return generateTokenResponse(user);
     }
@@ -68,25 +71,29 @@ public class AuthService {
     @Transactional
     public TokenResponse refreshToken(RefreshTokenRequest request) {
         String token = request.getRefreshToken();
-        
+
         // 1. Find token in DB
         RefreshToken refreshToken = refreshTokenRepository.findByTokenValue(token)
-                .orElseThrow(() -> new RuntimeException("Refresh token not found"));
-                
+                .orElseThrow(() -> new LiveBoxException(HttpStatus.UNAUTHORIZED, "Refresh token is invalid or has been revoked."));
+
         // 2. Check if expired
         if (refreshToken.getExpiresAt().isBefore(Instant.now())) {
             refreshTokenRepository.delete(refreshToken);
-            throw new RuntimeException("Refresh token was expired. Please make a new signin request");
+            throw new LiveBoxException(HttpStatus.UNAUTHORIZED, "Refresh token has expired. Please sign in again.");
         }
-        
-        // 3. Generate new tokens
+
+        // 3. Rotate refresh token for higher security
         User user = refreshToken.getUser();
-        
-        // Optionally, we could reuse the refresh token or rotate it.
-        // For higher security, rotate the refresh token:
         refreshTokenRepository.delete(refreshToken);
-        
+
         return generateTokenResponse(user);
+    }
+
+    // LB-103: Đăng xuất an toàn – Revoke Refresh Token trong DB
+    @Transactional
+    public void logout(LogoutRequest request) {
+        refreshTokenRepository.findByTokenValue(request.getRefreshToken())
+                .ifPresent(refreshTokenRepository::delete);
     }
 
     private TokenResponse generateTokenResponse(User user) {
@@ -99,7 +106,7 @@ public class AuthService {
                 .tokenValue(refreshTokenString)
                 .expiresAt(Instant.now().plus(refreshExpirationMs, ChronoUnit.MILLIS))
                 .build();
-                
+
         refreshTokenRepository.save(refreshTokenEntity);
 
         return TokenResponse.builder()

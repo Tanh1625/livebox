@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LiveBox WebSocket Tester</title>
+  <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@7/bundles/stomp.umd.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: #0e1117;
+      color: #e0e0e0;
+      min-height: 100vh;
+      padding: 24px;
+    }
+    h1 {
+      font-size: 22px;
+      font-weight: 700;
+      color: #7c83f5;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    h1 span { font-size: 28px; }
+    .grid {
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      gap: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .card {
+      background: #161b27;
+      border: 1px solid #2a2f3e;
+      border-radius: 12px;
+      padding: 20px;
+    }
+    .card h2 {
+      font-size: 13px;
+      font-weight: 600;
+      color: #7c83f5;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    label {
+      display: block;
+      font-size: 12px;
+      color: #8b93a7;
+      margin-bottom: 4px;
+      margin-top: 12px;
+    }
+    input {
+      width: 100%;
+      background: #0e1117;
+      border: 1px solid #2a2f3e;
+      border-radius: 8px;
+      color: #e0e0e0;
+      padding: 9px 12px;
+      font-size: 13px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    input:focus { border-color: #7c83f5; }
+    button {
+      width: 100%;
+      margin-top: 14px;
+      padding: 10px 16px;
+      border-radius: 8px;
+      border: none;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.1s;
+    }
+    button:active { transform: scale(0.98); }
+    button:disabled { opacity: 0.4; cursor: not-allowed; }
+    .btn-primary { background: #7c83f5; color: white; }
+    .btn-success { background: #22c55e; color: white; }
+    .btn-danger  { background: #ef4444; color: white; }
+    .btn-send    { background: #f59e0b; color: #0e1117; }
+    .status-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 14px;
+      font-size: 12px;
+      color: #8b93a7;
+    }
+    .dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: #2a2f3e;
+      flex-shrink: 0;
+      transition: background 0.3s;
+    }
+    .dot.connected { background: #22c55e; box-shadow: 0 0 6px #22c55e; }
+    .dot.error     { background: #ef4444; box-shadow: 0 0 6px #ef4444; }
+    .token-box {
+      margin-top: 12px;
+      background: #0e1117;
+      border: 1px solid #2a2f3e;
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 11px;
+      color: #8b93a7;
+      word-break: break-all;
+      min-height: 40px;
+    }
+    /* Chat panel */
+    .chat-panel {
+      display: flex;
+      flex-direction: column;
+      height: calc(100vh - 100px);
+    }
+    .message-list {
+      flex: 1;
+      overflow-y: auto;
+      background: #0e1117;
+      border: 1px solid #2a2f3e;
+      border-radius: 10px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .message-list::-webkit-scrollbar { width: 4px; }
+    .message-list::-webkit-scrollbar-thumb { background: #2a2f3e; border-radius: 4px; }
+    .msg {
+      display: flex;
+      gap: 10px;
+      animation: fadeIn 0.2s ease;
+    }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; } }
+    .avatar {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #7c83f5, #a78bfa);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 700;
+      flex-shrink: 0;
+      color: white;
+    }
+    .msg-body {}
+    .msg-meta {
+      font-size: 11px;
+      color: #8b93a7;
+      margin-bottom: 2px;
+    }
+    .msg-meta strong { color: #c4c8e0; font-size: 12px; }
+    .msg-content {
+      font-size: 13px;
+      line-height: 1.5;
+      background: #1e2333;
+      border-radius: 0 8px 8px 8px;
+      padding: 8px 12px;
+      display: inline-block;
+      max-width: 600px;
+      word-break: break-word;
+    }
+    .msg.system .msg-content {
+      background: transparent;
+      color: #8b93a7;
+      font-style: italic;
+      font-size: 12px;
+    }
+    .send-row {
+      display: flex;
+      gap: 10px;
+    }
+    .send-row input {
+      flex: 1;
+      margin: 0;
+    }
+    .send-row button {
+      width: auto;
+      margin: 0;
+      padding: 9px 20px;
+      flex-shrink: 0;
+    }
+    .log {
+      margin-top: 12px;
+      background: #0e1117;
+      border: 1px solid #2a2f3e;
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-size: 11px;
+      font-family: 'Consolas', monospace;
+      max-height: 120px;
+      overflow-y: auto;
+      color: #8b93a7;
+    }
+    .log .ok  { color: #22c55e; }
+    .log .err { color: #ef4444; }
+    .log .info { color: #7c83f5; }
+    .pill {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 99px;
+      font-size: 10px;
+      font-weight: 700;
+      background: #2a2f3e;
+      color: #7c83f5;
+    }
+    textarea {
+      width: 100%;
+      background: #0e1117;
+      border: 1px solid #2a2f3e;
+      border-radius: 8px;
+      color: #e0e0e0;
+      padding: 9px 12px;
+      font-size: 13px;
+      outline: none;
+      resize: vertical;
+      min-height: 80px;
+      font-family: inherit;
+    }
+    textarea:focus { border-color: #f59e0b; }
+  </style>
+</head>
+<body>
+
+<h1><span>📡</span> LiveBox WebSocket Tester</h1>
+
+<div class="grid">
+  <!-- LEFT PANEL: Config -->
+  <div>
+    <!-- Step 1: Auth -->
+    <div class="card" style="margin-bottom:16px">
+      <h2>① Đăng nhập</h2>
+      <label>API Base URL</label>
+      <input id="baseUrl" value="http://localhost:8080" />
+      <label>Email</label>
+      <input id="email" value="admin@livebox.com" />
+      <label>Password</label>
+      <input id="password" type="password" value="admin123" />
+      <button class="btn-primary" onclick="doLogin()">🔑 Login & Lấy Token</button>
+      <div class="status-row">
+        <div class="dot" id="authDot"></div>
+        <span id="authStatus">Chưa đăng nhập</span>
+      </div>
+      <div class="token-box" id="tokenDisplay">Token sẽ hiện ở đây...</div>
+    </div>
+
+    <!-- Step 2: Connect WS -->
+    <div class="card" style="margin-bottom:16px">
+      <h2>② Kết nối WebSocket</h2>
+      <label>Channel ID (UUID)</label>
+      <input id="channelId" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" />
+      <button class="btn-success" id="btnConnect" onclick="connectWS()" disabled>⚡ Connect STOMP</button>
+      <button class="btn-danger"  id="btnDisconnect" onclick="disconnectWS()" disabled>✕ Disconnect</button>
+      <div class="status-row">
+        <div class="dot" id="wsDot"></div>
+        <span id="wsStatus">Chưa kết nối</span>
+      </div>
+    </div>
+
+    <!-- Step 3: Load history -->
+    <div class="card">
+      <h2>③ REST: Lịch sử tin nhắn</h2>
+      <label>Page (0-indexed)</label>
+      <input id="histPage" value="0" type="number" min="0" />
+      <label>Size</label>
+      <input id="histSize" value="20" type="number" min="1" max="100" />
+      <button class="btn-primary" id="btnHistory" onclick="loadHistory()" disabled>📜 Tải lịch sử</button>
+    </div>
+  </div>
+
+  <!-- RIGHT PANEL: Chat -->
+  <div class="card chat-panel">
+    <h2>💬 Kênh chat realtime <span class="pill" id="channelLabel">–</span></h2>
+    <div class="message-list" id="msgList">
+      <div class="msg system"><div class="msg-body"><div class="msg-content">Kết nối WebSocket và subscribe để bắt đầu nhận tin nhắn...</div></div></div>
+    </div>
+    <div class="send-row">
+      <textarea id="msgInput" placeholder="Nhập tin nhắn... (Enter để gửi)" rows="2"
+        onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMsg();}"></textarea>
+      <button class="btn-send" id="btnSend" onclick="sendMsg()" disabled>Gửi ➤</button>
+    </div>
+    <div class="log" id="logBox">
+      <span class="info">[SYSTEM] Tester sẵn sàng. Thực hiện Login để bắt đầu.</span>
+    </div>
+  </div>
+</div>
+
+<script>
+  let accessToken = null;
+  let stompClient = null;
+
+  function log(msg, type = '') {
+    const box = document.getElementById('logBox');
+    const time = new Date().toLocaleTimeString('vi-VN');
+    box.innerHTML += `<br><span class="${type}">[${time}] ${msg}</span>`;
+    box.scrollTop = box.scrollHeight;
+  }
+
+  function addMessage(data, isHistory = false) {
+    const list = document.getElementById('msgList');
+    const sender = data.sender || { displayName: 'Hệ thống', id: null };
+    const initial = (sender.displayName || '?')[0].toUpperCase();
+    const time = new Date(data.createdAt).toLocaleTimeString('vi-VN');
+    const prefix = isHistory ? '[LỊCH SỬ] ' : '';
+
+    const div = document.createElement('div');
+    div.className = 'msg';
+    div.innerHTML = `
+      <div class="avatar">${initial}</div>
+      <div class="msg-body">
+        <div class="msg-meta"><strong>${prefix}${sender.displayName}</strong> · ${time}</div>
+        <div class="msg-content">${escHtml(data.content)}</div>
+      </div>`;
+    list.appendChild(div);
+    list.scrollTop = list.scrollHeight;
+  }
+
+  function addSystemMsg(text) {
+    const list = document.getElementById('msgList');
+    const div = document.createElement('div');
+    div.className = 'msg system';
+    div.innerHTML = `<div class="msg-body"><div class="msg-content">ℹ️ ${text}</div></div>`;
+    list.appendChild(div);
+    list.scrollTop = list.scrollHeight;
+  }
+
+  function escHtml(s) {
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  // ── STEP 1: LOGIN ────────────────────────────────────────────────────────────
+  async function doLogin() {
+    const base = document.getElementById('baseUrl').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    try {
+      log(`Đang login với ${email}...`, 'info');
+      const res = await fetch(`${base}/api/v1/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.message || res.statusText);
+
+      accessToken = json.data.accessToken;
+      document.getElementById('authDot').className = 'dot connected';
+      document.getElementById('authStatus').textContent = `✅ Đã login: ${json.data.user.username}`;
+      document.getElementById('tokenDisplay').textContent = accessToken;
+      document.getElementById('btnConnect').disabled = false;
+      log(`Login thành công! User: ${json.data.user.username}`, 'ok');
+    } catch (e) {
+      document.getElementById('authDot').className = 'dot error';
+      document.getElementById('authStatus').textContent = '❌ Login thất bại';
+      log(`Login lỗi: ${e.message}`, 'err');
+    }
+  }
+
+  // ── STEP 2: CONNECT WEBSOCKET ────────────────────────────────────────────────
+  function connectWS() {
+    const base = document.getElementById('baseUrl').value.trim();
+    const channelId = document.getElementById('channelId').value.trim();
+    if (!channelId) { alert('Nhập Channel ID trước!'); return; }
+
+    document.getElementById('channelLabel').textContent = channelId.slice(0, 8) + '...';
+    log('Đang kết nối WebSocket...', 'info');
+
+    const wsUrl = `${base}/ws?token=${accessToken}`;
+    const socket = new SockJS(wsUrl);
+    stompClient = new StompJs.Client({ webSocketFactory: () => socket });
+
+    stompClient.onConnect = () => {
+      document.getElementById('wsDot').className = 'dot connected';
+      document.getElementById('wsStatus').textContent = '✅ Đã kết nối STOMP';
+      document.getElementById('btnDisconnect').disabled = false;
+      document.getElementById('btnConnect').disabled = true;
+      document.getElementById('btnSend').disabled = false;
+      document.getElementById('btnHistory').disabled = false;
+      log(`Kết nối thành công! Subscribe /topic/channels/${channelId}`, 'ok');
+      addSystemMsg('✅ Đã kết nối! Đang lắng nghe tin nhắn từ channel này...');
+
+      stompClient.subscribe(`/topic/channels/${channelId}`, (frame) => {
+        const data = JSON.parse(frame.body);
+        log(`Nhận tin nhắn từ ${data.sender?.displayName}: ${data.content}`, 'ok');
+        addMessage(data);
+      });
+    };
+
+    stompClient.onStompError = (frame) => {
+      document.getElementById('wsDot').className = 'dot error';
+      document.getElementById('wsStatus').textContent = '❌ Lỗi STOMP';
+      log(`STOMP error: ${frame.headers?.message}`, 'err');
+    };
+
+    stompClient.onDisconnect = () => {
+      document.getElementById('wsDot').className = 'dot';
+      document.getElementById('wsStatus').textContent = 'Đã ngắt kết nối';
+      document.getElementById('btnConnect').disabled = false;
+      document.getElementById('btnDisconnect').disabled = true;
+      document.getElementById('btnSend').disabled = true;
+      log('WebSocket đã ngắt kết nối.', 'info');
+    };
+
+    stompClient.activate();
+  }
+
+  function disconnectWS() {
+    if (stompClient) stompClient.deactivate();
+  }
+
+  // ── SEND MESSAGE ─────────────────────────────────────────────────────────────
+  function sendMsg() {
+    const channelId = document.getElementById('channelId').value.trim();
+    const content = document.getElementById('msgInput').value.trim();
+    if (!content || !stompClient?.connected) return;
+
+    stompClient.publish({
+      destination: `/app/channels/${channelId}/send`,
+      body: JSON.stringify({ content })
+    });
+    document.getElementById('msgInput').value = '';
+    log(`Đã gửi: "${content}"`, 'info');
+  }
+
+  // ── LOAD HISTORY ──────────────────────────────────────────────────────────────
+  async function loadHistory() {
+    const base = document.getElementById('baseUrl').value.trim();
+    const channelId = document.getElementById('channelId').value.trim();
+    const page = document.getElementById('histPage').value;
+    const size = document.getElementById('histSize').value;
+    try {
+      log(`Đang tải lịch sử trang ${page}...`, 'info');
+      const res = await fetch(`${base}/api/v1/channels/${channelId}/messages?page=${page}&size=${size}`, {
+        headers: { 'Authorization': `Bearer ${accessToken}` }
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.message || res.statusText);
+
+      const messages = json.data.content || [];
+      addSystemMsg(`📜 Tải ${messages.length} tin nhắn lịch sử (trang ${page}):`);
+      // Reverse vì API trả DESC (mới nhất trước), hiển thị theo thứ tự cũ → mới
+      [...messages].reverse().forEach(m => addMessage(m, true));
+      log(`Tải thành công ${messages.length} tin nhắn.`, 'ok');
+    } catch(e) {
+      log(`Lỗi khi tải lịch sử: ${e.message}`, 'err');
+    }
+  }
+</script>
+</body>
+</html>
