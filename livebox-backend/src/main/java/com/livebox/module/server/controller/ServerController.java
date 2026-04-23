@@ -45,6 +45,12 @@ public class ServerController {
         return ApiResponse.success(serverService.getMyServers());
     }
 
+    // Lấy danh sách server mà mình là OWNER (dùng để quản lý: sửa/xóa)
+    @GetMapping("/owned")
+    public ApiResponse<List<ServerResponse>> getMyOwnedServers() {
+        return ApiResponse.success(serverService.getMyOwnedServers());
+    }
+
     // Xem chi tiết server (Member only)
     @GetMapping("/{id}")
     public ApiResponse<ServerResponse> getServer(@PathVariable UUID id) {
