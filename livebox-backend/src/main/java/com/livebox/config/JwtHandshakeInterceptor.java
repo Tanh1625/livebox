@@ -40,6 +40,7 @@ public class JwtHandshakeInterceptor implements HandshakeInterceptor {
         if (StringUtils.hasText(token) && jwtProvider.validateToken(token)) {
             try {
                 String email = jwtProvider.getEmailFromToken(token);
+                String userId = jwtProvider.getUserIdFromToken(token); // UUID string từ JWT claim
                 UserDetails userDetails = userDetailsService.loadUserByUsername(email);
 
                 UsernamePasswordAuthenticationToken authentication =
@@ -47,7 +48,9 @@ public class JwtHandshakeInterceptor implements HandshakeInterceptor {
 
                 // Lưu principal vào WebSocket session để Spring Security dùng trong @MessageMapping
                 attributes.put("principal", authentication);
-                log.debug("WebSocket handshake authenticated for user: {}", email);
+                // Lưu userId để SubscribeInterceptor check membership mà không cần DB call thêm
+                attributes.put("userId", userId);
+                log.debug("WebSocket handshake authenticated for user: {} (id={})", email, userId);
                 return true;
             } catch (Exception e) {
                 log.warn("WebSocket handshake authentication failed: {}", e.getMessage());

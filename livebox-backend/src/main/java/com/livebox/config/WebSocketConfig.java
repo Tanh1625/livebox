@@ -1,6 +1,8 @@
 package com.livebox.config;
 
+import com.livebox.common.security.MembershipGuard;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -18,6 +20,8 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 
 import java.security.Principal;
 import java.util.Map;
+import java.util.UUID;
+
 
 /**
  * WebSocketConfig — STOMP over WebSocket configuration (SCRUM-56 updated).
@@ -38,6 +42,7 @@ import java.util.Map;
  *   <li>{@code /user/queue/notifications} — per-user unread badges</li>
  * </ul>
  */
+@Slf4j
 @Configuration
 @EnableWebSocketMessageBroker
 @RequiredArgsConstructor
@@ -45,6 +50,10 @@ import java.util.Map;
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     private final JwtHandshakeInterceptor jwtHandshakeInterceptor;
+    private final MembershipGuard membershipGuard;
+
+    /** Destination prefix cho channel messages: /topic/channels/{channelId} */
+    private static final String CHANNEL_TOPIC_PREFIX = "/topic/channels/";
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
@@ -58,29 +67,77 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         registry
                 .addEndpoint("/ws")
                 .setAllowedOriginPatterns("http://localhost:3000", "http://localhost:5173", "http://127.0.0.1:5500/")
-                .addInterceptors(jwtHandshakeInterceptor) // SCRUM-56: JWT auth at handshake
+                .addInterceptors(jwtHandshakeInterceptor)
                 .withSockJS();
     }
 
     /**
-     * SCRUM-56: Propagate the Principal from WebSocket session into each STOMP CONNECT frame.
-     * Without this, @AuthenticationPrincipal in @MessageMapping would return null.
+     * Inbound channel interceptor — xử lý 2 trường hợp:
+     *
+     * <ul>
+     *   <li>CONNECT: propagate Principal từ session vào STOMP frame (bắt buộc cho @MessageMapping)</li>
+     *   <li>SUBSCRIBE: kiểm tra membership trước khi cho phép subscribe channel topic (🔒 security fix)</li>
+     * </ul>
      */
     @Override
     public void configureClientInboundChannel(ChannelRegistration registration) {
         registration.interceptors(new ChannelInterceptor() {
             @Override
             public Message<?> preSend(Message<?> message, MessageChannel channel) {
-                StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
-                if (accessor != null && StompCommand.CONNECT.equals(accessor.getCommand())) {
-                    Map<String, Object> sessionAttributes = accessor.getSessionAttributes();
-                    if (sessionAttributes != null) {
-                        Object principal = sessionAttributes.get("principal");
-                        if (principal instanceof Principal p) {
-                            accessor.setUser(p);
+                StompHeaderAccessor accessor =
+                        MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
+
+                if (accessor == null) return message;
+
+                switch (accessor.getCommand() != null ? accessor.getCommand() : StompCommand.CONNECT) {
+
+                    case CONNECT -> {
+                        // Propagate Principal từ WebSocket session vào STOMP session
+                        Map<String, Object> sessionAttributes = accessor.getSessionAttributes();
+                        if (sessionAttributes != null) {
+                            Object principal = sessionAttributes.get("principal");
+                            if (principal instanceof Principal p) {
+                                accessor.setUser(p);
+                            }
                         }
                     }
+
+                    case SUBSCRIBE -> {
+                        // Security: chặn subscribe nếu không phải member của server chứa channel
+                        String destination = accessor.getDestination();
+                        if (destination != null && destination.startsWith(CHANNEL_TOPIC_PREFIX)) {
+                            String channelIdStr = destination.substring(CHANNEL_TOPIC_PREFIX.length());
+                            Map<String, Object> sessionAttributes = accessor.getSessionAttributes();
+                            if (sessionAttributes == null) {
+                                log.warn("SUBSCRIBE blocked: no session attributes (session={})",
+                                        accessor.getSessionId());
+                                throw new IllegalStateException("WebSocket session not authenticated.");
+                            }
+
+                            String userIdStr = (String) sessionAttributes.get("userId");
+                            if (userIdStr == null) {
+                                log.warn("SUBSCRIBE blocked: userId not in session (dest={})", destination);
+                                throw new IllegalStateException("WebSocket session not authenticated.");
+                            }
+
+                            try {
+                                UUID channelId = UUID.fromString(channelIdStr);
+                                UUID userId = UUID.fromString(userIdStr);
+                                // Throws LiveBoxException(403) nếu không phải member
+                                membershipGuard.requireChannelMembership(channelId, userId);
+                                log.debug("SUBSCRIBE authorized: user={} channel={}", userId, channelId);
+                            } catch (IllegalArgumentException e) {
+                                // channelId không phải UUID hợp lệ → destination lạ → bỏ qua
+                                log.debug("SUBSCRIBE: non-UUID channel destination '{}', skipping check",
+                                        destination);
+                            }
+                        }
+                        // Các /topic khác (/topic/servers/..., /user/queue/...) → allow through
+                    }
+
+                    default -> { /* no-op for SEND, DISCONNECT, etc. */ }
                 }
+
                 return message;
             }
         });
