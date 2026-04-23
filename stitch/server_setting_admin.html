@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Neon Pulse Admin - Server Settings</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@300;400;500;600&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "outline-variant": "#45484f",
+                        "background": "#0b0e14",
+                        "on-error-container": "#ffa8a3",
+                        "primary-fixed": "#00e3fd",
+                        "on-surface": "#ecedf6",
+                        "surface-container-lowest": "#000000",
+                        "on-primary-fixed-variant": "#005762",
+                        "error": "#ff716c",
+                        "on-error": "#490006",
+                        "tertiary": "#70aaff",
+                        "tertiary-fixed-dim": "#65a4ff",
+                        "surface-container": "#161a21",
+                        "on-primary-container": "#004d57",
+                        "inverse-primary": "#006976",
+                        "outline": "#73757d",
+                        "on-tertiary-fixed-variant": "#003971",
+                        "on-secondary-fixed": "#3b00a0",
+                        "secondary": "#a68cff",
+                        "on-tertiary": "#002a55",
+                        "tertiary-container": "#599cf9",
+                        "inverse-surface": "#f9f9ff",
+                        "primary": "#81ecff",
+                        "surface-dim": "#0b0e14",
+                        "secondary-fixed-dim": "#cabaff",
+                        "on-background": "#ecedf6",
+                        "on-primary": "#005762",
+                        "surface-container-highest": "#22262f",
+                        "on-surface-variant": "#a9abb3",
+                        "inverse-on-surface": "#52555c",
+                        "surface-container-high": "#1c2028",
+                        "primary-fixed-dim": "#00d4ec",
+                        "surface-bright": "#282c36",
+                        "on-secondary-fixed-variant": "#591bdc",
+                        "on-secondary-container": "#e4daff",
+                        "on-secondary": "#25006b",
+                        "on-primary-fixed": "#003840",
+                        "surface-container-low": "#10131a",
+                        "surface-tint": "#81ecff",
+                        "secondary-container": "#591adc",
+                        "surface-variant": "#22262f",
+                        "secondary-fixed": "#d8caff",
+                        "secondary-dim": "#7e51ff",
+                        "primary-container": "#00e3fd",
+                        "primary-dim": "#00d4ec",
+                        "on-tertiary-container": "#001d3f",
+                        "surface": "#0b0e14",
+                        "error-container": "#9f0519",
+                        "error-dim": "#d7383b",
+                        "on-tertiary-fixed": "#001835",
+                        "tertiary-fixed": "#80b2ff",
+                        "tertiary-dim": "#5c9ffc"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "display": ["Plus Jakarta Sans"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0b0e14;
+        }
+        .neon-glow {
+            text-shadow: 0 0 8px rgba(129, 236, 255, 0.5);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #22262f;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface h-screen overflow-hidden flex flex-col">
+<!-- TopAppBar -->
+<header class="bg-[#0b0e14]/80 backdrop-blur-2xl text-[#81ecff] font-['Plus_Jakarta_Sans'] tracking-tight font-bold docked full-width top-0 z-50 bg-gradient-to-b from-white/5 to-transparent shadow-[0_16px_64px_rgba(11,14,20,0.8)] flex justify-between items-center w-full px-8 py-4">
+<div class="text-2xl font-black text-[#81ecff] drop-shadow-[0_0_8px_rgba(129,236,255,0.5)]">Neon Pulse Admin</div>
+<div class="flex items-center gap-6">
+<div class="relative group">
+<input class="bg-surface-container-highest border-none rounded-full px-4 py-2 text-sm focus:ring-2 focus:ring-primary w-64 text-on-surface transition-all" placeholder="Search..." type="text"/>
+<span class="material-symbols-outlined absolute right-3 top-2 text-slate-400">search</span>
+</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-slate-400 hover:text-[#a68cff] transition-colors duration-300 cursor-pointer active:scale-95 transition-transform" data-icon="notifications">notifications</span>
+<span class="material-symbols-outlined text-slate-400 hover:text-[#a68cff] transition-colors duration-300 cursor-pointer active:scale-95 transition-transform" data-icon="settings">settings</span>
+<div class="w-10 h-10 rounded-full overflow-hidden border-2 border-primary/20">
+<img alt="Admin User Profile" class="w-full h-full object-cover" data-alt="close-up portrait of a digital artist in a dim room illuminated by cyan and violet computer screens" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDwu3z49U6epGY8EdX5g7osWs-c4xvEvkA3QvbLIsN4LYso9fb74p58rAUSDXRPHU2yXby1bxwj4aEdY_n5y4-Fck42pwbA99cgga8bKhYGN9FFMqc4Uy_p17EZZcI7-lrvOEebUdEkWY0DuEM0U6DzDf5B5smfSu0HuVsumz1G6ZywtUJJ_R-LYh5pOw7du26v5mhSBOHdxGRUEFFw4fXBpmHPWAQZDnC-zwf7Sfh3xUphBThENB-PokIEvSJrA5TAanqRjOLqQw0"/>
+</div>
+</div>
+</div>
+</header>
+<div class="flex flex-1 overflow-hidden">
+<!-- SideNavBar -->
+<nav class="bg-[#0b0e14] h-screen w-72 fixed left-0 top-0 overflow-y-auto bg-surface-container-low flat no shadows flex flex-col gap-6 p-6 pt-24 z-40">
+<div class="mb-2">
+<div class="flex items-center gap-3 p-3 bg-surface-container rounded-lg">
+<div class="w-10 h-10 bg-secondary-container rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-primary" data-weight="fill" style="font-variation-settings: 'FILL' 1;">bolt</span>
+</div>
+<div>
+<div class="text-on-surface font-headline font-bold text-sm">Neon Server</div>
+<div class="text-secondary text-[10px] uppercase tracking-widest font-bold">Elite Tier</div>
+</div>
+</div>
+</div>
+<div class="flex flex-col gap-1">
+<label class="font-['Plus_Jakarta_Sans'] text-[10px] uppercase tracking-widest text-slate-500 px-3 mb-2">Management</label>
+<!-- Overview (Active) -->
+<a class="flex items-center gap-3 px-4 py-3 bg-gradient-to-r from-[#81ecff]/10 to-transparent text-[#81ecff] font-bold border-r-4 border-[#81ecff] rounded-l-lg hover:bg-white/5 transition-all duration-200 active:translate-x-1" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-['Plus_Jakarta_Sans'] text-sm uppercase tracking-widest">Overview</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-slate-200 hover:bg-white/5 transition-all duration-200 active:translate-x-1" href="#">
+<span class="material-symbols-outlined" data-icon="shield_person">shield_person</span>
+<span class="font-['Plus_Jakarta_Sans'] text-sm uppercase tracking-widest">Roles</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-slate-200 hover:bg-white/5 transition-all duration-200 active:translate-x-1" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="font-['Plus_Jakarta_Sans'] text-sm uppercase tracking-widest">Members</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-slate-200 hover:bg-white/5 transition-all duration-200 active:translate-x-1" href="#">
+<span class="material-symbols-outlined" data-icon="block">block</span>
+<span class="font-['Plus_Jakarta_Sans'] text-sm uppercase tracking-widest">Bans</span>
+</a>
+</div>
+<div class="mt-auto flex flex-col gap-1">
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-slate-200 hover:bg-white/5 transition-all duration-200 active:translate-x-1" href="#">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+<span class="font-['Plus_Jakarta_Sans'] text-sm uppercase tracking-widest">Support</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-slate-200 hover:bg-white/5 transition-all duration-200 active:translate-x-1" href="#">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+<span class="font-['Plus_Jakarta_Sans'] text-sm uppercase tracking-widest">Logs</span>
+</a>
+<button class="flex items-center gap-3 px-4 py-4 mt-4 text-error font-bold rounded-lg hover:bg-error/10 transition-all duration-200 active:scale-95 border border-error/20">
+<span class="material-symbols-outlined" data-icon="delete">delete</span>
+<span class="font-['Plus_Jakarta_Sans'] text-sm uppercase tracking-widest">Delete Server</span>
+</button>
+</div>
+</nav>
+<!-- Main Content (Right Panel) -->
+<main class="flex-1 ml-72 pt-20 custom-scrollbar overflow-y-auto bg-surface-container-highest min-h-screen">
+<div class="max-w-4xl mx-auto px-12 py-12">
+<!-- Header Section -->
+<div class="mb-12">
+<h1 class="font-display text-4xl font-extrabold tracking-tight text-on-surface mb-2">Server Overview</h1>
+<p class="font-body text-on-surface-variant text-lg">Customize your server's identity and settings.</p>
+</div>
+<!-- Bento Grid Style Settings -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-8">
+<!-- Server Icon Section -->
+<div class="md:col-span-4 flex flex-col items-center justify-center p-8 rounded-lg bg-surface-container-high relative overflow-hidden group">
+<div class="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent pointer-events-none"></div>
+<h3 class="font-label text-[10px] uppercase tracking-[0.2em] text-slate-500 mb-6 self-start">Server Icon</h3>
+<div class="relative w-32 h-32 rounded-full border-2 border-dashed border-primary/40 flex items-center justify-center hover:border-primary transition-colors cursor-pointer group-hover:scale-105 duration-300">
+<div class="w-28 h-28 rounded-full overflow-hidden bg-surface-container-highest flex items-center justify-center border-4 border-surface-container-high shadow-[0_0_20px_rgba(129,236,255,0.15)]">
+<span class="material-symbols-outlined text-primary text-4xl">add_a_photo</span>
+</div>
+</div>
+<p class="mt-4 text-[10px] text-slate-500 text-center font-medium">MIN 512x512 PX</p>
+</div>
+<!-- Server Details Form -->
+<div class="md:col-span-8 p-8 rounded-lg bg-surface-container-high">
+<h3 class="font-label text-[10px] uppercase tracking-[0.2em] text-slate-500 mb-6">Server Details</h3>
+<div class="space-y-6">
+<div>
+<label class="block font-label text-[10px] uppercase tracking-widest text-primary mb-3 font-bold">Server Name</label>
+<input class="w-full bg-surface-container-low border-none rounded-md px-4 py-4 text-on-surface font-headline font-semibold text-lg focus:ring-1 focus:ring-primary shadow-inner transition-all" type="text" value="Neon Pulse Community"/>
+</div>
+<div class="pt-4">
+<button class="w-full md:w-auto px-8 py-3 bg-gradient-to-r from-primary to-primary-container text-on-primary rounded-xl font-headline font-bold hover:brightness-110 active:scale-95 transition-all shadow-[0_8px_24px_rgba(0,227,253,0.3)]">
+                                    Save Changes
+                                </button>
+</div>
+</div>
+</div>
+<!-- Notification Settings -->
+<div class="md:col-span-12 p-8 rounded-lg bg-surface-container-high">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
+<div>
+<h3 class="font-headline text-xl font-bold text-on-surface">Default Notification Settings</h3>
+<p class="text-on-surface-variant text-sm mt-1">Configure how members receive updates by default.</p>
+</div>
+<span class="material-symbols-outlined text-secondary text-3xl" data-weight="fill">notifications_active</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+<!-- Radio Option 1 -->
+<label class="relative flex flex-col p-6 rounded-lg bg-surface-container-low cursor-pointer border-2 border-transparent hover:bg-surface-bright hover:border-primary/20 transition-all group">
+<input checked="" class="absolute top-4 right-4 w-5 h-5 border-2 border-outline-variant bg-transparent text-primary focus:ring-offset-0 focus:ring-primary/40 checked:bg-primary" name="notifications" type="radio"/>
+<span class="material-symbols-outlined text-on-surface mb-3 text-2xl group-hover:text-primary transition-colors">chat</span>
+<span class="font-headline font-bold text-on-surface text-base">All Messages</span>
+<span class="text-slate-500 text-xs mt-1">Every single interaction pinged.</span>
+</label>
+<!-- Radio Option 2 -->
+<label class="relative flex flex-col p-6 rounded-lg bg-surface-container-low cursor-pointer border-2 border-transparent hover:bg-surface-bright hover:border-primary/20 transition-all group">
+<input class="absolute top-4 right-4 w-5 h-5 border-2 border-outline-variant bg-transparent text-primary focus:ring-offset-0 focus:ring-primary/40 checked:bg-primary" name="notifications" type="radio"/>
+<span class="material-symbols-outlined text-on-surface mb-3 text-2xl group-hover:text-primary transition-colors">alternate_email</span>
+<span class="font-headline font-bold text-on-surface text-base">@mentions only</span>
+<span class="text-slate-500 text-xs mt-1">Stay focused on direct pings.</span>
+</label>
+<!-- Radio Option 3 -->
+<label class="relative flex flex-col p-6 rounded-lg bg-surface-container-low cursor-pointer border-2 border-transparent hover:bg-surface-bright hover:border-primary/20 transition-all group">
+<input class="absolute top-4 right-4 w-5 h-5 border-2 border-outline-variant bg-transparent text-primary focus:ring-offset-0 focus:ring-primary/40 checked:bg-primary" name="notifications" type="radio"/>
+<span class="material-symbols-outlined text-on-surface mb-3 text-2xl group-hover:text-primary transition-colors">notifications_off</span>
+<span class="font-headline font-bold text-on-surface text-base">Nothing</span>
+<span class="text-slate-500 text-xs mt-1">Total silence until checked.</span>
+</label>
+</div>
+</div>
+<!-- Additional Context/Info -->
+<div class="md:col-span-12 p-8 rounded-lg bg-surface-container-high border-t border-white/5">
+<div class="flex items-start gap-4">
+<div class="p-3 bg-tertiary-container/20 rounded-lg">
+<span class="material-symbols-outlined text-tertiary">info</span>
+</div>
+<div>
+<h4 class="font-headline font-bold text-on-surface text-sm uppercase tracking-wide">Admin Pro Tip</h4>
+<p class="text-on-surface-variant text-sm mt-1 max-w-2xl leading-relaxed">
+                                    Your server icon is the first thing new members see. Ensure it contrasts well with both light and dark themes for maximum visibility across all user clients. 
+                                </p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

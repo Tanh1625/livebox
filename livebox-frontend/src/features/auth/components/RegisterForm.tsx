@@ -12,7 +12,7 @@ export const RegisterForm: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
-  
+
   const setToken = useAuthStore(state => state.setToken);
   const navigate = useNavigate();
 
@@ -20,12 +20,12 @@ export const RegisterForm: React.FC = () => {
     try {
       setIsLoading(true);
       setServerError(null);
-      
+
       const response = await authApi.register(data);
-      
+
       if (response && response.accessToken) {
         setToken(response.accessToken);
-        navigate('/');
+        navigate('/servers/empty');
       }
     } catch (error: any) {
       console.error('Registration failed:', error);
@@ -62,7 +62,7 @@ export const RegisterForm: React.FC = () => {
             placeholder="Username"
             type="text"
             icon="person"
-            {...register('username', { 
+            {...register('username', {
               required: 'Username is required',
               minLength: {
                 value: 3,
@@ -80,7 +80,7 @@ export const RegisterForm: React.FC = () => {
             placeholder="Email"
             type="email"
             icon="mail"
-            {...register('email', { 
+            {...register('email', {
               required: 'Email is required',
               pattern: {
                 value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
@@ -96,7 +96,7 @@ export const RegisterForm: React.FC = () => {
             icon="lock"
             actionIcon={showPassword ? "visibility_off" : "visibility"}
             onActionClick={() => setShowPassword(!showPassword)}
-            {...register('password', { 
+            {...register('password', {
               required: 'Password is required',
               minLength: {
                 value: 6,
@@ -117,11 +117,11 @@ export const RegisterForm: React.FC = () => {
 
       {/* Bottom Separator */}
       <div className="h-px w-full bg-surface-container-highest"></div>
-      
+
       {/* Login Link */}
       <div className="text-center">
         <p className="text-on-surface-variant text-sm font-body">
-          Already have an account? 
+          Already have an account?
           <Link to="/login" className="text-secondary font-semibold hover:underline ml-1">Login</Link>
         </p>
       </div>

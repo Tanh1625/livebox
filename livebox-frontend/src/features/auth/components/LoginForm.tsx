@@ -25,7 +25,7 @@ export const LoginForm: React.FC = () => {
       
       if (response && response.accessToken) {
         setToken(response.accessToken);
-        navigate('/');
+        navigate('/servers/empty');
       }
     } catch (error: any) {
       console.error('Login failed:', error);

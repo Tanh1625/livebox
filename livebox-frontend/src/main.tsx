@@ -4,6 +4,8 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import './index.css'
 import { LoginPage } from './pages/auth/LoginPage'
 import { RegisterPage } from './pages/auth/RegisterPage'
+import { ServerEmptyPage } from './pages/server/ServerEmptyPage'
+import { CreateServerPage } from './pages/server/CreateServerPage'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -12,6 +14,8 @@ createRoot(document.getElementById('root')!).render(
         <Route path="/" element={<LoginPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/servers/empty" element={<ServerEmptyPage />} />
+        <Route path="/servers/create" element={<CreateServerPage />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>,

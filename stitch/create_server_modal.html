@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>LiveBox - Create Server</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glow-cyan {
+            box-shadow: 0 0 20px rgba(129, 236, 255, 0.4);
+        }
+        .glow-ambient {
+            box-shadow: 0 16px 64px rgba(129, 236, 255, 0.08), 0 32px 128px rgba(166, 140, 255, 0.05);
+        }
+    </style>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container-low": "#10131a",
+                    "error-container": "#9f0519",
+                    "on-primary-fixed-variant": "#005762",
+                    "tertiary-dim": "#5c9ffc",
+                    "tertiary-container": "#599cf9",
+                    "on-primary-container": "#004d57",
+                    "primary-fixed": "#00e3fd",
+                    "secondary-dim": "#7e51ff",
+                    "on-secondary-fixed-variant": "#591bdc",
+                    "on-error-container": "#ffa8a3",
+                    "surface": "#0b0e14",
+                    "on-tertiary-container": "#001d3f",
+                    "surface-dim": "#0b0e14",
+                    "on-error": "#490006",
+                    "inverse-primary": "#006976",
+                    "inverse-surface": "#f9f9ff",
+                    "surface-container-high": "#1c2028",
+                    "outline-variant": "#45484f",
+                    "secondary-container": "#591adc",
+                    "error": "#ff716c",
+                    "on-primary-fixed": "#003840",
+                    "on-tertiary-fixed-variant": "#003971",
+                    "secondary-fixed": "#d8caff",
+                    "primary-dim": "#00d4ec",
+                    "on-surface-variant": "#a9abb3",
+                    "secondary": "#a68cff",
+                    "tertiary": "#70aaff",
+                    "secondary-fixed-dim": "#cabaff",
+                    "primary-container": "#00e3fd",
+                    "surface-tint": "#81ecff",
+                    "on-secondary-container": "#e4daff",
+                    "on-secondary-fixed": "#3b00a0",
+                    "error-dim": "#d7383b",
+                    "tertiary-fixed-dim": "#65a4ff",
+                    "on-surface": "#ecedf6",
+                    "on-secondary": "#25006b",
+                    "surface-bright": "#282c36",
+                    "inverse-on-surface": "#52555c",
+                    "background": "#0b0e14",
+                    "surface-container-lowest": "#000000",
+                    "primary-fixed-dim": "#00d4ec",
+                    "on-primary": "#005762",
+                    "on-background": "#ecedf6",
+                    "primary": "#81ecff",
+                    "surface-container": "#161a21",
+                    "surface-container-highest": "#22262f",
+                    "outline": "#73757d",
+                    "on-tertiary-fixed": "#001835",
+                    "on-tertiary": "#002a55",
+                    "tertiary-fixed": "#80b2ff",
+                    "surface-variant": "#22262f"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Plus Jakarta Sans"],
+                    "display": ["Plus Jakarta Sans"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+</head>
+<body class="bg-background text-on-surface font-body overflow-hidden">
+<!-- Main Background Interface (Simulated Dashboard) -->
+<div class="fixed inset-0 z-0 flex overflow-hidden">
+<!-- Predicted SideNavBar -->
+<nav class="fixed left-0 top-0 h-screen z-40 h-full w-20 flex flex-col items-center py-8 bg-[#0b0e14] border-r border-white/5 shadow-none">
+<div class="mb-8 flex flex-col items-center">
+<div class="w-12 h-12 rounded-full bg-gradient-to-tr from-primary to-secondary flex items-center justify-center glow-cyan mb-2">
+<span class="material-symbols-outlined text-surface" data-icon="bolt" style="font-variation-settings: 'FILL' 1;">bolt</span>
+</div>
+</div>
+<div class="flex flex-col gap-6 items-center">
+<button class="text-slate-500 hover:text-[#a68cff] p-3 transition-all hover:bg-white/5 rounded-full">
+<span class="material-symbols-outlined" data-icon="explore">explore</span>
+</button>
+<button class="bg-gradient-to-tr from-[#81ecff] to-[#a68cff] text-[#0b0e14] rounded-full p-3 shadow-[0_0_20px_rgba(129,236,255,0.4)]">
+<span class="material-symbols-outlined" data-icon="dns">dns</span>
+</button>
+<button class="text-slate-500 hover:text-[#a68cff] p-3 transition-all hover:bg-white/5 rounded-full">
+<span class="material-symbols-outlined" data-icon="chat_bubble">chat_bubble</span>
+</button>
+<button class="text-slate-500 hover:text-[#a68cff] p-3 transition-all hover:bg-white/5 rounded-full">
+<span class="material-symbols-outlined" data-icon="account_balance_wallet">account_balance_wallet</span>
+</button>
+</div>
+</nav>
+<!-- Main Content Area (Background) -->
+<main class="flex-1 ml-20 bg-surface min-h-screen p-8">
+<div class="max-w-6xl mx-auto opacity-20">
+<header class="flex justify-between items-center mb-12">
+<h1 class="text-4xl font-headline font-black tracking-tighter text-primary italic">LiveBox</h1>
+</header>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="h-64 rounded-lg bg-surface-container-high"></div>
+<div class="h-64 rounded-lg bg-surface-container-high"></div>
+<div class="h-64 rounded-lg bg-surface-container-high"></div>
+</div>
+</div>
+</main>
+</div>
+<!-- Modal Overlay -->
+<div class="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-[#000000]/90 backdrop-blur-sm">
+<!-- Modal Card -->
+<div class="relative w-full max-w-[480px] bg-surface-container-low/60 backdrop-blur-2xl rounded-lg glow-ambient overflow-hidden">
+<!-- Modal Header -->
+<div class="flex items-center justify-between px-8 pt-8 pb-4">
+<h2 class="text-2xl font-headline font-bold text-on-surface tracking-tight">Create a Server</h2>
+<button class="text-on-surface-variant hover:text-on-surface transition-colors p-2 scale-95 active:scale-90 duration-200">
+<span class="material-symbols-outlined" data-icon="close">close</span>
+</button>
+</div>
+<!-- Modal Body -->
+<div class="px-8 py-6 space-y-10">
+<!-- Image Upload Section -->
+<div class="flex flex-col items-center">
+<div class="group relative w-24 h-24 flex flex-col items-center justify-center rounded-full bg-surface-container-highest cursor-pointer transition-all hover:bg-surface-bright border-2 border-dashed border-outline-variant hover:border-primary">
+<span class="material-symbols-outlined text-primary mb-1 text-3xl" data-icon="add_a_photo">add_a_photo</span>
+<span class="font-label text-[10px] font-bold tracking-widest text-on-surface-variant uppercase">UPLOAD</span>
+</div>
+<p class="mt-4 text-xs font-label text-on-surface-variant text-center px-8">
+                        Add an icon to give your server personality. Max 5MB.
+                    </p>
+</div>
+<!-- Server Name Input -->
+<div class="space-y-2">
+<label class="block font-label text-xs font-bold tracking-[0.15em] text-on-surface-variant uppercase ml-1">
+                        SERVER NAME
+                    </label>
+<div class="relative group">
+<input class="w-full h-14 bg-surface-container-high border-none rounded-md px-4 text-on-surface placeholder:text-outline focus:ring-1 focus:ring-primary/40 focus:bg-surface-bright transition-all duration-300" placeholder="Enter your server's name" type="text"/>
+</div>
+<p class="text-[11px] text-outline ml-1">
+                        By creating a server, you agree to the <span class="text-secondary cursor-pointer hover:underline">Community Guidelines</span>.
+                    </p>
+</div>
+</div>
+<!-- Modal Footer -->
+<div class="px-8 pb-10 pt-4 flex items-center justify-between gap-4">
+<button class="px-6 py-3 font-label text-sm font-semibold text-on-surface-variant hover:text-on-surface transition-colors duration-200 active:scale-95">
+                    Back
+                </button>
+<button class="flex-1 bg-gradient-to-r from-primary to-primary-dim text-on-primary font-headline font-bold py-3.5 px-8 rounded-full glow-cyan transition-all duration-300 hover:scale-[1.02] active:scale-95 tracking-wide">
+                    Create Server
+                </button>
+</div>
+<!-- Decorative Glow Elements (Inside Card) -->
+<div class="absolute -top-24 -right-24 w-48 h-48 bg-secondary/10 blur-[80px] rounded-full pointer-events-none"></div>
+<div class="absolute -bottom-24 -left-24 w-48 h-48 bg-primary/10 blur-[80px] rounded-full pointer-events-none"></div>
+</div>
+</div>
+<!-- Background Decorative Elements -->
+<div class="fixed top-0 right-0 w-[500px] h-[500px] bg-primary/5 blur-[120px] rounded-full -z-10"></div>
+<div class="fixed bottom-0 left-0 w-[600px] h-[600px] bg-secondary/5 blur-[150px] rounded-full -z-10"></div>
+</body></html>
