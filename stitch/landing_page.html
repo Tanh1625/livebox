@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>LiveBox | The Electric Noir Experience</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&amp;family=Inter:wght@300;400;500;600&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-lowest": "#000000",
+                        "tertiary-fixed-dim": "#65a4ff",
+                        "on-secondary-container": "#e4daff",
+                        "tertiary": "#70aaff",
+                        "inverse-primary": "#006976",
+                        "on-primary-container": "#004d57",
+                        "on-primary": "#005762",
+                        "on-error-container": "#ffa8a3",
+                        "surface-variant": "#22262f",
+                        "tertiary-dim": "#5c9ffc",
+                        "on-surface-variant": "#a9abb3",
+                        "outline-variant": "#45484f",
+                        "tertiary-fixed": "#80b2ff",
+                        "on-tertiary-container": "#001d3f",
+                        "surface-container": "#161a21",
+                        "secondary-fixed-dim": "#cabaff",
+                        "error": "#ff716c",
+                        "on-tertiary-fixed": "#001835",
+                        "on-primary-fixed": "#003840",
+                        "on-primary-fixed-variant": "#005762",
+                        "primary": "#81ecff",
+                        "on-tertiary-fixed-variant": "#003971",
+                        "on-secondary-fixed-variant": "#591bdc",
+                        "inverse-surface": "#f9f9ff",
+                        "on-surface": "#ecedf6",
+                        "on-error": "#490006",
+                        "error-dim": "#d7383b",
+                        "on-background": "#ecedf6",
+                        "inverse-on-surface": "#52555c",
+                        "background": "#0b0e14",
+                        "surface-container-high": "#1c2028",
+                        "on-tertiary": "#002a55",
+                        "secondary": "#a68cff",
+                        "secondary-fixed": "#d8caff",
+                        "secondary-container": "#591adc",
+                        "primary-fixed-dim": "#00d4ec",
+                        "tertiary-container": "#599cf9",
+                        "surface-dim": "#0b0e14",
+                        "secondary-dim": "#7e51ff",
+                        "primary-container": "#00e3fd",
+                        "surface": "#0b0e14",
+                        "surface-tint": "#81ecff",
+                        "primary-dim": "#00d4ec",
+                        "error-container": "#9f0519",
+                        "surface-container-highest": "#22262f",
+                        "on-secondary-fixed": "#3b00a0",
+                        "surface-bright": "#282c36",
+                        "surface-container-low": "#10131a",
+                        "outline": "#73757d",
+                        "primary-fixed": "#00e3fd",
+                        "on-secondary": "#25006b"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "display": ["Plus Jakarta Sans"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #0b0e14;
+            color: #ecedf6;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-panel {
+            background: rgba(40, 44, 54, 0.4);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+        }
+        .neon-glow-primary {
+            box-shadow: 0 0 40px rgba(129, 236, 255, 0.15);
+        }
+        .text-glow {
+            text-shadow: 0 0 15px rgba(129, 236, 255, 0.4);
+        }
+    </style>
+</head>
+<body class="antialiased">
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full z-50 bg-[#0b0e14]/70 backdrop-blur-3xl transition-all duration-300">
+<div class="flex justify-between items-center px-8 py-4 max-w-7xl mx-auto w-full">
+<div class="text-2xl font-black text-[#81ecff] tracking-tighter font-['Plus_Jakarta_Sans']">
+                LiveBox
+            </div>
+<div class="hidden md:flex items-center gap-10">
+<a class="font-['Plus_Jakarta_Sans'] tracking-tight text-[#81ecff] border-b-2 border-[#81ecff] pb-1 transition-colors" href="#">Solutions</a>
+<a class="font-['Plus_Jakarta_Sans'] tracking-tight text-slate-400 hover:text-[#81ecff] transition-colors" href="#">Features</a>
+<a class="font-['Plus_Jakarta_Sans'] tracking-tight text-slate-400 hover:text-[#81ecff] transition-colors" href="#">Pricing</a>
+</div>
+<div class="flex items-center gap-6">
+<button class="text-slate-400 hover:text-[#81ecff] transition-all font-medium font-['Plus_Jakarta_Sans'] active:scale-95">Login</button>
+<button class="bg-gradient-to-br from-primary to-primary-container text-on-primary-container px-6 py-2.5 rounded-xl font-bold font-['Plus_Jakarta_Sans'] hover:opacity-80 transition-all active:scale-95 shadow-[0_10px_30px_rgba(129,236,255,0.2)]">
+                    Get Started
+                </button>
+</div>
+</div>
+</nav>
+<main class="relative pt-32 pb-24 overflow-hidden">
+<!-- Ambient Background Glows -->
+<div class="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-primary/10 blur-[120px] rounded-full pointer-events-none"></div>
+<div class="absolute bottom-[20%] right-[-10%] w-[40%] h-[40%] bg-secondary/10 blur-[120px] rounded-full pointer-events-none"></div>
+<!-- Hero Section -->
+<section class="max-w-7xl mx-auto px-8 relative z-10">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
+<!-- Asymmetric Typography Cluster -->
+<div class="lg:col-span-7 flex flex-col items-start">
+<div class="mb-4 flex items-center gap-2 px-4 py-1 rounded-full bg-surface-container-high border-none">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+<span class="text-xs font-bold tracking-widest text-primary uppercase font-label">V2.0 IGNITION SEQUENCE ACTIVE</span>
+</div>
+<h1 class="font-display font-extrabold text-6xl md:text-8xl text-on-surface leading-[1.05] tracking-tight mb-8">
+                        Imagine a <span class="text-glow text-primary">place</span> where you can talk and hang out.
+                    </h1>
+<p class="font-body text-xl text-on-surface-variant leading-relaxed mb-10 max-w-2xl">
+                        LiveBox is the easiest way to talk over voice, video, and text. Whether you’re part of a school club, a gaming group, or a worldwide art community, where just you and a handful of friends can spend time together.
+                    </p>
+<div class="flex flex-col sm:flex-row gap-6 w-full sm:w-auto">
+<button class="bg-gradient-to-r from-primary to-primary-container text-on-primary-container px-10 py-5 rounded-xl text-lg font-bold font-display hover:opacity-90 transition-all duration-300 active:scale-95 shadow-[0_20px_50px_rgba(129,236,255,0.25)] flex items-center justify-center gap-3">
+                            Get Started for Free
+                            <span class="material-symbols-outlined">rocket_launch</span>
+</button>
+<button class="bg-surface-container-highest text-on-surface px-10 py-5 rounded-xl text-lg font-bold font-display hover:bg-surface-bright transition-all duration-300 active:scale-95 flex items-center justify-center gap-3">
+                            Download for Desktop
+                            <span class="material-symbols-outlined">download</span>
+</button>
+</div>
+</div>
+<!-- Glassmorphic Preview Component -->
+<div class="lg:col-span-5 relative group">
+<div class="absolute -inset-1 bg-gradient-to-r from-primary via-secondary to-tertiary rounded-lg blur opacity-20 group-hover:opacity-40 transition duration-1000"></div>
+<div class="relative glass-panel rounded-lg overflow-hidden p-3 neon-glow-primary transform rotate-2 hover:rotate-0 transition-transform duration-700">
+<img alt="LiveBox Interface Preview" class="w-full h-auto rounded-md" data-alt="Modern dark mode communication application interface with vibrant neon accents and transparent glassmorphic panels for chat and voice channels" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCQLC-BKqRJwv7BoS5cdpEtHKd9Qdw2YQ2hSb5X3jQSOLfrtqAdGgfbnCyfGr1Egpqe4YPXP8OGL2gEQDxFU-Si3tsWqnV70dS07wXyLSil433mOfAxNOfZ44QhSKgGgP44V1GfoNlEwDxztajdUlWnlqdTDOX9KZ7Z_D1On8p3zn_1nPokiaDIf6jQ-AgV5uBfh_HRuyM2JhbWSmwDIrQzmV5c6-FGZEzBJWlB49c8urcgA2t1BJ-TrctFe4KF-PPedgsmmnNMRYw"/>
+</div>
+<!-- Floating Stats Chip -->
+<div class="absolute -bottom-6 -left-6 glass-panel p-6 rounded-lg flex items-center gap-4 animate-bounce hover:animate-none">
+<div class="w-12 h-12 rounded-full bg-secondary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary">groups</span>
+</div>
+<div>
+<div class="text-on-surface font-bold text-lg">24.5k+</div>
+<div class="text-on-surface-variant text-xs font-medium uppercase tracking-wider">Active Clubs</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Bento Grid Features Section -->
+<section class="max-w-7xl mx-auto px-8 mt-48">
+<div class="text-center mb-20">
+<h2 class="font-display font-bold text-4xl text-on-surface mb-4">Master Your Space</h2>
+<div class="w-24 h-1 bg-primary mx-auto rounded-full"></div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-4 grid-rows-2 gap-6 h-auto md:h-[600px]">
+<div class="md:col-span-2 md:row-span-2 surface-container-high rounded-lg p-8 flex flex-col justify-end relative overflow-hidden group">
+<img alt="Gaming Setup" class="absolute inset-0 w-full h-full object-cover opacity-30 group-hover:scale-110 transition-transform duration-700" data-alt="Hyper-modern gaming setup with neon blue and purple LED lighting reflecting on sleek surfaces in a dark room" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAbEHqFF9-RvyMWG0AukJa4ouzToppRn9OPyMK_fnyJe7skKcD_lb0d8QN4EtvPG35rmnYzf_xzZrIegTQXsx__A3k40subvrDr5m0FVVY8Fv7vx3gCRrwwGGuvE39wc48lQTiOReDe5wDtN4pmKAf_X4XooysGgs-LCg9-gVq8dsXBJSgXy2Y-aZ_udrsCWnn4hxd9LSiGLXY7Ww4AKwB2G7_Q_BtV1KBzl_U7n4CzVNcFCaKV43MPEgex-2BAa1URlbTuLBPqvlY"/>
+<div class="relative z-10">
+<h3 class="text-3xl font-bold text-on-surface mb-4">Low-Latency Voice</h3>
+<p class="text-on-surface-variant max-w-sm">Feel like you're in the same room. Our high-fidelity audio engine ensures every whisper is heard in real-time.</p>
+</div>
+</div>
+<div class="md:col-span-2 surface-container rounded-lg p-8 flex items-center justify-between group overflow-hidden">
+<div class="z-10">
+<h3 class="text-2xl font-bold text-on-surface mb-2">Crystal Clear Video</h3>
+<p class="text-on-surface-variant">4K streaming for your community.</p>
+</div>
+<div class="w-32 h-32 glass-panel rounded-full flex items-center justify-center transform group-hover:rotate-12 transition-all">
+<span class="material-symbols-outlined text-primary text-5xl" style="font-variation-settings: 'FILL' 1;">videocam</span>
+</div>
+</div>
+<div class="surface-container-highest rounded-lg p-8 group">
+<span class="material-symbols-outlined text-secondary text-4xl mb-4">auto_awesome</span>
+<h3 class="text-xl font-bold text-on-surface mb-2">Smart Themes</h3>
+<p class="text-on-surface-variant text-sm">Personalize your space with AI-driven neon themes.</p>
+</div>
+<div class="surface-container-low rounded-lg p-8 group border border-outline-variant/10">
+<span class="material-symbols-outlined text-tertiary text-4xl mb-4">shield_with_heart</span>
+<h3 class="text-xl font-bold text-on-surface mb-2">Safe Haven</h3>
+<p class="text-on-surface-variant text-sm">Advanced moderation tools to keep your community pure.</p>
+</div>
+</div>
+</section>
+<!-- CTA Ignition Sequence -->
+<section class="max-w-5xl mx-auto px-8 mt-48 mb-12">
+<div class="relative bg-surface-container-high rounded-lg p-12 md:p-20 overflow-hidden text-center">
+<!-- Progress Pillar Onboarding Visualizer -->
+<div class="absolute top-0 left-0 w-full h-1.5 flex gap-1">
+<div class="flex-1 bg-primary"></div>
+<div class="flex-1 bg-primary opacity-40"></div>
+<div class="flex-1 bg-primary opacity-20"></div>
+<div class="flex-1 bg-primary opacity-10"></div>
+</div>
+<div class="relative z-10">
+<h2 class="font-display font-extrabold text-4xl md:text-5xl text-on-surface mb-6">Ready to ignite your community?</h2>
+<p class="text-on-surface-variant text-lg mb-10 max-w-xl mx-auto">Join over 12 million explorers today. Set up your first channel in less than 30 seconds.</p>
+<button class="bg-primary text-on-primary-container px-12 py-5 rounded-full font-black font-display text-xl uppercase tracking-tighter hover:scale-105 transition-all shadow-[0_0_30px_rgba(129,236,255,0.4)]">
+                        Launch LiveBox Now
+                    </button>
+</div>
+<!-- Abstract Decorative Shapes -->
+<div class="absolute top-1/2 left-0 -translate-y-1/2 w-32 h-32 bg-secondary/20 blur-3xl rounded-full"></div>
+<div class="absolute bottom-0 right-0 w-64 h-64 bg-primary/5 blur-[80px] rounded-full translate-x-1/2 translate-y-1/2"></div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="w-full py-12 bg-[#0b0e14]">
+<div class="flex flex-col md:flex-row justify-between items-center px-12 border-t border-[#81ecff]/10 pt-12 max-w-7xl mx-auto w-full">
+<div class="flex flex-col items-center md:items-start mb-8 md:mb-0">
+<div class="text-lg font-bold text-[#81ecff] mb-2 font-['Plus_Jakarta_Sans'] uppercase tracking-widest">LiveBox</div>
+<p class="font-['Inter'] text-sm tracking-wide uppercase text-slate-500">© 2024 LiveBox. The Electric Noir Experience.</p>
+</div>
+<div class="flex gap-12">
+<a class="font-['Inter'] text-sm tracking-wide uppercase text-slate-500 hover:text-[#81ecff] transition-colors cursor-pointer" href="#">Privacy</a>
+<a class="font-['Inter'] text-sm tracking-wide uppercase text-slate-500 hover:text-[#81ecff] transition-colors cursor-pointer" href="#">Terms</a>
+<a class="font-['Inter'] text-sm tracking-wide uppercase text-slate-500 hover:text-[#81ecff] transition-colors cursor-pointer" href="#">Security</a>
+<a class="font-['Inter'] text-sm tracking-wide uppercase text-slate-500 hover:text-[#81ecff] transition-colors cursor-pointer" href="#">Twitter</a>
+</div>
+</div>
+</footer>
+</body></html>

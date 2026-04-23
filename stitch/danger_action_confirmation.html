@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-tertiary-fixed-variant": "#003971",
+                    "surface-container-highest": "#22262f",
+                    "secondary-fixed-dim": "#cabaff",
+                    "on-tertiary-fixed": "#001835",
+                    "primary": "#81ecff",
+                    "on-secondary": "#25006b",
+                    "surface": "#0b0e14",
+                    "surface-container-high": "#1c2028",
+                    "surface-container-lowest": "#000000",
+                    "error-container": "#9f0519",
+                    "surface-variant": "#22262f",
+                    "surface-dim": "#0b0e14",
+                    "outline-variant": "#45484f",
+                    "inverse-on-surface": "#52555c",
+                    "inverse-surface": "#f9f9ff",
+                    "primary-fixed-dim": "#00d4ec",
+                    "on-primary-container": "#004d57",
+                    "inverse-primary": "#006976",
+                    "surface-tint": "#81ecff",
+                    "surface-container": "#161a21",
+                    "surface-bright": "#282c36",
+                    "on-tertiary": "#002a55",
+                    "tertiary-fixed": "#80b2ff",
+                    "secondary": "#a68cff",
+                    "on-surface": "#ecedf6",
+                    "secondary-container": "#591adc",
+                    "on-error-container": "#ffa8a3",
+                    "primary-dim": "#00d4ec",
+                    "tertiary": "#70aaff",
+                    "on-primary": "#005762",
+                    "error-dim": "#d7383b",
+                    "tertiary-fixed-dim": "#65a4ff",
+                    "on-error": "#490006",
+                    "primary-container": "#00e3fd",
+                    "on-secondary-fixed": "#3b00a0",
+                    "on-secondary-fixed-variant": "#591bdc",
+                    "tertiary-dim": "#5c9ffc",
+                    "surface-container-low": "#10131a",
+                    "outline": "#73757d",
+                    "on-tertiary-container": "#001d3f",
+                    "secondary-dim": "#7e51ff",
+                    "error": "#ff716c",
+                    "secondary-fixed": "#d8caff",
+                    "primary-fixed": "#00e3fd",
+                    "on-surface-variant": "#a9abb3",
+                    "on-background": "#ecedf6",
+                    "on-primary-fixed": "#003840",
+                    "on-secondary-container": "#e4daff",
+                    "background": "#0b0e14",
+                    "on-primary-fixed-variant": "#005762",
+                    "tertiary-container": "#599cf9"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Plus Jakarta Sans"],
+                    "display": ["Plus Jakarta Sans"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .drop-shadow-neon { filter: drop-shadow(0 0 8px rgba(129, 236, 255, 0.5)); }
+        .massive-soft-glow { box-shadow: 0 16px 64px rgba(236, 237, 246, 0.05); }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body selection:bg-primary/30">
+<!-- Main Navigation Layout Shell -->
+<div class="flex h-screen overflow-hidden">
+<!-- SideNavBar Shared Component -->
+<aside class="fixed left-0 top-0 h-full flex flex-col gap-y-4 items-center bg-[#0b0e14] h-screen w-20 py-6 z-40 border-r-0">
+<div class="w-12 h-12 bg-surface-container-highest rounded-2xl flex items-center justify-center mb-4 transition-all duration-300 hover:rounded-xl hover:bg-secondary cursor-pointer">
+<span class="material-symbols-outlined text-primary" data-icon="dns">dns</span>
+</div>
+<nav class="flex flex-col gap-y-4 items-center flex-1">
+<button class="bg-gradient-to-br from-[#81ecff] to-[#a68cff] rounded-full p-3 text-[#0b0e14] shadow-[0_0_15px_rgba(129,236,255,0.6)] scale-110 duration-200">
+<span class="material-symbols-outlined" data-icon="dns" style="font-variation-settings: 'FILL' 1;">dns</span>
+</button>
+<button class="bg-[#1c2128] rounded-full p-3 text-slate-500 hover:rounded-2xl hover:bg-[#a68cff] hover:text-white transition-all duration-500 ease-out">
+<span class="material-symbols-outlined" data-icon="chat_bubble">chat_bubble</span>
+</button>
+<button class="bg-[#1c2128] rounded-full p-3 text-slate-500 hover:rounded-2xl hover:bg-[#a68cff] hover:text-white transition-all duration-500 ease-out">
+<span class="material-symbols-outlined" data-icon="explore">explore</span>
+</button>
+<button class="bg-[#1c2128] rounded-full p-3 text-slate-500 hover:rounded-2xl hover:bg-[#a68cff] hover:text-white transition-all duration-500 ease-out">
+<span class="material-symbols-outlined" data-icon="database">database</span>
+</button>
+<button class="bg-[#1c2128] rounded-full p-3 text-slate-500 hover:rounded-2xl hover:bg-[#a68cff] hover:text-white transition-all duration-500 ease-out">
+<span class="material-symbols-outlined" data-icon="pulse">pulse_alert</span>
+</button>
+</nav>
+<div class="mt-auto flex flex-col gap-y-4">
+<button class="bg-surface-container-high p-3 rounded-full text-primary hover:bg-primary hover:text-on-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+</button>
+</div>
+</aside>
+<!-- Main Content Area (Visual Context) -->
+<main class="flex-1 ml-20 bg-surface flex flex-col relative">
+<!-- TopAppBar Shared Component -->
+<header class="bg-[#0b0e14]/80 backdrop-blur-xl flex justify-between items-center px-6 py-4 w-full docked full-width top-0 sticky z-50 bg-gradient-to-b from-[#0b0e14] to-transparent shadow-[0_8px_32px_rgba(0,0,0,0.5)]">
+<div class="flex items-center gap-x-4">
+<span class="text-2xl font-bold tracking-tighter text-[#81ecff] drop-shadow-[0_0_8px_rgba(129,236,255,0.5)] font-['Plus_Jakarta_Sans']">NEON_PULSE</span>
+<div class="hidden md:flex gap-x-6 ml-8">
+<span class="text-[#81ecff] drop-shadow-neon font-['Plus_Jakarta_Sans'] cursor-pointer">Servers</span>
+<span class="text-slate-400 hover:text-[#a68cff] transition-all duration-300 font-['Plus_Jakarta_Sans'] cursor-pointer">Activity</span>
+</div>
+</div>
+<div class="flex items-center gap-x-4">
+<div class="bg-surface-container-high rounded-full px-4 py-1.5 flex items-center gap-x-2">
+<span class="material-symbols-outlined text-on-surface-variant text-sm" data-icon="search">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm w-48 text-on-surface" placeholder="Search Node..." type="text"/>
+</div>
+<span class="material-symbols-outlined text-slate-400 hover:text-[#a68cff] transition-all duration-300 cursor-pointer" data-icon="notifications">notifications</span>
+<span class="material-symbols-outlined text-slate-400 hover:text-[#a68cff] transition-all duration-300 cursor-pointer" data-icon="settings">settings</span>
+<img alt="User profile" class="w-8 h-8 rounded-full border-2 border-primary/20" data-alt="Close-up portrait of a young man with neon lighting reflecting on his face, cinematic cyberpunk aesthetic" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAkOP1D6NDsN6Q1wqkRgpilSmzp-560-ZjyvjmUmG_qRA7hoOj8aCplRnzdIxAQWT6aEKUiZL3Cr_RkrKxXaJySCzQ6ziwBffqYg_mFsztYnAP4Iek5UH49nVeyCpCVWCzlBnR8srAcIieMZQ2eQEEP_zav56IVQTi1mN0cU5QpK80KovLweZ_Yh0eAH6jnyj_WOHUIaOWij10Y2At0jHVvyBbvBkzmJzImTyhVVsAgyatPh23mgPTZj21VqTsoo6atesNMD1xjivc"/>
+</div>
+</header>
+<!-- Background Content Grid -->
+<div class="p-8 grid grid-cols-12 gap-6 opacity-40">
+<div class="col-span-12 md:col-span-8 space-y-6">
+<div class="h-64 bg-surface-container-high rounded-lg p-6 flex flex-col justify-end relative overflow-hidden">
+<img alt="Hero" class="absolute inset-0 w-full h-full object-cover opacity-30" data-alt="Abstract digital network connections with glowing cyan and purple lines on a deep black background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCf8oBq339lYMboMdBG7Q5q7fD1Pjjdmy3x0vmqQCzpub6hCMzqPxzp4FiJMaFPRfhSAx81U5pHNZOQxrrKV8zl_N_TDcegxKFCAoQrGrdsZNZfRzxPf-UfLo7hccJ9kA9V3207cF_M2TqATE2hcvjp8277qocV4xehKsKTkFhg1w9gNj1qG6WvpL19Gq4UZfqdiJUoFcz8wMnusSaEqklkwiFb23yM0DibXXa61GXcsF92DnhOVY2i5JKi2eEFyn8NZgfccZkSo8U"/>
+<h1 class="text-4xl font-extrabold text-primary relative z-10 font-headline tracking-tighter">Welcome to Anh Đạt's Server</h1>
+<p class="text-on-surface-variant relative z-10 max-w-lg">The central hub for high-velocity collaboration and neural synthesis.</p>
+</div>
+<div class="grid grid-cols-3 gap-4">
+<div class="h-32 bg-surface-container rounded-lg"></div>
+<div class="h-32 bg-surface-container rounded-lg"></div>
+<div class="h-32 bg-surface-container rounded-lg"></div>
+</div>
+</div>
+<div class="col-span-12 md:col-span-4 bg-surface-container-low rounded-lg p-6">
+<div class="w-full h-full border border-dashed border-outline-variant/30 rounded-lg"></div>
+</div>
+</div>
+<!-- Deep Space Overlay for Modal -->
+<div class="fixed inset-0 bg-[#000000]/80 backdrop-blur-md z-[60] flex items-center justify-center">
+<!-- Center Modal (MODAL-CONFIRM-01) -->
+<div class="bg-surface-container-high w-full max-w-md rounded-lg massive-soft-glow overflow-hidden relative border border-outline-variant/10">
+<div class="p-8">
+<h2 class="text-2xl font-bold text-error font-headline tracking-tight mb-4">Leave Anh Đạt's Server?</h2>
+<p class="text-on-surface-variant leading-relaxed font-body">
+                            Are you sure you want to leave Anh Đạt's Server? You will need an invite to rejoin.
+                        </p>
+</div>
+<div class="bg-surface-container-highest px-8 py-6 flex items-center justify-end gap-x-4">
+<button class="px-6 py-2.5 text-on-surface-variant font-semibold hover:text-on-surface transition-colors font-body">
+                            Cancel
+                        </button>
+<button class="bg-error hover:bg-error-dim text-on-error px-8 py-2.5 rounded-xl font-bold transition-all active:scale-95 font-body shadow-[0_0_20px_rgba(255,113,108,0.3)]">
+                            Leave Server
+                        </button>
+</div>
+</div>
+<!-- Floating Context Menu (COMP-MENU-01) -->
+<!-- Positioned absolute relative to a mock click position near the center -->
+</div>
+<!-- Floating Action Button Contextual (Hidden as per rule) -->
+</main>
+</div>
+</body></html>

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>LiveBox | Profile Settings</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Plus+Jakarta+Sans:ital,wght@0,700;0,800;1,700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-primary-fixed-variant": "#005762",
+                    "on-secondary-container": "#e4daff",
+                    "background": "#0b0e14",
+                    "secondary-fixed": "#d8caff",
+                    "secondary-dim": "#7e51ff",
+                    "on-surface": "#ecedf6",
+                    "on-tertiary-container": "#001d3f",
+                    "error-container": "#9f0519",
+                    "surface-container-lowest": "#000000",
+                    "surface-container-low": "#10131a",
+                    "error": "#ff716c",
+                    "primary-fixed": "#00e3fd",
+                    "on-background": "#ecedf6",
+                    "on-primary-fixed": "#003840",
+                    "on-error-container": "#ffa8a3",
+                    "secondary-container": "#591adc",
+                    "on-primary-container": "#004d57",
+                    "primary": "#81ecff",
+                    "surface-container-highest": "#22262f",
+                    "surface-variant": "#22262f",
+                    "surface-dim": "#0b0e14",
+                    "on-tertiary": "#002a55",
+                    "primary-dim": "#00d4ec",
+                    "surface-bright": "#282c36",
+                    "on-secondary-fixed": "#3b00a0",
+                    "inverse-on-surface": "#52555c",
+                    "on-tertiary-fixed-variant": "#003971",
+                    "on-surface-variant": "#a9abb3",
+                    "inverse-surface": "#f9f9ff",
+                    "tertiary-dim": "#5c9ffc",
+                    "primary-container": "#00e3fd",
+                    "inverse-primary": "#006976",
+                    "primary-fixed-dim": "#00d4ec",
+                    "secondary-fixed-dim": "#cabaff",
+                    "on-error": "#490006",
+                    "surface-container-high": "#1c2028",
+                    "tertiary": "#70aaff",
+                    "outline": "#73757d",
+                    "tertiary-container": "#599cf9",
+                    "on-primary": "#005762",
+                    "error-dim": "#d7383b",
+                    "surface-container": "#161a21",
+                    "secondary": "#a68cff",
+                    "on-secondary": "#25006b",
+                    "tertiary-fixed-dim": "#65a4ff",
+                    "tertiary-fixed": "#80b2ff",
+                    "surface-tint": "#81ecff",
+                    "outline-variant": "#45484f",
+                    "on-secondary-fixed-variant": "#591bdc",
+                    "on-tertiary-fixed": "#001835",
+                    "surface": "#0b0e14"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Plus Jakarta Sans"],
+                    "display": ["Plus Jakarta Sans"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+        }
+        .neon-shadow {
+            box-shadow: 0 16px 64px rgba(0, 0, 0, 0.6), 0 0 40px rgba(129, 236, 255, 0.05);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body min-h-screen flex items-center justify-center p-4">
+<!-- Modal Overlay Backdrop -->
+<div class="fixed inset-0 bg-background/80 backdrop-blur-md z-40"></div>
+<!-- Profile Settings Modal -->
+<div class="relative z-50 w-full max-w-xl bg-surface-container-low rounded-lg neon-shadow overflow-hidden border border-outline-variant/10">
+<!-- Header -->
+<div class="px-8 pt-10 pb-6">
+<h1 class="text-4xl font-headline font-extrabold tracking-tight text-on-surface">
+                My Account
+            </h1>
+</div>
+<!-- Body -->
+<div class="px-8 pb-10 space-y-10">
+<!-- User Avatar Section -->
+<div class="flex items-center space-x-8">
+<div class="relative group cursor-pointer">
+<div class="w-24 h-24 rounded-full overflow-hidden border-2 border-primary/20 bg-surface-container-highest">
+<img alt="User profile" class="w-full h-full object-cover" data-alt="close-up portrait of a young woman with neon rim lighting against a dark atmospheric background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB_bnzKgU8R722LUpI09CsH7fl6vhbBkdWZzbCCTjiiGYhvMZoHq49JG9uM_5EHEBHXNwdj3JmtpFeFPZE6btcASEFYEmZ5K_bf6OuXOWKi9SB5Zx4gpe4NKWFKyvpuq1A7v1HnlUfCv6Vb18sEcPSlKSugm9tlWrl7P4sLmM3kEuKIn0vPMPO9y8EEKR93XhTqz1Mnp8uLDv0j-radVbKuVU5Hh_1Matz8Y5P-AZtb2QiILuVhkUfg7wnCDapPpezzIOnZXCu4oHc"/>
+</div>
+<!-- Edit Overlay -->
+<div class="absolute inset-0 bg-surface-container-highest/80 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center rounded-full">
+<span class="material-symbols-outlined text-primary text-xl" data-icon="photo_camera">photo_camera</span>
+<span class="font-label text-[10px] font-bold tracking-[0.1em] text-primary mt-1">EDIT</span>
+</div>
+</div>
+<div>
+<p class="font-label text-xs uppercase tracking-[0.15em] text-secondary mb-1">Account Level</p>
+<div class="flex items-center gap-2">
+<span class="px-3 py-1 bg-primary/10 text-primary text-xs font-bold rounded-full border border-primary/20">ELITE NEXUS</span>
+<span class="text-on-surface-variant text-sm">Member since 2024</span>
+</div>
+</div>
+</div>
+<!-- Form Inputs -->
+<div class="grid grid-cols-1 gap-8">
+<!-- Display Name -->
+<div class="space-y-3">
+<label class="block font-label text-xs font-bold uppercase tracking-[0.15em] text-on-surface-variant">
+                        DISPLAY NAME
+                    </label>
+<div class="group relative">
+<input class="w-full bg-surface-container-high border-none rounded-md px-6 py-4 text-on-surface focus:ring-0 focus:bg-surface-bright transition-all duration-300 placeholder-on-surface-variant/30" placeholder="Enter your name" type="text" value="Alex Vance"/>
+<div class="absolute bottom-0 left-0 h-[2px] w-0 bg-primary group-focus-within:w-full transition-all duration-500"></div>
+</div>
+</div>
+<!-- Email (Read Only) -->
+<div class="space-y-3">
+<label class="block font-label text-xs font-bold uppercase tracking-[0.15em] text-on-surface-variant">
+                        EMAIL ADDRESS
+                    </label>
+<div class="relative opacity-60">
+<input class="w-full bg-surface-container-high/50 border-none rounded-md px-6 py-4 text-on-surface-variant cursor-not-allowed" readonly="" type="email" value="alex.v@livebox.io"/>
+<span class="absolute right-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-on-surface-variant text-lg" data-icon="lock">lock</span>
+</div>
+</div>
+</div>
+<!-- Notification Settings Stub (Visual Polish) -->
+<div class="pt-4">
+<div class="flex items-center justify-between p-4 bg-surface-container rounded-lg border border-outline-variant/5">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-secondary" data-icon="notifications_active">notifications_active</span>
+<div>
+<p class="text-sm font-bold">Push Notifications</p>
+<p class="text-xs text-on-surface-variant">Stay updated with Nexus signals</p>
+</div>
+</div>
+<div class="w-10 h-5 bg-secondary rounded-full relative">
+<div class="absolute right-1 top-1 w-3 h-3 bg-white rounded-full"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer -->
+<div class="px-8 py-8 bg-surface-container-lowest/30 flex items-center justify-between">
+<!-- Logout Button -->
+<button class="flex items-center gap-2 px-6 py-3 rounded-full bg-error-container/10 text-error hover:bg-error-container/20 transition-all duration-300 group">
+<span class="material-symbols-outlined text-lg group-active:scale-90 transition-transform" data-icon="logout">logout</span>
+<span class="font-label text-xs font-bold uppercase tracking-[0.1em]">Logout</span>
+</button>
+<!-- Action Cluster -->
+<div class="flex items-center gap-4">
+<button class="px-6 py-3 rounded-full text-on-surface-variant font-label text-xs font-bold uppercase tracking-[0.1em] hover:text-on-surface transition-colors">
+                    Cancel
+                </button>
+<button class="px-8 py-3 rounded-full bg-primary text-on-primary font-label text-xs font-bold uppercase tracking-[0.1em] shadow-[0_0_20px_rgba(129,236,255,0.3)] active:scale-95 transition-all">
+                    Save Changes
+                </button>
+</div>
+</div>
+</div>
+<!-- Hidden Layout Background Content (The Context) -->
+<div class="fixed inset-0 -z-10 overflow-hidden opacity-20 pointer-events-none">
+<div class="absolute top-[10%] left-[5%] w-96 h-96 bg-primary rounded-full blur-[120px] opacity-20"></div>
+<div class="absolute bottom-[20%] right-[10%] w-80 h-80 bg-secondary rounded-full blur-[120px] opacity-10"></div>
+<!-- Grid Pattern Overlay -->
+<div class="absolute inset-0" style="background-image: radial-gradient(circle at 2px 2px, rgba(129,236,255,0.05) 1px, transparent 0); background-size: 40px 40px;"></div>
+</div>
+</body></html>

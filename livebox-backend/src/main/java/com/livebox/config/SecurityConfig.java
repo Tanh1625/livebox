@@ -17,15 +17,17 @@ import org.springframework.web.cors.CorsConfigurationSource;
 /**
  * SecurityConfig — Spring Security filter chain for the LiveBox API.
  *
- * <p>Strategy: JWT stateless (no sessions). CORS is delegated to
+ * <p>
+ * Strategy: JWT stateless (no sessions). CORS is delegated to
  * {@link AppConfig#corsConfigurationSource()}. The JWT filter will be
  * added in the Auth module (Sprint 1).
  *
- * <p>Public routes (no token required):
+ * <p>
+ * Public routes (no token required):
  * <ul>
- *   <li>{@code POST /api/v1/auth/**} — register, login, token refresh</li>
- *   <li>{@code GET  /api/v1/invites/**} — validate invite link before login</li>
- *   <li>WebSocket handshake {@code /ws/**}</li>
+ * <li>{@code POST /api/v1/auth/**} — register, login, token refresh</li>
+ * <li>{@code GET  /api/v1/invites/**} — validate invite link before login</li>
+ * <li>WebSocket handshake {@code /ws/**}</li>
  * </ul>
  */
 @Configuration
@@ -36,7 +38,8 @@ public class SecurityConfig {
     private final CorsConfigurationSource corsConfigurationSource;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
-    public SecurityConfig(CorsConfigurationSource corsConfigurationSource, JwtAuthenticationFilter jwtAuthenticationFilter) {
+    public SecurityConfig(CorsConfigurationSource corsConfigurationSource,
+            JwtAuthenticationFilter jwtAuthenticationFilter) {
         this.corsConfigurationSource = corsConfigurationSource;
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
@@ -51,8 +54,7 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource))
 
                 // Stateless session — JWT carries all auth state
-                .sessionManagement(sm ->
-                        sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
                 // Authorization rules
                 .authorizeHttpRequests(auth -> auth
@@ -65,11 +67,11 @@ public class SecurityConfig {
                         // Swagger UI
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                         // Everything else requires a valid JWT
-                        .anyRequest().authenticated()
-                );
+                        .anyRequest().authenticated());
 
         // Register JwtAuthenticationFilter before standard auth filter
-        http.addFilterBefore(jwtAuthenticationFilter, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(jwtAuthenticationFilter,
+                org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
