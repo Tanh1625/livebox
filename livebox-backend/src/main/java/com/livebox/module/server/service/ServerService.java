@@ -66,6 +66,18 @@ public class ServerService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Lấy danh sách server mà mình là OWNER (dùng cho màn hình quản lý: sửa/xóa server).
+     * Khác với getMyServers() trả về tất cả server mình tham gia (kể cả server của người khác).
+     */
+    @Transactional(readOnly = true)
+    public List<ServerResponse> getMyOwnedServers() {
+        UUID currentUserId = SecurityUtils.getCurrentUserId();
+        return serverRepository.findByOwnerId(currentUserId).stream()
+                .map(ServerResponse::fromEntity)
+                .collect(Collectors.toList());
+    }
+
     @Transactional(readOnly = true)
     public ServerResponse getServerById(UUID id) {
         UUID currentUserId = SecurityUtils.getCurrentUserId();
