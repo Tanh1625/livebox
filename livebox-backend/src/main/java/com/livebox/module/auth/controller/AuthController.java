@@ -2,6 +2,7 @@ package com.livebox.module.auth.controller;
 
 import com.livebox.common.dto.ApiResponse;
 import com.livebox.module.auth.dto.LoginRequest;
+import com.livebox.module.auth.dto.LogoutRequest;
 import com.livebox.module.auth.dto.RefreshTokenRequest;
 import com.livebox.module.auth.dto.RegisterRequest;
 import com.livebox.module.auth.dto.TokenResponse;
@@ -22,6 +23,7 @@ public class AuthController {
 
     private final AuthService authService;
 
+    // LB-101: Đăng ký tài khoản mới
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse<TokenResponse> register(@Valid @RequestBody RegisterRequest request) {
@@ -29,15 +31,24 @@ public class AuthController {
         return ApiResponse.created(response);
     }
 
+    // LB-102: Đăng nhập, nhận Access Token + Refresh Token
     @PostMapping("/login")
     public ApiResponse<TokenResponse> login(@Valid @RequestBody LoginRequest request) {
         TokenResponse response = authService.login(request);
         return ApiResponse.success(response);
     }
 
+    // LB-102: Làm mới Access Token bằng Refresh Token hợp lệ
     @PostMapping("/refresh")
     public ApiResponse<TokenResponse> refresh(@Valid @RequestBody RefreshTokenRequest request) {
         TokenResponse response = authService.refreshToken(request);
         return ApiResponse.success(response);
+    }
+
+    // LB-103: Đăng xuất an toàn – Revoke Refresh Token trong DB
+    @PostMapping("/logout")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void logout(@Valid @RequestBody LogoutRequest request) {
+        authService.logout(request);
     }
 }
