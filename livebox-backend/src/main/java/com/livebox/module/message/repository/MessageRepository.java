@@ -25,4 +25,11 @@ public interface MessageRepository extends JpaRepository<Message, UUID> {
      */
     @Query("SELECT m FROM Message m LEFT JOIN FETCH m.sender WHERE m.channel.id = :channelId ORDER BY m.createdAt DESC")
     Page<Message> findByChannelIdOrderByCreatedAtDesc(@Param("channelId") UUID channelId, Pageable pageable);
+
+    /**
+     * SCRUM-61: Đếm số tin nhắn chưa đọc của user trong một channel.
+     * since = receiptUpdatedAt của ReadReceipt (hoặc Instant.EPOCH nếu chưa đọc lần nào).
+     */
+    @Query("SELECT COUNT(m) FROM Message m WHERE m.channel.id = :channelId AND m.createdAt > :since")
+    long countUnreadSince(@Param("channelId") UUID channelId, @Param("since") java.time.Instant since);
 }
