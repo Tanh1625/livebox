@@ -2,10 +2,12 @@ package com.livebox.module.server.controller;
 
 import com.livebox.common.dto.ApiResponse;
 import com.livebox.module.server.dto.InviteResponse;
+import com.livebox.module.server.dto.MemberStatusResponse;
 import com.livebox.module.server.dto.ServerCreateRequest;
 import com.livebox.module.server.dto.ServerResponse;
 import com.livebox.module.server.dto.ServerUpdateRequest;
 import com.livebox.module.server.service.InviteService;
+import com.livebox.module.server.service.PresenceService;
 import com.livebox.module.server.service.ServerService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +33,7 @@ public class ServerController {
 
     private final ServerService serverService;
     private final InviteService inviteService;
+    private final PresenceService presenceService;
 
     // LB-201: Tạo server
     @PostMapping
@@ -49,6 +52,12 @@ public class ServerController {
     @GetMapping("/owned")
     public ApiResponse<List<ServerResponse>> getMyOwnedServers() {
         return ApiResponse.success(serverService.getMyOwnedServers());
+    }
+
+    // SCRUM-59: Danh sách thành viên kèm trạng thái online/offline (Member only)
+    @GetMapping("/{serverId}/members")
+    public ApiResponse<List<MemberStatusResponse>> getMembers(@PathVariable UUID serverId) {
+        return ApiResponse.success(presenceService.getMembersWithStatus(serverId));
     }
 
     // Xem chi tiết server (Member only)
