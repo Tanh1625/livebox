@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../../auth/store/authStore';
+import { JoinServerModal } from './JoinServerModal';
 
 export const ServerEmptyScreen: React.FC = () => {
   const navigate = useNavigate();
   const logout = useAuthStore((state) => state.logout);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isJoinModalOpen, setIsJoinModalOpen] = useState(false);
 
   const handleLogout = () => {
     setIsSettingsOpen(false);
@@ -128,7 +130,10 @@ export const ServerEmptyScreen: React.FC = () => {
             >
               + Create a Server
             </button>
-            <button className="px-10 py-5 bg-surface-container-highest text-primary rounded-xl font-display font-bold uppercase tracking-widest text-sm border border-outline-variant/20 hover:bg-surface-bright active:scale-95 transition-all duration-300">
+            <button 
+              onClick={() => setIsJoinModalOpen(true)}
+              className="px-10 py-5 bg-surface-container-highest text-primary rounded-xl font-display font-bold uppercase tracking-widest text-sm border border-outline-variant/20 hover:bg-surface-bright active:scale-95 transition-all duration-300"
+            >
               Join via Invite Link
             </button>
           </div>
@@ -172,6 +177,13 @@ export const ServerEmptyScreen: React.FC = () => {
           <span className="material-symbols-outlined text-sm">more_vert</span>
         </div>
       </div> */}
+      <JoinServerModal 
+        isOpen={isJoinModalOpen} 
+        onClose={() => setIsJoinModalOpen(false)} 
+        onSuccess={() => {
+          navigate('/app/main');
+        }}
+      />
     </div>
   );
 };

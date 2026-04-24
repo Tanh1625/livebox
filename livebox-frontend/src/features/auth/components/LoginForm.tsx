@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate, Link } from 'react-router-dom';
 import { Input } from '../../../components/ui/Input';
@@ -15,7 +15,27 @@ export const LoginForm: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   
   const setToken = useAuthStore(state => state.setToken);
+  const isAuthenticated = useAuthStore(state => state.isAuthenticated);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      const checkServersAndNavigate = async () => {
+        try {
+          const joinedServers = await serverApi.getMyServers();
+          if (joinedServers.length > 0) {
+            navigate('/app/main');
+          } else {
+            navigate('/servers/empty');
+          }
+        } catch (error) {
+          console.warn('Auth check failed, redirecting to empty state', error);
+          navigate('/servers/empty');
+        }
+      };
+      checkServersAndNavigate();
+    }
+  }, [isAuthenticated, navigate]);
 
   const onSubmit = async (data: LoginRequest) => {
     try {

@@ -4,6 +4,8 @@ import { useNavigate, Link } from 'react-router-dom';
 import { Input } from '../../../components/ui/Input';
 import { Button } from '../../../components/ui/Button';
 import { authApi } from '../api/authApi';
+import { useAuthStore } from '../store/authStore';
+import { serverApi } from '../../server/api/serverApi';
 import { RegisterRequest } from '../types';
 
 export const RegisterForm: React.FC = () => {
@@ -13,9 +15,27 @@ export const RegisterForm: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
 
+  const isAuthenticated = useAuthStore(state => state.isAuthenticated);
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (isAuthenticated) {
+      const checkServersAndNavigate = async () => {
+        try {
+          const joinedServers = await serverApi.getMyServers();
+          if (joinedServers.length > 0) {
+            navigate('/app/main');
+          } else {
+            navigate('/servers/empty');
+          }
+        } catch (error) {
+          navigate('/servers/empty');
+        }
+      };
+      checkServersAndNavigate();
+      return;
+    }
+
     if (!showSuccessPopup) {
       return;
     }
@@ -27,7 +47,7 @@ export const RegisterForm: React.FC = () => {
     return () => {
       window.clearTimeout(timeoutId);
     };
-  }, [showSuccessPopup, navigate]);
+  }, [showSuccessPopup, navigate, isAuthenticated]);
 
   const onSubmit = async (data: RegisterRequest) => {
     try {

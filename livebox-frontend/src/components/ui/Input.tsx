@@ -7,6 +7,7 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
+  label?: string;
   error?: string;
   icon?: string; // Material symbol icon name for the left side
   actionIcon?: string; // Material symbol icon name for the right side
@@ -14,9 +15,14 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
 }
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ error, icon, actionIcon, onActionClick, className, ...props }, ref) => {
+  ({ label, error, icon, actionIcon, onActionClick, className, ...props }, ref) => {
     return (
-      <div className="w-full">
+      <div className="w-full space-y-2">
+        {label && (
+          <label className="block text-[10px] font-bold uppercase tracking-[0.2em] text-outline font-headline ml-1">
+            {label}
+          </label>
+        )}
         <div className="relative group">
           {icon && (
             <div className="absolute inset-y-0 left-5 flex items-center pointer-events-none">

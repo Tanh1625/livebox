@@ -35,7 +35,8 @@ const InviteFriendsModal: React.FC<InviteFriendsModalProps> = ({
     };
 
     void fetchInvite();
-  }, [server.id, onClose, onError]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [server.id]);
 
   const handleCopy = async () => {
     if (!invite?.inviteUrl) return;

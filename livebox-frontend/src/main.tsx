@@ -9,17 +9,50 @@ import { CreateServerPage } from './pages/server/CreateServerPage'
 import { MainApplicationPage } from './pages/server/MainApplicationPage'
 import { OwnedServersPage } from './pages/server/OwnedServersPage'
 
+import { ProtectedRoute } from './components/auth/ProtectedRoute'
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
       <Routes>
+        {/* Public Routes */}
         <Route path="/" element={<LoginPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
-        <Route path="/servers/empty" element={<ServerEmptyPage />} />
-        <Route path="/servers/create" element={<CreateServerPage />} />
-        <Route path="/servers/owned" element={<OwnedServersPage />} />
-        <Route path="/app/main" element={<MainApplicationPage />} />
+        
+        {/* Protected Routes */}
+        <Route 
+          path="/servers/empty" 
+          element={
+            <ProtectedRoute>
+              <ServerEmptyPage />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/servers/create" 
+          element={
+            <ProtectedRoute>
+              <CreateServerPage />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/servers/owned" 
+          element={
+            <ProtectedRoute>
+              <OwnedServersPage />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/app/main" 
+          element={
+            <ProtectedRoute>
+              <MainApplicationPage />
+            </ProtectedRoute>
+          } 
+        />
       </Routes>
     </BrowserRouter>
   </StrictMode>,

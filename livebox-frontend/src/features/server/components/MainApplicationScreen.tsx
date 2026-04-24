@@ -1,14 +1,105 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../../auth/store/authStore';
 import { serverApi } from '../api/serverApi';
 import type { ServerResponse } from '../types';
+import { channelApi } from '../../channel/api/channelApi';
+import type { ChannelResponse } from '../../channel/types';
+import { useWebSocket } from '../../../hooks/useWebSocket';
+
+import { JoinServerModal } from './JoinServerModal';
+import { messageApi } from '../../message/api/messageApi';
+import type { MessageResponse } from '../../message/types';
 
 export const MainApplicationScreen: React.FC = () => {
   const navigate = useNavigate();
   const logout = useAuthStore((state) => state.logout);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isJoinModalOpen, setIsJoinModalOpen] = useState(false);
   const [joinedServers, setJoinedServers] = useState<ServerResponse[]>([]);
+  const [selectedServerId, setSelectedServerId] = useState<string | null>(null);
+  const [channels, setChannels] = useState<ChannelResponse[]>([]);
+  const [activeChannelId, setActiveChannelId] = useState<string | null>(null);
+  
+  // Message state
+  const [messages, setMessages] = useState<MessageResponse[]>([]);
+  const [isLoadingMessages, setIsLoadingMessages] = useState(false);
+  const [messageInput, setMessageInput] = useState('');
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const selectedServer = useMemo(() => 
+    joinedServers.find(s => s.id === selectedServerId), 
+    [joinedServers, selectedServerId]
+  );
+
+
+  const textChannels = useMemo(() => 
+    channels.filter(c => c.type === 'TEXT'), 
+    [channels]
+  );
+
+  const voiceChannels = useMemo(() => 
+    channels.filter(c => c.type === 'VOICE'), 
+    [channels]
+  );
+
+  // Fetch messages when channel changes
+  useEffect(() => {
+    const fetchMessages = async () => {
+      if (!activeChannelId) {
+        setMessages([]);
+        return;
+      }
+
+      try {
+        setIsLoadingMessages(true);
+        console.log('Fetching messages for channel:', activeChannelId);
+        const data = await messageApi.getMessages(activeChannelId);
+        console.log('Messages received:', data);
+        
+        if (data && Array.isArray(data.content)) {
+          // Backend returns Page<MessageResponse>, newest first (DESC)
+          // For display, we want chronological order (oldest at top)
+          setMessages([...data.content].reverse());
+        } else {
+          setMessages([]);
+        }
+      } catch (error) {
+        console.error('Failed to fetch messages:', error);
+      } finally {
+        setIsLoadingMessages(false);
+      }
+    };
+
+    void fetchMessages();
+  }, [activeChannelId]);
+
+  // WebSocket integration
+  const { sendMessage } = useWebSocket({
+    channelId: activeChannelId,
+    onMessageReceived: (newMsg) => {
+      setMessages((prev) => {
+        // Prevent duplicate messages if already present in history
+        if (prev.some(m => m.id === newMsg.id)) return prev;
+        return [...prev, newMsg];
+      });
+    }
+  });
+
+  const handleSendMessage = (e?: React.FormEvent) => {
+    e?.preventDefault();
+    if (!messageInput.trim()) return;
+
+    const sent = sendMessage(messageInput.trim());
+    if (sent) {
+      setMessageInput('');
+    }
+  };
+
+  // Auto-scroll to bottom
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
 
   const handleLogout = () => {
     setIsSettingsOpen(false);
@@ -33,6 +124,10 @@ export const MainApplicationScreen: React.FC = () => {
         const servers = await serverApi.getMyServers();
         if (isMounted) {
           setJoinedServers(servers);
+          // Default to first server if none selected
+          if (servers.length > 0 && !selectedServerId) {
+            setSelectedServerId(servers[0].id);
+          }
         }
       } catch (error) {
         console.error('Failed to load joined servers:', error);
@@ -46,6 +141,26 @@ export const MainApplicationScreen: React.FC = () => {
     };
   }, []);
 
+  useEffect(() => {
+    if (selectedServerId) {
+      const loadChannels = async () => {
+        try {
+          const data = await channelApi.getChannels(selectedServerId);
+          setChannels(data);
+          if (data.length > 0) {
+            setActiveChannelId(data[0].id);
+          }
+        } catch (error) {
+          console.error('Failed to load channels:', error);
+        }
+      };
+      loadChannels();
+    } else {
+      setChannels([]);
+      setActiveChannelId(null);
+    }
+  }, [selectedServerId]);
+
   return (
     <div className="bg-surface text-on-surface flex h-screen overflow-hidden">
       <aside className="w-[72px] bg-surface-container-lowest flex flex-col items-center py-4 gap-4 z-50">
@@ -56,20 +171,31 @@ export const MainApplicationScreen: React.FC = () => {
 
         {joinedServers.map((server) => (
           <div key={server.id} className="group relative">
-            <div className="w-12 h-12 bg-surface-container-high rounded-full flex items-center justify-center hover:rounded-2xl transition-all duration-300 cursor-pointer overflow-hidden active:scale-95">
-              {server.avatarUrl ? (
+            <div 
+              onClick={() => setSelectedServerId(server.id)}
+              className={`w-12 h-12 flex items-center justify-center transition-all duration-300 cursor-pointer overflow-hidden active:scale-95 ${
+                selectedServerId === server.id 
+                  ? 'bg-primary rounded-2xl text-on-primary shadow-[0_0_15px_rgba(129,236,255,0.4)]' 
+                  : 'bg-surface-container-high rounded-full hover:rounded-2xl'
+              }`}
+            >
+              {server.avatarUrl && server.avatarUrl.trim() !== "" ? (
                 <img
                   className="w-full h-full object-cover"
-                  alt="Server icon"
+                  alt={server.name}
                   src={server.avatarUrl}
                 />
               ) : (
-                <span className="text-sm font-bold text-primary uppercase">
-                  {server.name?.charAt(0) || 'S'}
+                <span className={`text-lg font-bold uppercase ${selectedServerId === server.id ? 'text-on-primary' : 'text-primary'}`}>
+                  {server.name?.charAt(0) || '?'}
                 </span>
               )}
             </div>
-            <div className="absolute -left-1 top-1/2 -translate-y-1/2 w-1 h-2 bg-on-surface rounded-r-full group-hover:h-5 transition-all"></div>
+            {/* Active Indicator Pillar */}
+            <div className={`absolute -left-1 top-1/2 -translate-y-1/2 w-1 bg-on-surface rounded-r-full transition-all ${
+              selectedServerId === server.id ? 'h-8' : 'h-2 group-hover:h-5'
+            }`}></div>
+            
             <div className="pointer-events-none absolute left-14 top-1/2 -translate-y-1/2 min-w-52 max-w-64 rounded-xl border border-outline-variant/30 bg-surface-container-high p-3 shadow-[0_12px_28px_rgba(0,0,0,0.45)] opacity-0 group-hover:opacity-100 translate-x-2 group-hover:translate-x-0 transition-all duration-200 z-40">
               <p className="text-sm font-bold text-on-surface truncate">{server.name || 'Untitled Server'}</p>
             </div>
@@ -96,41 +222,72 @@ export const MainApplicationScreen: React.FC = () => {
       </aside>
 
       <nav className="w-[280px] bg-surface-container-low flex flex-col shrink-0">
-        <header className="h-16 px-4 flex items-center justify-between bg-surface-container-low/50 backdrop-blur-xl shrink-0">
-          <h1 className="font-headline text-lg font-bold tracking-tight text-primary drop-shadow-[0_0_8px_rgba(129,236,255,0.4)]">Neon Pulse</h1>
-          <span className="material-symbols-outlined text-outline">expand_more</span>
+        <header className="h-16 px-4 flex items-center justify-between bg-surface-container-low/50 backdrop-blur-xl shrink-0 border-b border-outline-variant/5">
+          <h1 className="font-headline text-lg font-bold tracking-tight text-primary drop-shadow-[0_0_8px_rgba(129,236,255,0.4)] truncate max-w-[200px]">
+            {selectedServer?.name || 'LiveBox'}
+          </h1>
+          <span className="material-symbols-outlined text-outline cursor-pointer hover:text-on-surface transition-colors">expand_more</span>
         </header>
 
         <div className="flex-1 overflow-y-auto px-2 py-4 space-y-6">
-          <div>
-            <h3 className="px-2 mb-2 text-[10px] font-bold uppercase tracking-[0.2em] text-outline font-headline">Text Channels</h3>
-            <div className="space-y-0.5">
-              <div className="flex items-center gap-3 px-3 py-2 rounded-xl bg-gradient-to-br from-primary to-secondary text-surface-container-lowest font-bold shadow-[0_0_15px_rgba(129,236,255,0.3)] transition-transform active:scale-95 cursor-pointer">
-                <span className="text-xl font-medium opacity-70">#</span>
-                <span className="text-sm">general</span>
-              </div>
-              <div className="flex items-center gap-3 px-3 py-2 rounded-xl text-on-surface-variant hover:bg-white/5 hover:text-on-surface transition-all cursor-pointer">
-                <span className="text-xl font-medium opacity-40">#</span>
-                <span className="text-sm">announcements</span>
-              </div>
-              <div className="flex items-center gap-3 px-3 py-2 rounded-xl text-on-surface-variant hover:bg-white/5 hover:text-on-surface transition-all cursor-pointer">
-                <span className="text-xl font-medium opacity-40">#</span>
-                <span className="text-sm">dev-log</span>
+          {/* Text Channels Section */}
+          {textChannels.length > 0 && (
+            <div>
+              <h3 className="px-2 mb-2 text-[10px] font-bold uppercase tracking-[0.2em] text-outline font-headline flex items-center justify-between group">
+                <span>Text Channels</span>
+                <span className="material-symbols-outlined text-sm cursor-pointer opacity-0 group-hover:opacity-100 hover:text-primary transition-all">add</span>
+              </h3>
+              <div className="space-y-0.5">
+                {textChannels.map((channel) => (
+                  <div 
+                    key={channel.id}
+                    onClick={() => setActiveChannelId(channel.id)}
+                    className={`flex items-center gap-3 px-3 py-2 rounded-xl transition-all cursor-pointer group/channel ${
+                      activeChannelId === channel.id
+                        ? 'bg-gradient-to-br from-primary/20 to-secondary/20 text-primary font-bold shadow-[inset_0_0_15px_rgba(129,236,255,0.1)]'
+                        : 'text-on-surface-variant hover:bg-white/5 hover:text-on-surface'
+                    }`}
+                  >
+                    <span className={`text-xl font-medium transition-opacity ${activeChannelId === channel.id ? 'opacity-100' : 'opacity-40 group-hover/channel:opacity-70'}`}>#</span>
+                    <span className="text-sm truncate">{channel.name}</span>
+                  </div>
+                ))}
               </div>
             </div>
-          </div>
+          )}
 
-          <div>
-            <h3 className="px-2 mb-2 text-[10px] font-bold uppercase tracking-[0.2em] text-outline font-headline">Voice Channels</h3>
-            <div className="space-y-0.5">
-              <div className="flex items-center justify-between px-3 py-2 rounded-xl text-on-surface-variant hover:bg-white/5 hover:text-on-surface transition-all cursor-pointer">
-                <div className="flex items-center gap-3">
-                  <span className="material-symbols-outlined text-lg">volume_up</span>
-                  <span className="text-sm">Main Hub</span>
-                </div>
+          {/* Voice Channels Section */}
+          {voiceChannels.length > 0 && (
+            <div>
+              <h3 className="px-2 mb-2 text-[10px] font-bold uppercase tracking-[0.2em] text-outline font-headline flex items-center justify-between group">
+                <span>Voice Channels</span>
+                <span className="material-symbols-outlined text-sm cursor-pointer opacity-0 group-hover:opacity-100 hover:text-primary transition-all">add</span>
+              </h3>
+              <div className="space-y-0.5">
+                {voiceChannels.map((channel) => (
+                  <div 
+                    key={channel.id}
+                    className="flex items-center justify-between px-3 py-2 rounded-xl text-on-surface-variant hover:bg-white/5 hover:text-on-surface transition-all cursor-pointer group/voice"
+                  >
+                    <div className="flex items-center gap-3">
+                      <span className="material-symbols-outlined text-lg opacity-60 group-hover/voice:opacity-100">volume_up</span>
+                      <span className="text-sm truncate">{channel.name}</span>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
-          </div>
+          )}
+
+          {/* Empty State for Channels */}
+          {channels.length === 0 && (
+            <div className="px-4 py-10 text-center space-y-2">
+              <div className="w-12 h-12 bg-surface-container-high rounded-full flex items-center justify-center mx-auto text-outline/30">
+                <span className="material-symbols-outlined text-2xl">chat_bubble_outline</span>
+              </div>
+              <p className="text-xs text-outline font-medium">No channels found</p>
+            </div>
+          )}
         </div>
 
         <footer className="p-3 bg-surface-container-lowest/30 backdrop-blur-md flex items-center gap-3">
@@ -186,89 +343,102 @@ export const MainApplicationScreen: React.FC = () => {
         <header className="h-16 px-6 flex items-center justify-between shrink-0 bg-surface/60 backdrop-blur-2xl z-10">
           <div className="flex items-center gap-3">
             <span className="text-2xl font-medium text-outline">#</span>
-            <h2 className="font-headline font-bold text-lg text-on-surface">general</h2>
+            <h2 className="font-headline font-bold text-lg text-on-surface">
+              {channels.find(c => c.id === activeChannelId)?.name || 'general'}
+            </h2>
           </div>
           <div className="flex items-center gap-4">
             <div className="flex items-center bg-surface-container-high px-4 py-1.5 rounded-full gap-2 w-64 border border-outline-variant/10">
               <span className="material-symbols-outlined text-lg text-outline">search</span>
               <input className="bg-transparent border-none focus:ring-0 text-sm text-on-surface placeholder:text-outline w-full" placeholder="Search the void..." type="text" />
             </div>
-            <span className="material-symbols-outlined text-outline cursor-pointer hover:text-primary">notifications</span>
-            <span className="material-symbols-outlined text-outline cursor-pointer hover:text-primary">push_pin</span>
+            <span className="material-symbols-outlined text-outline cursor-pointer hover:text-primary transition-colors">notifications</span>
+            <button 
+              onClick={() => setIsJoinModalOpen(true)}
+              className="flex items-center justify-center p-1 rounded-lg text-outline hover:text-primary hover:bg-white/5 transition-all active:scale-90"
+              title="Join a Server"
+            >
+              <span className="material-symbols-outlined">group_add</span>
+            </button>
           </div>
         </header>
 
         <div className="flex-1 overflow-y-auto px-6 py-8 space-y-8">
-          <div className="flex items-start gap-4 max-w-2xl group">
-            <img
-              className="w-10 h-10 rounded-full mt-1"
-              alt="Member avatar"
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuDDYwbmOxESh4aD3ANcG5QQP4oRJS7UXNhdO9FZy95zDOi1oUH9StgVejtS4WtwWCYtM4f5oc_i2grnnQt9XUroWA2TaNjcgPTaFmxr1RV3yRFwE2O3_6mOzapKfvcxQn3t1G2UGSeS1o7b8Xz5-ImT_6Xw7lDGc2CSMbE6cCKAH7lTqzatX8imTurnsq__t2wao3bu8y4t8n6dzR-UcbDnlTZ2fI_yGcJV50yo-U7LXnmB3LlGRp9vPp45KyTF82xymFQY56P81qQ"
-            />
-            <div className="space-y-1">
-              <div className="flex items-center gap-2">
-                <span className="font-bold text-on-surface">Marcus</span>
-                <span className="text-[10px] text-outline font-headline uppercase tracking-widest">Today at 10:42 AM</span>
-              </div>
-              <div className="bg-surface-container-high p-4 rounded-r-2xl rounded-bl-2xl text-on-surface leading-relaxed shadow-sm">
-                Just deployed the latest Neural Net update to the staging environment.
-                Initial telemetry looks promising. Pulse rates are stabilizing.
-              </div>
+          {isLoadingMessages ? (
+            <div className="flex flex-col items-center justify-center h-full gap-4">
+              <div className="w-10 h-10 border-4 border-primary/20 border-t-primary rounded-full animate-spin"></div>
+              <p className="text-outline text-sm font-headline tracking-widest uppercase">Deciphering signals...</p>
             </div>
-          </div>
-
-          <div className="flex items-start gap-4 flex-row-reverse max-w-2xl ml-auto group">
-            <img
-              className="w-10 h-10 rounded-full mt-1"
-              alt="User avatar"
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuBgswcl2rnNkfR8M5dj2-B-OUpYIIGtdJxT-7Q1-oRQEilkYQcl1-U0EGErxMF3EH-VVjSy5yWis-W_ALqjjOb7Tx1xF0q1yEv0KByee8rxsTRywbqvn-DIEN50-lB64hWnR5TJEcV4Obg5XjUiKf2Gv6-AmX5G3wuu7fiibvLiavczKay393FxXn2CufO4euViXu9mE8qaj1iFdM3UV_Gmy5JniT_DLuOrLEcnwr-ryzvo3zAoTc8dETi3m6bVW7mRWs9sPmsmiLc"
-            />
-            <div className="space-y-1 flex flex-col items-end">
-              <div className="flex items-center gap-2">
-                <span className="text-[10px] text-outline font-headline uppercase tracking-widest">Today at 10:45 AM</span>
-                <span className="font-bold text-primary">Lan Anh</span>
+          ) : messages.length > 0 ? (
+            messages.map((msg) => (
+              <div key={msg.id} className="flex items-start gap-4 max-w-2xl group">
+                <img
+                  className="w-10 h-10 rounded-full mt-1 border border-outline-variant/20 shadow-sm"
+                  alt={msg.sender.displayName}
+                  src={msg.sender.avatarUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(msg.sender.displayName)}&background=random`}
+                />
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2">
+                    <span className="font-bold text-on-surface hover:text-primary transition-colors cursor-pointer">{msg.sender.displayName}</span>
+                    <span className="text-[10px] text-outline font-headline uppercase tracking-[0.1em]">
+                      {new Date(msg.createdAt).toLocaleString([], { 
+                        hour: '2-digit', 
+                        minute: '2-digit',
+                        hour12: true,
+                        day: '2-digit',
+                        month: '2-digit'
+                      })}
+                    </span>
+                  </div>
+                  <div className="bg-surface-container-high/80 p-4 rounded-r-2xl rounded-bl-2xl text-on-surface leading-relaxed shadow-sm border border-white/5 group-hover:bg-surface-bright transition-all duration-300">
+                    {msg.content}
+                  </div>
+                </div>
               </div>
-              <div className="bg-gradient-to-br from-primary to-secondary p-4 rounded-l-2xl rounded-br-2xl text-surface-container-lowest font-medium leading-relaxed shadow-[0_8px_20px_rgba(129,236,255,0.2)]">
-                Incredible work Marcus. I am seeing the latency drop across the Creative Core too.
-                Let us push to production once the ignition sequence is fully verified.
+            ))
+          ) : (
+            <div className="flex flex-col items-center justify-center h-full text-center opacity-60 py-20">
+              <div className="w-24 h-24 bg-surface-container-highest/50 rounded-full flex items-center justify-center mb-8 border border-outline-variant/10 shadow-xl">
+                <span className="material-symbols-outlined text-5xl text-primary animate-pulse">forum</span>
               </div>
+              <h3 className="text-on-surface font-black text-3xl font-headline tracking-tight mb-3">The beginning of a new cluster</h3>
+              <p className="text-on-surface-variant max-w-sm leading-relaxed">
+                Welcome to the <span className="text-primary font-bold">#{channels.find(c => c.id === activeChannelId)?.name || 'channel'}</span> channel. 
+                Start the conversation and ignite the void.
+              </p>
             </div>
-          </div>
-
-          <div className="flex items-start gap-4 max-w-2xl group">
-            <img
-              className="w-10 h-10 rounded-full mt-1"
-              alt="Member avatar"
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuBdupAUyk-EA35uVAwePpce3DGokZW8rVuq24V3L-4aIeQnoMZuGmi-nAvLQWAfke-2JVWpbdhZCtDRoeymXDosdDbCR8VOTj0bXkmsLFl5EcKwMUpUF6Skdnz0j6JuXIUiz0-Q0MkrUT4lNtyPNlzk26fh2mEOVo4aPdksgxoqEjJWCz8hDZ4r0IcvhhS1gDcbAktDN61g2QusE0_GY4LJj8oCcFhuzgIaeWg8M4O_wj5bhm5y5kubIzbjxVv3gwLoTCrGVPZ5ujM"
-            />
-            <div className="space-y-1">
-              <div className="flex items-center gap-2">
-                <span className="font-bold text-secondary">Sarah</span>
-                <span className="text-[10px] text-outline font-headline uppercase tracking-widest">Today at 10:48 AM</span>
-              </div>
-              <div className="bg-surface-container-high p-4 rounded-r-2xl rounded-bl-2xl text-on-surface leading-relaxed">
-                Design assets for the void-shell interface are ready for review.
-                I have used the new tonal layering approach we discussed.
-              </div>
-            </div>
-          </div>
+          )}
+          <div ref={messagesEndRef} />
         </div>
 
         <footer className="p-6 shrink-0">
-          <div className="bg-surface-container-high rounded-full flex items-center p-2 pl-6 gap-4 shadow-[0_8px_32px_rgba(0,0,0,0.5)] border border-outline-variant/10">
+          <form 
+            onSubmit={handleSendMessage}
+            className="bg-surface-container-high rounded-full flex items-center p-2 pl-6 gap-4 shadow-[0_8px_32px_rgba(0,0,0,0.5)] border border-outline-variant/10"
+          >
             <button type="button" className="text-outline hover:text-primary transition-colors active:scale-90">
               <span className="material-symbols-outlined">add_circle</span>
             </button>
-            <input className="flex-1 bg-transparent border-none focus:ring-0 text-on-surface placeholder:text-outline/50" placeholder="Message #general" type="text" />
+            <input 
+              className="flex-1 bg-transparent border-none focus:ring-0 text-on-surface placeholder:text-outline/50" 
+              placeholder={`Message #${channels.find(c => c.id === activeChannelId)?.name || 'channel'}`}
+              type="text" 
+              value={messageInput}
+              onChange={(e) => setMessageInput(e.target.value)}
+            />
             <div className="flex items-center gap-2">
               <button type="button" className="p-2 text-outline hover:text-primary transition-colors active:scale-90">
                 <span className="material-symbols-outlined">mood</span>
               </button>
-              <button type="button" className="bg-primary text-on-primary w-10 h-10 rounded-full flex items-center justify-center hover:shadow-[0_0_15px_rgba(129,236,255,0.5)] transition-all active:scale-90">
+              <button 
+                type="submit"
+                disabled={!messageInput.trim()}
+                className="bg-primary text-on-primary w-10 h-10 rounded-full flex items-center justify-center hover:shadow-[0_0_15px_rgba(129,236,255,0.5)] transition-all active:scale-90 disabled:opacity-50 disabled:grayscale disabled:cursor-not-allowed"
+              >
                 <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>send</span>
               </button>
             </div>
-          </div>
+          </form>
         </footer>
       </main>
 
@@ -354,6 +524,14 @@ export const MainApplicationScreen: React.FC = () => {
           </section>
         </div>
       </aside>
+      <JoinServerModal 
+        isOpen={isJoinModalOpen} 
+        onClose={() => setIsJoinModalOpen(false)} 
+        onSuccess={() => {
+          // Optionally reload servers or show success
+          window.location.reload(); 
+        }}
+      />
     </div>
   );
 };
