@@ -89,54 +89,49 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
                 if (accessor == null) return message;
 
-                switch (accessor.getCommand() != null ? accessor.getCommand() : StompCommand.CONNECT) {
+                StompCommand command = accessor.getCommand();
 
-                    case CONNECT -> {
-                        // Propagate Principal từ WebSocket session vào STOMP session
+                if (StompCommand.CONNECT.equals(command)) {
+                    // Propagate Principal từ WebSocket session vào STOMP session
+                    Map<String, Object> sessionAttributes = accessor.getSessionAttributes();
+                    if (sessionAttributes != null) {
+                        Object principal = sessionAttributes.get("principal");
+                        if (principal instanceof Principal p) {
+                            accessor.setUser(p);
+                        }
+                    }
+                } else if (StompCommand.SUBSCRIBE.equals(command)) {
+                    // Security: chặn subscribe nếu không phải member của server chứa channel
+                    String destination = accessor.getDestination();
+                    if (destination != null && destination.startsWith(CHANNEL_TOPIC_PREFIX)) {
+                        String channelIdStr = destination.substring(CHANNEL_TOPIC_PREFIX.length());
                         Map<String, Object> sessionAttributes = accessor.getSessionAttributes();
-                        if (sessionAttributes != null) {
-                            Object principal = sessionAttributes.get("principal");
-                            if (principal instanceof Principal p) {
-                                accessor.setUser(p);
-                            }
+                        if (sessionAttributes == null) {
+                            log.warn("SUBSCRIBE blocked: no session attributes (session={})",
+                                    accessor.getSessionId());
+                            throw new IllegalStateException("WebSocket session not authenticated.");
+                        }
+
+                        String userIdStr = (String) sessionAttributes.get("userId");
+                        if (userIdStr == null) {
+                            log.warn("SUBSCRIBE blocked: userId not in session (dest={})", destination);
+                            throw new IllegalStateException("WebSocket session not authenticated.");
+                        }
+
+                        try {
+                            UUID channelId = UUID.fromString(channelIdStr);
+                            UUID userId = UUID.fromString(userIdStr);
+                            // Throws LiveBoxException(403) nếu không phải member
+                            membershipGuard.requireChannelMembership(channelId, userId);
+                            log.debug("SUBSCRIBE authorized: user={} channel={}", userId, channelId);
+                        } catch (IllegalArgumentException e) {
+                            // channelId không phải UUID hợp lệ → destination lạ → bỏ qua
+                            log.debug("SUBSCRIBE: non-UUID channel destination '{}', skipping check",
+                                    destination);
                         }
                     }
-
-                    case SUBSCRIBE -> {
-                        // Security: chặn subscribe nếu không phải member của server chứa channel
-                        String destination = accessor.getDestination();
-                        if (destination != null && destination.startsWith(CHANNEL_TOPIC_PREFIX)) {
-                            String channelIdStr = destination.substring(CHANNEL_TOPIC_PREFIX.length());
-                            Map<String, Object> sessionAttributes = accessor.getSessionAttributes();
-                            if (sessionAttributes == null) {
-                                log.warn("SUBSCRIBE blocked: no session attributes (session={})",
-                                        accessor.getSessionId());
-                                throw new IllegalStateException("WebSocket session not authenticated.");
-                            }
-
-                            String userIdStr = (String) sessionAttributes.get("userId");
-                            if (userIdStr == null) {
-                                log.warn("SUBSCRIBE blocked: userId not in session (dest={})", destination);
-                                throw new IllegalStateException("WebSocket session not authenticated.");
-                            }
-
-                            try {
-                                UUID channelId = UUID.fromString(channelIdStr);
-                                UUID userId = UUID.fromString(userIdStr);
-                                // Throws LiveBoxException(403) nếu không phải member
-                                membershipGuard.requireChannelMembership(channelId, userId);
-                                log.debug("SUBSCRIBE authorized: user={} channel={}", userId, channelId);
-                            } catch (IllegalArgumentException e) {
-                                // channelId không phải UUID hợp lệ → destination lạ → bỏ qua
-                                log.debug("SUBSCRIBE: non-UUID channel destination '{}', skipping check",
-                                        destination);
-                            }
-                        }
-                        // Các /topic khác (/topic/servers/..., /user/queue/...) → allow through
-                    }
-
-                    default -> { /* no-op for SEND, DISCONNECT, etc. */ }
                 }
+                // Các /topic khác (/topic/servers/..., /user/queue/...) hoặc các command khác (SEND, DISCONNECT) → allow through
 
                 return message;
             }
