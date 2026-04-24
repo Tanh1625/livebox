@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { inviteApi } from '../api/inviteApi';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '../../../components/ui/Button';
 import { Input } from '../../../components/ui/Input';
 
@@ -14,30 +14,28 @@ export const JoinServerModal: React.FC<JoinServerModalProps> = ({
   onClose,
   onSuccess
 }) => {
+  const navigate = useNavigate();
   const [inviteCode, setInviteCode] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   if (!isOpen) return null;
 
-  const handleJoin = async () => {
-    if (!inviteCode.trim()) {
-      setError('Please enter an invite code');
+  const handlePreview = () => {
+    const trimmed = inviteCode.trim();
+    if (!trimmed) {
+      setError('Vui lòng nhập mã mời');
       return;
     }
 
-    try {
-      setIsLoading(true);
-      setError(null);
-      await inviteApi.joinServer(inviteCode.trim());
-      onSuccess?.();
-      onClose();
-    } catch (err: unknown) {
-      console.error('Failed to join server:', err);
-      setError('Invalid invite code or server error. Please try again.');
-    } finally {
-      setIsLoading(false);
+    // Extract code from URL if needed
+    let code = trimmed;
+    if (code.includes('/invite/')) {
+      code = code.split('/invite/').pop()?.split('?')[0] || code;
     }
+
+    onClose();
+    navigate(`/invite/${code}`);
   };
 
   return (
@@ -79,7 +77,7 @@ export const JoinServerModal: React.FC<JoinServerModalProps> = ({
                 </li>
                 <li className="flex items-center gap-2">
                   <span className="w-1 h-1 bg-primary rounded-full"></span>
-                  https://livebox.ai/invite/h7x8p2
+                  https://livebox.gg/invite/h7x8p2
                 </li>
               </ul>
             </div>
@@ -89,11 +87,11 @@ export const JoinServerModal: React.FC<JoinServerModalProps> = ({
         {/* Footer */}
         <div className="px-8 py-6 bg-surface-container-low/50 flex flex-col gap-3">
           <Button 
-            onClick={handleJoin} 
+            onClick={handlePreview} 
             isLoading={isLoading}
             className="w-full py-4 text-sm font-bold tracking-widest uppercase"
           >
-            Join Cluster
+            Check Invitation
           </Button>
           <button 
             onClick={onClose}

@@ -20,7 +20,7 @@ export const MainApplicationScreen: React.FC = () => {
   const [selectedServerId, setSelectedServerId] = useState<string | null>(null);
   const [channels, setChannels] = useState<ChannelResponse[]>([]);
   const [activeChannelId, setActiveChannelId] = useState<string | null>(null);
-  
+
   // Message state
   const [messages, setMessages] = useState<MessageResponse[]>([]);
   const [isLoadingMessages, setIsLoadingMessages] = useState(false);
@@ -55,19 +55,19 @@ export const MainApplicationScreen: React.FC = () => {
   const onlineMembers = useMemo(() => members.filter(m => m.online), [members]);
   const offlineMembers = useMemo(() => members.filter(m => !m.online), [members]);
 
-  const selectedServer = useMemo(() => 
-    joinedServers.find(s => s.id === selectedServerId), 
+  const selectedServer = useMemo(() =>
+    joinedServers.find(s => s.id === selectedServerId),
     [joinedServers, selectedServerId]
   );
 
 
-  const textChannels = useMemo(() => 
-    channels.filter(c => c.type === 'TEXT'), 
+  const textChannels = useMemo(() =>
+    channels.filter(c => c.type === 'TEXT'),
     [channels]
   );
 
-  const voiceChannels = useMemo(() => 
-    channels.filter(c => c.type === 'VOICE'), 
+  const voiceChannels = useMemo(() =>
+    channels.filter(c => c.type === 'VOICE'),
     [channels]
   );
 
@@ -81,7 +81,7 @@ export const MainApplicationScreen: React.FC = () => {
     try {
       if (showLoader) setIsLoadingMessages(true);
       const data = await messageApi.getMessages(activeChannelId);
-      
+
       if (data && Array.isArray(data.content)) {
         // Backend returns Page<MessageResponse>, newest first (DESC)
         // For display, we want chronological order (oldest at top)
@@ -204,13 +204,12 @@ export const MainApplicationScreen: React.FC = () => {
 
         {joinedServers.map((server) => (
           <div key={server.id} className="group relative">
-            <div 
+            <div
               onClick={() => setSelectedServerId(server.id)}
-              className={`w-12 h-12 flex items-center justify-center transition-all duration-300 cursor-pointer overflow-hidden active:scale-95 ${
-                selectedServerId === server.id 
-                  ? 'bg-primary rounded-2xl text-on-primary shadow-[0_0_15px_rgba(129,236,255,0.4)]' 
+              className={`w-12 h-12 flex items-center justify-center transition-all duration-300 cursor-pointer overflow-hidden active:scale-95 ${selectedServerId === server.id
+                  ? 'bg-primary rounded-2xl text-on-primary shadow-[0_0_15px_rgba(129,236,255,0.4)]'
                   : 'bg-surface-container-high rounded-full hover:rounded-2xl'
-              }`}
+                }`}
             >
               {server.avatarUrl && server.avatarUrl.trim() !== "" ? (
                 <img
@@ -225,10 +224,9 @@ export const MainApplicationScreen: React.FC = () => {
               )}
             </div>
             {/* Active Indicator Pillar */}
-            <div className={`absolute -left-1 top-1/2 -translate-y-1/2 w-1 bg-on-surface rounded-r-full transition-all ${
-              selectedServerId === server.id ? 'h-8' : 'h-2 group-hover:h-5'
-            }`}></div>
-            
+            <div className={`absolute -left-1 top-1/2 -translate-y-1/2 w-1 bg-on-surface rounded-r-full transition-all ${selectedServerId === server.id ? 'h-8' : 'h-2 group-hover:h-5'
+              }`}></div>
+
             <div className="pointer-events-none absolute left-14 top-1/2 -translate-y-1/2 min-w-52 max-w-64 rounded-xl border border-outline-variant/30 bg-surface-container-high p-3 shadow-[0_12px_28px_rgba(0,0,0,0.45)] opacity-0 group-hover:opacity-100 translate-x-2 group-hover:translate-x-0 transition-all duration-200 z-40">
               <p className="text-sm font-bold text-on-surface truncate">{server.name || 'Untitled Server'}</p>
             </div>
@@ -272,14 +270,13 @@ export const MainApplicationScreen: React.FC = () => {
               </h3>
               <div className="space-y-0.5">
                 {textChannels.map((channel) => (
-                  <div 
+                  <div
                     key={channel.id}
                     onClick={() => setActiveChannelId(channel.id)}
-                    className={`flex items-center gap-3 px-3 py-2 rounded-xl transition-all cursor-pointer group/channel ${
-                      activeChannelId === channel.id
+                    className={`flex items-center gap-3 px-3 py-2 rounded-xl transition-all cursor-pointer group/channel ${activeChannelId === channel.id
                         ? 'bg-gradient-to-br from-primary/20 to-secondary/20 text-primary font-bold shadow-[inset_0_0_15px_rgba(129,236,255,0.1)]'
                         : 'text-on-surface-variant hover:bg-white/5 hover:text-on-surface'
-                    }`}
+                      }`}
                   >
                     <span className={`text-xl font-medium transition-opacity ${activeChannelId === channel.id ? 'opacity-100' : 'opacity-40 group-hover/channel:opacity-70'}`}>#</span>
                     <span className="text-sm truncate">{channel.name}</span>
@@ -298,7 +295,7 @@ export const MainApplicationScreen: React.FC = () => {
               </h3>
               <div className="space-y-0.5">
                 {voiceChannels.map((channel) => (
-                  <div 
+                  <div
                     key={channel.id}
                     className="flex items-center justify-between px-3 py-2 rounded-xl text-on-surface-variant hover:bg-white/5 hover:text-on-surface transition-all cursor-pointer group/voice"
                   >
@@ -326,9 +323,9 @@ export const MainApplicationScreen: React.FC = () => {
         <footer className="p-3 bg-surface-container-lowest/30 backdrop-blur-md flex items-center gap-3">
           <div className="relative">
             {user?.email ? (
-               <div className="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center font-bold text-primary border border-outline-variant/20 shadow-md">
-                 {user.email.charAt(0).toUpperCase()}
-               </div>
+              <div className="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center font-bold text-primary border border-outline-variant/20 shadow-md">
+                {user.email.charAt(0).toUpperCase()}
+              </div>
             ) : (
               <img
                 className="w-10 h-10 rounded-full object-cover"
@@ -394,7 +391,7 @@ export const MainApplicationScreen: React.FC = () => {
               <input className="bg-transparent border-none focus:ring-0 text-sm text-on-surface placeholder:text-outline w-full" placeholder="Search the void..." type="text" />
             </div>
             <span className="material-symbols-outlined text-outline cursor-pointer hover:text-primary transition-colors">notifications</span>
-            <button 
+            <button
               onClick={() => setIsJoinModalOpen(true)}
               className="flex items-center justify-center p-1 rounded-lg text-outline hover:text-primary hover:bg-white/5 transition-all active:scale-90"
               title="Join a Server"
@@ -424,17 +421,16 @@ export const MainApplicationScreen: React.FC = () => {
                         {msg.sender.displayName}
                       </span>
                       <span className="text-[10px] text-outline font-headline uppercase tracking-[0.1em]">
-                        {new Date(msg.createdAt).toLocaleString([], { 
-                          hour: '2-digit', 
+                        {new Date(msg.createdAt).toLocaleString([], {
+                          hour: '2-digit',
                           minute: '2-digit',
                         })}
                       </span>
                     </div>
-                    <div className={`max-w-[80%] p-3 text-sm leading-relaxed shadow-sm border border-white/5 transition-all duration-300 ${
-                      isMine 
-                        ? 'bg-primary text-on-primary rounded-l-2xl rounded-tr-2xl' 
+                    <div className={`max-w-[80%] p-3 text-sm leading-relaxed shadow-sm border border-white/5 transition-all duration-300 ${isMine
+                        ? 'bg-primary text-on-primary rounded-l-2xl rounded-tr-2xl'
                         : 'bg-surface-container-high/80 text-on-surface rounded-r-2xl rounded-tl-2xl'
-                    }`}>
+                      }`}>
                       {msg.content}
                     </div>
                   </div>
@@ -448,7 +444,7 @@ export const MainApplicationScreen: React.FC = () => {
               </div>
               <h3 className="text-on-surface font-black text-3xl font-headline tracking-tight mb-3">The beginning of a new cluster</h3>
               <p className="text-on-surface-variant max-w-sm leading-relaxed">
-                Welcome to the <span className="text-primary font-bold">#{channels.find(c => c.id === activeChannelId)?.name || 'channel'}</span> channel. 
+                Welcome to the <span className="text-primary font-bold">#{channels.find(c => c.id === activeChannelId)?.name || 'channel'}</span> channel.
                 Start the conversation and ignite the void.
               </p>
             </div>
@@ -457,17 +453,17 @@ export const MainApplicationScreen: React.FC = () => {
         </div>
 
         <footer className="p-6 shrink-0">
-          <form 
+          <form
             onSubmit={handleSendMessage}
             className="bg-surface-container-high rounded-full flex items-center p-2 pl-6 gap-4 shadow-[0_8px_32px_rgba(0,0,0,0.5)] border border-outline-variant/10"
           >
             <button type="button" className="text-outline hover:text-primary transition-colors active:scale-90">
               <span className="material-symbols-outlined">add_circle</span>
             </button>
-            <input 
-              className="flex-1 bg-transparent border-none focus:ring-0 text-on-surface placeholder:text-outline/50" 
+            <input
+              className="flex-1 bg-transparent border-none focus:ring-0 text-on-surface placeholder:text-outline/50"
               placeholder={`Message #${channels.find(c => c.id === activeChannelId)?.name || 'channel'}`}
-              type="text" 
+              type="text"
               value={messageInput}
               onChange={(e) => setMessageInput(e.target.value)}
             />
@@ -475,7 +471,7 @@ export const MainApplicationScreen: React.FC = () => {
               <button type="button" className="p-2 text-outline hover:text-primary transition-colors active:scale-90">
                 <span className="material-symbols-outlined">mood</span>
               </button>
-              <button 
+              <button
                 type="submit"
                 disabled={!messageInput.trim()}
                 className="bg-primary text-on-primary w-10 h-10 rounded-full flex items-center justify-center hover:shadow-[0_0_15px_rgba(129,236,255,0.5)] transition-all active:scale-90 disabled:opacity-50 disabled:grayscale disabled:cursor-not-allowed"
@@ -574,12 +570,12 @@ export const MainApplicationScreen: React.FC = () => {
           )}
         </div>
       </aside>
-      <JoinServerModal 
-        isOpen={isJoinModalOpen} 
-        onClose={() => setIsJoinModalOpen(false)} 
+      <JoinServerModal
+        isOpen={isJoinModalOpen}
+        onClose={() => setIsJoinModalOpen(false)}
         onSuccess={() => {
           // Optionally reload servers or show success
-          window.location.reload(); 
+          window.location.reload();
         }}
       />
     </div>

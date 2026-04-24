@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import './index.css'
 import { LoginPage } from './pages/auth/LoginPage'
 import { RegisterPage } from './pages/auth/RegisterPage'
+import { InvitePreviewPage } from './pages/server/InvitePreviewPage'
 import { ServerEmptyPage } from './pages/server/ServerEmptyPage'
 import { CreateServerPage } from './pages/server/CreateServerPage'
 import { MainApplicationPage } from './pages/server/MainApplicationPage'
@@ -19,6 +20,7 @@ createRoot(document.getElementById('root')!).render(
         <Route path="/" element={<LoginPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/invite/:code" element={<InvitePreviewPage />} />
         
         {/* Protected Routes */}
         <Route 
