@@ -2,442 +2,474 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8"/>
-  <title>LiveBox Tester v2</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LiveBox Tester v3.2 - Pro</title>
   <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@7/bundles/stomp.umd.min.js"></script>
   <style>
+    :root {
+      --bg-dark: #0e1117;
+      --bg-card: #161b22;
+      --accent: #7c83f5;
+      --border: #30363d;
+      --text: #e6edf3;
+      --text-dim: #8b949e;
+      --success: #238636;
+      --danger: #da3633;
+      --sidebar-w: 240px;
+      --right-w: 300px;
+    }
     *{box-sizing:border-box;margin:0;padding:0}
-    body{font-family:'Segoe UI',system-ui,sans-serif;background:#0e1117;color:#e0e0e0;padding:20px;min-height:100vh}
-    h1{font-size:20px;font-weight:700;color:#7c83f5;margin-bottom:20px}
-    .layout{display:grid;grid-template-columns:340px 1fr;gap:16px;max-width:1280px;margin:0 auto}
-    .card{background:#161b27;border:1px solid #2a2f3e;border-radius:10px;padding:16px;margin-bottom:12px}
-    .card h2{font-size:11px;font-weight:700;color:#7c83f5;text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px}
-    label{display:block;font-size:11px;color:#8b93a7;margin:10px 0 3px}
-    input,select{width:100%;background:#0e1117;border:1px solid #2a2f3e;border-radius:6px;color:#e0e0e0;padding:8px 10px;font-size:12px;outline:none}
-    input:focus,select:focus{border-color:#7c83f5}
-    button{width:100%;margin-top:10px;padding:8px 14px;border-radius:6px;border:none;font-size:12px;font-weight:600;cursor:pointer;transition:opacity .2s}
-    button:disabled{opacity:.35;cursor:not-allowed}
-    .p{background:#7c83f5;color:#fff}.g{background:#22c55e;color:#fff}
-    .r{background:#ef4444;color:#fff}.y{background:#f59e0b;color:#0e1117}
-    .o{background:#8b5cf6;color:#fff}.teal{background:#14b8a6;color:#fff}
-    .row2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-    .row2 button{margin-top:0}
-    .dot{width:8px;height:8px;border-radius:50%;background:#2a2f3e;display:inline-block;margin-right:6px;transition:background .3s}
-    .dot.on{background:#22c55e;box-shadow:0 0 5px #22c55e}.dot.err{background:#ef4444}
-    .status{font-size:11px;color:#8b93a7;margin-top:8px;display:flex;align-items:center}
-    .token-box{margin-top:8px;background:#0e1117;border:1px solid #2a2f3e;border-radius:6px;padding:6px 10px;font-size:10px;color:#8b93a7;word-break:break-all;min-height:32px}
-    /* Right panel */
-    .tabs{display:flex;gap:4px;margin-bottom:12px;flex-wrap:wrap}
-    .tab{padding:5px 12px;border-radius:6px;border:none;font-size:11px;font-weight:600;cursor:pointer;background:#2a2f3e;color:#8b93a7;transition:all .2s}
-    .tab.active{background:#7c83f5;color:#fff}
-    .panel{display:none}.panel.active{display:block}
-    /* Chat */
-    .chat-wrap{display:flex;flex-direction:column;height:calc(100vh - 200px)}
-    .msg-list{flex:1;overflow-y:auto;background:#0e1117;border:1px solid #2a2f3e;border-radius:8px;padding:12px;display:flex;flex-direction:column;gap:8px;margin-bottom:10px}
-    .msg-list::-webkit-scrollbar{width:3px}.msg-list::-webkit-scrollbar-thumb{background:#2a2f3e;border-radius:3px}
-    .msg{display:flex;gap:8px;animation:fi .2s}
-    @keyframes fi{from{opacity:0;transform:translateY(3px)}to{opacity:1}}
-    .av{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#7c83f5,#a78bfa);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;color:#fff}
-    .mm{font-size:10px;color:#8b93a7;margin-bottom:1px}.mm strong{color:#c4c8e0;font-size:11px}
-    .mc{font-size:12px;background:#1e2333;border-radius:0 6px 6px 6px;padding:6px 10px;display:inline-block;max-width:500px;word-break:break-word;line-height:1.5}
-    .msg.sys .mc{background:transparent;color:#8b93a7;font-style:italic;font-size:11px}
-    .send-row{display:flex;gap:8px}
-    .send-row textarea{flex:1;background:#0e1117;border:1px solid #2a2f3e;border-radius:6px;color:#e0e0e0;padding:8px 10px;font-size:12px;resize:none;height:60px;font-family:inherit;outline:none}
-    .send-row textarea:focus{border-color:#f59e0b}
-    .send-row button{width:auto;margin:0;padding:8px 16px;flex-shrink:0;align-self:flex-end}
-    /* Log */
-    .log{background:#0e1117;border:1px solid #2a2f3e;border-radius:6px;padding:8px 10px;font-size:10px;font-family:Consolas,monospace;max-height:100px;overflow-y:auto;color:#8b93a7;margin-top:8px}
-    .log .ok{color:#22c55e}.log .err{color:#ef4444}.log .info{color:#7c83f5}
-    /* JSON output */
-    .json-out{background:#0e1117;border:1px solid #2a2f3e;border-radius:6px;padding:10px;font-size:11px;font-family:Consolas,monospace;max-height:350px;overflow-y:auto;white-space:pre-wrap;color:#a5d6a7;margin-top:8px}
+    body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;background:var(--bg-dark);color:var(--text);overflow:hidden;height:100vh;font-size:14px}
+    
+    /* Layout */
+    .app-container { 
+      display: grid; 
+      grid-template-columns: var(--sidebar-w) 1fr var(--right-w); 
+      height: 100vh; 
+      max-width: 100%;
+      margin: 0 auto;
+    }
+    
+    @media (max-width: 1200px) {
+      .app-container { grid-template-columns: 200px 1fr 250px; }
+      :root { --sidebar-w: 200px; --right-w: 250px; }
+    }
+
+    @media (max-width: 900px) {
+      .app-container { grid-template-columns: 60px 1fr 0px; }
+      .right-panel { display: none; }
+      .sidebar h1, .sidebar .nav-item span:not(.icon), .section-title { display: none; }
+      .sidebar-header { justify-content: center; padding: 10px 0; }
+      .logout-btn { font-size: 8px; padding: 2px 4px; }
+    }
+
+    /* Sidebar */
+    .sidebar { background: #010409; border-right: 1px solid var(--border); display: flex; flex-direction: column; }
+    .sidebar-header { padding: 12px 16px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+    .sidebar-header h1 { font-size: 14px; color: var(--accent); font-weight: 800; letter-spacing: 1px; }
+    .scroll-area { flex: 1; overflow-y: auto; padding: 8px; }
+    .section-title { font-size: 10px; font-weight: 600; color: var(--text-dim); text-transform: uppercase; margin: 12px 8px 6px; }
+    
+    /* List items */
+    .nav-item { display: flex; align-items: center; gap: 8px; padding: 6px 10px; border-radius: 6px; cursor: pointer; font-size: 13px; margin-bottom: 2px; color: var(--text-dim); transition: 0.2s; }
+    .nav-item:hover { background: #1f2328; color: var(--text); }
+    .nav-item.active { background: #1f2328; color: var(--accent); font-weight: 600; }
+    .nav-item .icon { width: 20px; height: 20px; border-radius: 4px; background: var(--border); display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; font-size: 11px; }
+    
+    /* Main Content (Chat) */
+    .main-content { display: flex; flex-direction: column; background: var(--bg-dark); min-width: 0; }
+    .main-header { height: 48px; border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 16px; gap: 12px; }
+    .main-header h2 { font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    
+    .chat-container { flex: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; }
+    #msgList { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+    #msgList::-webkit-scrollbar { width: 6px; }
+    #msgList::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+    
+    .msg { display: flex; gap: 10px; animation: fadeIn 0.2s; max-width: 80%; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: translateY(0); } }
+    .msg-av { width: 32px; height: 32px; border-radius: 50%; background: var(--accent); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 12px; }
+    .msg-body { flex: 1; min-width: 0; }
+    .msg-meta { font-size: 10px; color: var(--text-dim); margin-bottom: 2px; }
+    .msg-meta strong { color: var(--text); margin-right: 6px; font-size: 12px; }
+    .msg-content { font-size: 13px; line-height: 1.4; color: #d1d5db; word-break: break-word; background: #1f2328; padding: 6px 10px; border-radius: 0 10px 10px 10px; border: 1px solid var(--border); }
+    
+    /* Self messages */
+    .msg.self { align-self: flex-end; flex-direction: row-reverse; }
+    .msg.self .msg-content { background: #23416b; border-color: #388bfd; border-radius: 10px 0 10px 10px; }
+    .msg.self .msg-meta { text-align: right; }
+    .msg.self .msg-meta strong { margin-right: 0; margin-left: 6px; }
+    
+    .msg-system { text-align: center; color: var(--text-dim); font-size: 11px; font-style: italic; margin: 8px 0; }
+    
+    .chat-input-area { padding: 0 16px 16px; }
+    .input-box { background: #1f2328; border: 1px solid var(--border); border-radius: 8px; padding: 8px; display: flex; gap: 8px; align-items: center; }
+    .input-box textarea { flex: 1; background: transparent; border: none; outline: none; color: var(--text); resize: none; height: 20px; font-size: 13px; font-family: inherit; line-height: 20px; }
+    .input-box button { background: var(--accent); color: white; border: none; padding: 4px 10px; border-radius: 4px; font-weight: 600; cursor: pointer; font-size: 12px; }
+    .input-box button:disabled { opacity: 0.5; }
+    
+    /* Right Panel (Controls) */
+    .right-panel { background: var(--bg-card); border-left: 1px solid var(--border); overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 12px; }
+    .card { background: var(--bg-dark); border: 1px solid var(--border); border-radius: 8px; padding: 10px; }
+    .card h3 { font-size: 10px; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; }
+    
+    input, select { width: 100%; background: var(--bg-dark); border: 1px solid var(--border); border-radius: 4px; padding: 5px 8px; color: var(--text); font-size: 12px; margin-bottom: 6px; outline: none; }
+    button.btn { width: 100%; padding: 6px; border-radius: 4px; border: none; font-size: 11px; font-weight: 600; cursor: pointer; margin-top: 2px; transition: 0.2s; }
+    .btn-p { background: var(--accent); color: white; }
+    .btn-g { background: var(--success); color: white; }
+    .btn-r { background: var(--danger); color: white; }
+    
+    .status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; background: #484f58; margin-right: 4px; }
+    .status-dot.on { background: #3fb950; box-shadow: 0 0 6px #3fb950; }
+    
+    .log-box { font-family: monospace; font-size: 10px; height: 80px; overflow-y: auto; background: black; color: #8b949e; padding: 6px; border-radius: 4px; margin-top: 6px; }
+    .json-box { font-family: monospace; font-size: 10px; background: #010409; color: #7ee787; padding: 6px; border-radius: 4px; white-space: pre-wrap; overflow-x: auto; max-height: 150px; }
+
     /* Presence */
-    .member-grid{display:flex;flex-direction:column;gap:6px;margin-top:8px}
-    .member-row{display:flex;align-items:center;gap:8px;padding:6px 10px;background:#0e1117;border-radius:6px;font-size:12px}
-    .badge{font-size:10px;padding:2px 7px;border-radius:99px;font-weight:700}
-    .badge.online{background:#22c55e22;color:#22c55e}.badge.offline{background:#2a2f3e;color:#8b93a7}
+    .member-item { display: flex; align-items: center; gap: 8px; padding: 4px 6px; border-radius: 6px; font-size: 12px; }
+    .m-av { position: relative; }
+    .p-dot { position: absolute; bottom: -1px; right: -1px; width: 8px; height: 8px; border-radius: 50%; border: 2px solid var(--bg-card); background: #484f58; }
+    .p-dot.online { background: #3fb950; }
+
+    #loadingMore { text-align: center; font-size: 10px; color: var(--text-dim); display: none; padding: 8px; }
+    .logout-btn { background: transparent; border: 1px solid var(--danger); color: var(--danger); padding: 1px 6px; border-radius: 4px; font-size: 9px; cursor: pointer; }
+    .logout-btn:hover { background: var(--danger); color: white; }
   </style>
 </head>
 <body>
-<h1>📡 LiveBox API + WebSocket Tester v2</h1>
-<div class="layout">
 
-  <!-- LEFT: Controls -->
-  <div>
-    <!-- 1. Auth -->
-    <div class="card">
-      <h2>① Đăng nhập</h2>
-      <label>API Base URL</label><input id="baseUrl" value="http://localhost:8080"/>
-      <label>Email</label><input id="email" value="admin@livebox.com"/>
-      <label>Password</label><input id="password" type="password" value="admin123"/>
-      <button class="p" onclick="doLogin()">🔑 Login</button>
-      <div class="status"><div class="dot" id="authDot"></div><span id="authStatus">Chưa đăng nhập</span></div>
-      <div class="token-box" id="tokenDisplay">Token sẽ hiện ở đây...</div>
+<div class="app-container">
+  
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <h1>LIVEBOX</h1>
+      <button id="btnLogout" class="logout-btn" style="display:none" onclick="doLogout()">Logout</button>
     </div>
-
-    <!-- 2. WebSocket -->
-    <div class="card">
-      <h2>② WebSocket STOMP</h2>
-      <label>Server ID (UUID)</label><input id="serverId" placeholder="dùng cho presence subscription"/>
-      <label>Channel ID (UUID)</label><input id="channelId" placeholder="dùng cho chat"/>
-      <div class="row2" style="margin-top:10px">
-        <button class="g" id="btnConnect" onclick="connectWS()" disabled>⚡ Connect</button>
-        <button class="r" id="btnDisconnect" onclick="disconnectWS()" disabled>✕ Disconnect</button>
+    <div class="scroll-area">
+      <div class="section-title">Servers</div>
+      <div id="serverList">
+        <div class="msg-system">Login to see servers...</div>
       </div>
-      <div class="status"><div class="dot" id="wsDot"></div><span id="wsStatus">Chưa kết nối</span></div>
-    </div>
-
-    <!-- 3. Invite Flow -->
-    <div class="card">
-      <h2>③ Invite Flow (LB-202)</h2>
-      <label>Server ID (để tạo invite)</label><input id="invServerId"/>
-      <button class="o" onclick="createInvite()">🔗 Tạo Invite Link (Owner)</button>
-      <label>Invite Code</label><input id="invCode" placeholder="AB3F9C12"/>
-      <div class="row2" style="margin-top:10px">
-        <button class="p" onclick="previewInvite()">👁 Preview</button>
-        <button class="g" onclick="joinServer()">✅ Join Server</button>
+      
+      <div id="channelSection" style="display:none">
+        <div class="section-title">Channels</div>
+        <div id="channelList"></div>
       </div>
-    </div>
-
-    <!-- 4. Read/Unread -->
-    <div class="card">
-      <h2>④ Unread Badges (SCRUM-61, 63)</h2>
-      <label>Server ID</label><input id="unreadServerId"/>
-      <button class="teal" onclick="getUnread()">📊 Lấy Unread Counts</button>
-      <label>Channel ID (mark as read)</label><input id="readChannelId"/>
-      <button class="g" onclick="markRead()">✓ Mark as Read</button>
-    </div>
-
-    <!-- 5. Members -->
-    <div class="card">
-      <h2>⑤ Members + Presence (SCRUM-59)</h2>
-      <label>Server ID</label><input id="membersServerId"/>
-      <button class="teal" onclick="getMembers()">👥 Lấy Member List</button>
-    </div>
-  </div>
-
-  <!-- RIGHT: Output -->
-  <div>
-    <div class="tabs">
-      <button class="tab active" onclick="switchTab('chat')">💬 Chat Realtime</button>
-      <button class="tab" onclick="switchTab('presence')">🟢 Presence Events</button>
-      <button class="tab" onclick="switchTab('api')">📋 API Output</button>
-    </div>
-
-    <!-- Chat tab -->
-    <div class="panel active" id="tab-chat">
-      <div class="card" style="padding:12px">
-        <div class="chat-wrap">
-          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
-            <span style="font-size:12px;font-weight:600;color:#7c83f5">Channel:</span>
-            <span id="channelLabel" style="font-size:11px;color:#8b93a7">–</span>
-            <button style="width:auto;margin:0;padding:4px 10px;font-size:11px" class="p" id="btnHistory" onclick="loadHistory()" disabled>📜 Load History</button>
-            <button style="width:auto;margin:0;padding:4px 10px;font-size:11px" class="teal" id="btnMarkRead" onclick="markReadActive()" disabled>✓ Mark Read</button>
-          </div>
-          <div class="msg-list" id="msgList">
-            <div class="msg sys"><div class="mc">Connect WebSocket để bắt đầu...</div></div>
-          </div>
-          <div class="send-row">
-            <textarea id="msgInput" placeholder="Nhập tin nhắn... (Enter gửi, Shift+Enter xuống dòng)"
-              onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMsg();}"></textarea>
-            <button class="y" id="btnSend" onclick="sendMsg()" disabled>Gửi ➤</button>
-          </div>
-        </div>
-        <div class="log" id="chatLog"><span class="info">[SYSTEM] Sẵn sàng.</span></div>
-      </div>
-    </div>
-
-    <!-- Presence tab -->
-    <div class="panel" id="tab-presence">
-      <div class="card">
-        <h2>🟢 Presence Events (SCRUM-60) — /topic/servers/{id}/members</h2>
-        <div id="presenceLog" style="color:#8b93a7;font-size:12px;font-style:italic">Chưa có sự kiện nào. Connect WS và điền Server ID.</div>
-        <h2 style="margin-top:16px">👥 Member List (REST)</h2>
-        <div class="member-grid" id="memberGrid">
-          <div style="color:#8b93a7;font-size:12px;font-style:italic">Chưa tải. Dùng panel bên trái để fetch.</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- API tab -->
-    <div class="panel" id="tab-api">
-      <div class="card">
-        <h2>📋 API Response</h2>
-        <div id="apiLabel" style="font-size:11px;color:#8b93a7;margin-bottom:4px">Chưa có request nào.</div>
-        <div class="json-out" id="apiOut">–</div>
+      
+      <div class="section-title">Actions</div>
+      <div class="nav-item" onclick="$('inviteCodeInput').focus()">
+        <span class="icon">+</span> <span>Join by Code</span>
       </div>
     </div>
   </div>
+
+  <div class="main-content">
+    <div class="main-header">
+      <h2 id="currentName">Welcome</h2>
+      <div style="flex:1"></div>
+      <div id="wsBadge" class="status-dot"></div>
+      <span id="wsText" style="font-size:11px; color:var(--text-dim)">Offline</span>
+    </div>
+    
+    <div class="chat-container">
+      <div id="loadingMore">Loading history...</div>
+      <div id="msgList">
+        <div class="msg-system">Login and select a channel to start chatting.</div>
+      </div>
+      
+      <div class="chat-input-area">
+        <div class="input-box">
+          <textarea id="msgInput" placeholder="Message..." disabled
+            onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMsg();}"></textarea>
+          <button id="btnSend" onclick="sendMsg()" disabled>Send</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="right-panel">
+    <div class="card" id="loginCard">
+      <h3>Auth</h3>
+      <input id="baseUrl" value="http://localhost:8080" placeholder="Base URL"/>
+      <input id="email" value="demo@gmail.com" placeholder="Email"/>
+      <input id="password" type="password" value="123456" placeholder="Password"/>
+      <button class="btn btn-p" onclick="doLogin()">Login</button>
+    </div>
+    
+    <div class="card" id="userCard" style="display:none">
+      <h3>Account</h3>
+      <div style="display:flex; align-items:center; gap:8px">
+        <div id="authDot" class="status-dot"></div>
+        <span id="authStatus" style="font-weight:600; font-size:12px">User</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Join Server</h3>
+      <input id="inviteCodeInput" placeholder="Invite code"/>
+      <button class="btn btn-g" onclick="joinServerByCode()">Join</button>
+    </div>
+
+    <div class="card" id="memberCard" style="display:none">
+      <h3>Members</h3>
+      <div id="memberList"></div>
+    </div>
+
+    <div class="card">
+      <h3>API Debug</h3>
+      <div class="json-box" id="apiOut">{}</div>
+      <div class="log-box" id="sysLog">Ready.</div>
+    </div>
+  </div>
+
 </div>
 
 <script>
-let token = null, stompClient = null;
 const $ = id => document.getElementById(id);
+let token = null, currentUser = null, stompClient = null;
+let currentServerId = null, currentChannelId = null;
+let historyPage = 0, isLoadingHistory = false, hasMoreHistory = true;
 
-// ─── TABS ────────────────────────────────────────────────────────────────────
-function switchTab(name) {
-  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  $('tab-' + name).classList.add('active');
-  event.target.classList.add('active');
-}
-
-// ─── LOGGING ─────────────────────────────────────────────────────────────────
-function clog(msg, type='') {
-  const b = $('chatLog'), t = new Date().toLocaleTimeString('vi-VN');
-  b.innerHTML += `<br><span class="${type}">[${t}] ${msg}</span>`;
-  b.scrollTop = b.scrollHeight;
-}
-function showApi(label, json) {
-  $('apiLabel').textContent = label;
-  $('apiOut').textContent = JSON.stringify(json, null, 2);
-}
-function addMsg(data, hist=false) {
-  const list = $('msgList');
-  const s = data.sender || {displayName:'System'};
-  const t = data.createdAt ? new Date(data.createdAt).toLocaleTimeString('vi-VN') : '';
-  const d = document.createElement('div');
-  d.className = 'msg';
-  d.innerHTML = `<div class="av">${(s.displayName||'?')[0].toUpperCase()}</div>
-    <div><div class="mm"><strong>${hist?'[H] ':''}${esc(s.displayName)}</strong> · ${t}</div>
-    <div class="mc">${esc(data.content)}</div></div>`;
-  list.appendChild(d); list.scrollTop = list.scrollHeight;
-}
-function sysMsg(text) {
-  const d = document.createElement('div');
-  d.className = 'msg sys';
-  d.innerHTML = `<div class="mc">ℹ️ ${text}</div>`;
-  $('msgList').appendChild(d); $('msgList').scrollTop = $('msgList').scrollHeight;
-}
-function esc(s='') { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
-// ─── AUTH ─────────────────────────────────────────────────────────────────────
+// ─── AUTH & LOGOUT ────────────────────────────────────────────────────────────
 async function doLogin() {
-  const base=$('baseUrl').value.trim(), email=$('email').value.trim(), pw=$('password').value;
+  const base = $('baseUrl').value.trim();
+  const email = $('email').value.trim();
+  const password = $('password').value;
+  
   try {
-    clog(`Login ${email}...`, 'info');
-    const r = await fetch(`${base}/api/v1/auth/login`, {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({email, password:pw})
+    sysLog("Logging in...");
+    const res = await api('POST', '/api/v1/auth/login', { email, password }, false);
+    token = res.data.accessToken;
+    currentUser = res.data.user;
+    
+    $('loginCard').style.display = 'none';
+    $('userCard').style.display = 'block';
+    $('btnLogout').style.display = 'block';
+    
+    $('authDot').className = 'status-dot on';
+    $('authStatus').textContent = currentUser.username || currentUser.email;
+    sysLog(`Login OK. Welcome ${currentUser.username || email}!`);
+    
+    await loadMyServers();
+    connectWS();
+  } catch (e) {
+    sysLog("Login failed: " + e.message, "danger");
+  }
+}
+
+function doLogout() {
+  token = null; currentUser = null; currentServerId = null; currentChannelId = null;
+  if (stompClient) stompClient.deactivate();
+  $('loginCard').style.display = 'block';
+  $('userCard').style.display = 'none';
+  $('btnLogout').style.display = 'none';
+  $('channelSection').style.display = 'none';
+  $('memberCard').style.display = 'none';
+  $('serverList').innerHTML = '<div class="msg-system">Login to see servers...</div>';
+  $('msgList').innerHTML = '<div class="msg-system">Login and select a channel to start chatting.</div>';
+  $('currentName').textContent = 'Welcome';
+  $('msgInput').disabled = true;
+  $('btnSend').disabled = true;
+  $('wsBadge').className = 'status-dot';
+  $('wsText').textContent = 'Offline';
+  sysLog("Logged out.");
+}
+
+// ─── DATA LOADING ──────────────────────────────────────────────────────────────
+async function loadMyServers() {
+  try {
+    const res = await api('GET', '/api/v1/servers/me');
+    const servers = res.data || [];
+    const list = $('serverList');
+    list.innerHTML = '';
+    servers.forEach(s => {
+      const div = document.createElement('div');
+      div.className = 'nav-item';
+      div.innerHTML = `<span class="icon">${s.name[0]}</span> <span>${s.name}</span>`;
+      div.onclick = () => selectServer(s.id, s.name);
+      list.appendChild(div);
     });
-    const j = await r.json();
-    if (!r.ok) throw new Error(j.message || r.statusText);
-    token = j.data.accessToken;
-    $('authDot').className='dot on';
-    $('authStatus').textContent=`✅ ${j.data.user?.email || email}`;
-    $('tokenDisplay').textContent = token;
-    $('btnConnect').disabled = false;
-    clog('Login OK!', 'ok');
-    showApi('POST /auth/login', j);
-  } catch(e) {
-    $('authDot').className='dot err';
-    $('authStatus').textContent='❌ Login thất bại';
-    clog('Login lỗi: '+e.message, 'err');
+    if (servers.length === 0) list.innerHTML = '<div class="msg-system">No servers joined.</div>';
+  } catch (e) { sysLog("Load servers error: " + e.message); }
+}
+
+async function selectServer(id, name) {
+  currentServerId = id;
+  document.querySelectorAll('#serverList .nav-item').forEach(el => {
+    el.classList.remove('active');
+    if (el.textContent.trim().includes(name)) el.classList.add('active');
+  });
+  $('currentName').textContent = name;
+  $('channelSection').style.display = 'block';
+  $('memberCard').style.display = 'block';
+  await loadChannels(id);
+  await loadMembers(id);
+  subscribePresence(id);
+}
+
+async function loadChannels(serverId) {
+  try {
+    const res = await api('GET', `/api/v1/servers/${serverId}/channels`);
+    const channels = res.data || [];
+    const list = $('channelList');
+    list.innerHTML = '';
+    channels.forEach(c => {
+      const div = document.createElement('div');
+      div.className = 'nav-item';
+      div.innerHTML = `<span style="opacity:0.6; margin-right:4px">#</span> <span>${c.name}</span>`;
+      div.onclick = () => selectChannel(c.id, c.name);
+      list.appendChild(div);
+    });
+  } catch (e) { sysLog("Load channels error: " + e.message); }
+}
+
+async function loadMembers(serverId) {
+  try {
+    const res = await api('GET', `/api/v1/servers/${serverId}/members`);
+    const members = res.data || [];
+    const list = $('memberList');
+    list.innerHTML = '';
+    members.forEach(m => {
+      const div = document.createElement('div');
+      div.className = 'member-item';
+      div.setAttribute('data-uid', m.userId);
+      div.innerHTML = `
+        <div class="m-av">
+          <div class="msg-av" style="width:20px;height:20px;font-size:9px">${m.displayName[0]}</div>
+          <div class="p-dot ${m.online ? 'online' : ''}"></div>
+        </div>
+        <div style="flex:1">${m.displayName}</div>
+        <div style="font-size:9px; color:var(--text-dim)">${m.role}</div>
+      `;
+      list.appendChild(div);
+    });
+  } catch (e) { sysLog("Load members error: " + e.message); }
+}
+
+function selectChannel(id, name) {
+  currentChannelId = id;
+  document.querySelectorAll('#channelList .nav-item').forEach(el => {
+    el.classList.remove('active');
+    if (el.textContent.trim().includes(name)) el.classList.add('active');
+  });
+  $('currentName').textContent = "# " + name;
+  $('msgInput').disabled = false;
+  $('btnSend').disabled = false;
+  $('msgList').innerHTML = '';
+  historyPage = 0; hasMoreHistory = true;
+  loadChatHistory(id, 0);
+  subscribeChannel(id);
+}
+
+// ─── CHAT & PAGINATION ────────────────────────────────────────────────────────
+async function loadChatHistory(channelId, page) {
+  if (isLoadingHistory || !hasMoreHistory) return;
+  isLoadingHistory = true;
+  if (page > 0) $('loadingMore').style.display = 'block';
+
+  try {
+    const res = await api('GET', `/api/v1/channels/${channelId}/messages?page=${page}&size=10`);
+    const msgs = res.data.content || [];
+    if (msgs.length < 10) hasMoreHistory = false;
+    const list = $('msgList');
+    const oldHeight = list.scrollHeight;
+    msgs.forEach(m => renderMessage(m, true));
+    if (page === 0) list.scrollTop = list.scrollHeight;
+    else list.scrollTop = list.scrollHeight - oldHeight;
+    historyPage++;
+  } catch (e) { sysLog("History error: " + e.message); }
+  isLoadingHistory = false;
+  $('loadingMore').style.display = 'none';
+}
+
+$('msgList').onscroll = function() {
+  if (this.scrollTop < 50 && !isLoadingHistory && hasMoreHistory && currentChannelId) {
+    loadChatHistory(currentChannelId, historyPage);
+  }
+};
+
+function renderMessage(m, prepend = false) {
+  const list = $('msgList');
+  const d = document.createElement('div');
+  // FIX: sender object uses 'id' NOT 'userId'
+  const isMe = currentUser && m.sender.id === currentUser.id;
+  
+  d.className = 'msg' + (isMe ? ' self' : '');
+  const time = new Date(m.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  
+  d.innerHTML = `
+    <div class="msg-av">${(m.sender.displayName||'?')[0].toUpperCase()}</div>
+    <div class="msg-body">
+      <div class="msg-meta"><strong>${m.sender.displayName}</strong> ${time}</div>
+      <div class="msg-content">${m.content}</div>
+    </div>
+  `;
+  if (prepend) list.prepend(d);
+  else {
+    list.appendChild(d);
+    list.scrollTop = list.scrollHeight;
   }
 }
 
 // ─── WEBSOCKET ────────────────────────────────────────────────────────────────
+let activeChannelSub = null;
+let activePresenceSub = null;
+
 function connectWS() {
-  const base=$('baseUrl').value.trim();
-  const channelId=$('channelId').value.trim();
-  const serverId=$('serverId').value.trim();
-  if (!channelId && !serverId) { alert('Điền Channel ID hoặc Server ID!'); return; }
-  $('channelLabel').textContent = channelId ? channelId.slice(0,8)+'...' : '(chỉ presence)';
-  clog('Đang kết nối WS...', 'info');
+  if (stompClient) stompClient.deactivate();
   stompClient = new StompJs.Client({
-    webSocketFactory: () => new SockJS(`${base}/ws?token=${token}`)
+    webSocketFactory: () => new SockJS(`${$('baseUrl').value.trim()}/ws?token=${token}`)
   });
   stompClient.onConnect = () => {
-    $('wsDot').className='dot on'; $('wsStatus').textContent='✅ Đã kết nối STOMP';
-    $('btnDisconnect').disabled=false; $('btnConnect').disabled=true;
-    $('btnSend').disabled=false; $('btnHistory').disabled=false; $('btnMarkRead').disabled=false;
-    clog('Connected!', 'ok'); sysMsg('Đã kết nối STOMP!');
-
-    // Subscribe channel messages
-    if (channelId) {
-      stompClient.subscribe(`/topic/channels/${channelId}`, frame => {
-        const d = JSON.parse(frame.body);
-        clog(`MSG từ ${d.sender?.displayName}: ${d.content}`, 'ok');
-        addMsg(d);
-      });
-      clog(`Subscribed /topic/channels/${channelId}`, 'info');
-    }
-
-    // Subscribe presence events
-    if (serverId) {
-      stompClient.subscribe(`/topic/servers/${serverId}/members`, frame => {
-        const d = JSON.parse(frame.body);
-        const isOnline = d.status === 'ONLINE';
-        const icon = isOnline ? '🟢' : '🔴';
-        const color = isOnline ? '#22c55e' : '#ef4444';
-        const t = new Date().toLocaleTimeString('vi-VN');
-
-        // 1. Log vào presenceLog
-        const logEl = $('presenceLog');
-        const logRow = document.createElement('div');
-        logRow.style.cssText = `font-size:12px;padding:4px 0;border-bottom:1px solid #2a2f3e;color:${color}`;
-        logRow.textContent = `[${t}] ${icon} ${d.displayName} → ${d.status}`;
-        if (logEl.querySelector('div[style*="font-style"]')) logEl.innerHTML = '';
-        logEl.prepend(logRow);
-
-        // 2. Cập nhật badge trong member grid (nếu đã load)
-        const memberRow = document.querySelector(`[data-userid="${d.userId}"]`);
-        if (memberRow) {
-          const badge = memberRow.querySelector('.badge');
-          if (badge) {
-            badge.className = `badge ${isOnline ? 'online' : 'offline'}`;
-            badge.textContent = isOnline ? 'ONLINE' : 'offline';
-          }
-          // Cập nhật dot nhỏ
-          const dot = memberRow.querySelector('.presence-dot');
-          if (dot) {
-            dot.style.background = isOnline ? '#22c55e' : '#4a5568';
-            dot.style.boxShadow = isOnline ? '0 0 4px #22c55e' : 'none';
-          }
-        }
-
-        clog(`${icon} ${d.displayName} → ${d.status}`, isOnline ? 'ok' : 'info');
-      });
-      clog(`Subscribed /topic/servers/${serverId}/members (presence)`, 'info');
-    }
-
-    // Subscribe user notifications
-    stompClient.subscribe('/user/queue/notifications', frame => {
-      const d = JSON.parse(frame.body);
-      clog(`🔔 Notification: ${JSON.stringify(d)}`, 'info');
-    });
-  };
-  stompClient.onStompError = f => {
-    $('wsDot').className='dot err'; $('wsStatus').textContent='❌ STOMP Error';
-    clog('STOMP error: '+f.headers?.message, 'err');
+    $('wsBadge').className = 'status-dot on';
+    $('wsText').textContent = 'Connected';
+    sysLog("WS Connected");
   };
   stompClient.onDisconnect = () => {
-    $('wsDot').className='dot'; $('wsStatus').textContent='Đã ngắt kết nối';
-    $('btnConnect').disabled=false; $('btnDisconnect').disabled=true;
-    $('btnSend').disabled=true; clog('Disconnected.', 'info');
+    $('wsBadge').className = 'status-dot';
+    $('wsText').textContent = 'Disconnected';
   };
   stompClient.activate();
 }
 
-function disconnectWS() { stompClient?.deactivate(); }
+function subscribeChannel(id) {
+  if (activeChannelSub) activeChannelSub.unsubscribe();
+  activeChannelSub = stompClient.subscribe(`/topic/channels/${id}`, frame => {
+    renderMessage(JSON.parse(frame.body));
+  });
+}
 
-// ─── SEND MSG ─────────────────────────────────────────────────────────────────
+function subscribePresence(serverId) {
+  if (activePresenceSub) activePresenceSub.unsubscribe();
+  activePresenceSub = stompClient.subscribe(`/topic/servers/${serverId}/members`, frame => {
+    const event = JSON.parse(frame.body);
+    const el = document.querySelector(`[data-uid="${event.userId}"]`);
+    if (el) {
+      const dot = el.querySelector('.p-dot');
+      dot.className = `p-dot ${event.status === 'ONLINE' ? 'online' : ''}`;
+    }
+  });
+}
+
 function sendMsg() {
-  const ch=$('channelId').value.trim(), content=$('msgInput').value.trim();
-  if (!content || !stompClient?.connected) return;
-  stompClient.publish({ destination:`/app/channels/${ch}/send`, body:JSON.stringify({content}) });
-  $('msgInput').value=''; clog(`Sent: "${content}"`, 'info');
+  const content = $('msgInput').value.trim();
+  if (!content || !currentChannelId) return;
+  stompClient.publish({
+    destination: `/app/channels/${currentChannelId}/send`,
+    body: JSON.stringify({ content })
+  });
+  $('msgInput').value = '';
 }
 
-// ─── HISTORY ──────────────────────────────────────────────────────────────────
-async function loadHistory() {
-  const base=$('baseUrl').value.trim(), ch=$('channelId').value.trim();
+// ─── UTILS ────────────────────────────────────────────────────────────────────
+async function joinServerByCode() {
+  const code = $('inviteCodeInput').value.trim();
+  if (!code) return;
   try {
-    clog('Tải lịch sử...', 'info');
-    const r = await api('GET', `/api/v1/channels/${ch}/messages?page=0&size=20`);
-    const msgs = r.data?.content || [];
-    sysMsg(`📜 ${msgs.length} tin nhắn (trang 0):`);
-    [...msgs].reverse().forEach(m => addMsg(m, true));
-    clog(`Tải ${msgs.length} tin nhắn OK.`, 'ok');
-    showApi(`GET /channels/${ch}/messages`, r);
-  } catch(e) { clog('Lỗi history: '+e.message, 'err'); }
+    const res = await api('POST', `/api/v1/invites/${code}/join`);
+    sysLog("Joined server: " + res.data.name);
+    await loadMyServers();
+  } catch (e) { sysLog("Join error: " + e.message, "danger"); }
 }
 
-// ─── MARK AS READ ─────────────────────────────────────────────────────────────
-async function markReadActive() {
-  const ch=$('channelId').value.trim();
-  if (!ch) { alert('Cần Channel ID!'); return; }
-  $('readChannelId').value = ch;
-  await markRead();
-}
-async function markRead() {
-  const ch=$('readChannelId').value.trim();
-  try {
-    const r = await fetch(`${$('baseUrl').value.trim()}/api/v1/channels/${ch}/read`, {
-      method:'POST', headers:{Authorization:`Bearer ${token}`}
-    });
-    if (r.status===204) { clog('✓ Marked as read: '+ch, 'ok'); sysMsg('✓ Đã đánh dấu đã đọc'); }
-    else { const j=await r.json(); throw new Error(j.message); }
-  } catch(e) { clog('markRead lỗi: '+e.message, 'err'); }
-}
-
-// ─── UNREAD COUNTS ────────────────────────────────────────────────────────────
-async function getUnread() {
-  const sid=$('unreadServerId').value.trim();
-  try {
-    const r = await api('GET', `/api/v1/servers/${sid}/unread`);
-    showApi(`GET /servers/${sid}/unread`, r);
-    switchTab('api'); document.querySelectorAll('.tab')[2].classList.add('active');
-    document.querySelectorAll('.tab')[0].classList.remove('active');
-    clog(`Unread counts loaded: ${r.data?.length} channels`, 'ok');
-  } catch(e) { clog('Unread lỗi: '+e.message, 'err'); }
-}
-
-// ─── INVITE ───────────────────────────────────────────────────────────────────
-async function createInvite() {
-  const sid=$('invServerId').value.trim();
-  try {
-    const r = await api('POST', `/api/v1/servers/${sid}/invites`);
-    $('invCode').value = r.data?.code || '';
-    showApi(`POST /servers/${sid}/invites`, r);
-    clog(`Invite tạo: ${r.data?.code} — URL: ${r.data?.inviteUrl}`, 'ok');
-  } catch(e) { clog('Invite create lỗi: '+e.message, 'err'); }
-}
-async function previewInvite() {
-  const code=$('invCode').value.trim();
-  try {
-    const r = await api('GET', `/api/v1/invites/${code}`, false);
-    showApi(`GET /invites/${code} (preview)`, r);
-    clog(`Preview: ${r.data?.serverName} — ${r.data?.memberCount} members — alreadyMember: ${r.data?.alreadyMember}`, 'ok');
-  } catch(e) { clog('Preview lỗi: '+e.message, 'err'); }
-}
-async function joinServer() {
-  const code=$('invCode').value.trim();
-  try {
-    const r = await api('POST', `/api/v1/invites/${code}/join`);
-    showApi(`POST /invites/${code}/join`, r);
-    clog(`Joined server: ${r.data?.name}`, 'ok');
-  } catch(e) { clog('Join lỗi: '+e.message, 'err'); }
-}
-
-// ─── MEMBERS ──────────────────────────────────────────────────────────────────
-async function getMembers() {
-  const sid=$('membersServerId').value.trim();
-  try {
-    const r = await api('GET', `/api/v1/servers/${sid}/members`);
-    showApi(`GET /servers/${sid}/members`, r);
-    const grid=$('memberGrid'); grid.innerHTML='';
-    (r.data||[]).forEach(m => {
-      const row=document.createElement('div');
-      row.className='member-row';
-      row.setAttribute('data-userid', m.userId);
-      row.innerHTML=`
-        <div style="position:relative;flex-shrink:0">
-          <div class="av" style="width:26px;height:26px;font-size:10px">${(m.displayName||'?')[0]}</div>
-          <div class="presence-dot" style="position:absolute;bottom:0;right:0;width:8px;height:8px;border-radius:50%;border:2px solid #161b27;background:${m.online?'#22c55e':'#4a5568'};${m.online?'box-shadow:0 0 4px #22c55e':''}" ></div>
-        </div>
-        <span style="flex:1;font-size:12px">${esc(m.displayName)}</span>
-        <span style="font-size:10px;color:#8b93a7;margin-right:6px">${m.role}</span>
-        <span class="badge ${m.online?'online':'offline'}">${m.online?'ONLINE':'offline'}</span>`;
-      grid.appendChild(row);
-    });
-    clog(`Members loaded: ${r.data?.length}`, 'ok');
-    // auto switch to presence tab
-    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
-    document.querySelectorAll('.tab')[1].classList.add('active');
-    $('tab-presence').classList.add('active');
-  } catch(e) { clog('Members lỗi: '+e.message, 'err'); }
-}
-
-// ─── HELPER ───────────────────────────────────────────────────────────────────
-async function api(method, path, useAuth=true) {
-  const base=$('baseUrl').value.trim();
-  const headers={'Content-Type':'application/json'};
-  if (useAuth && token) headers['Authorization']=`Bearer ${token}`;
-  const r = await fetch(base+path, {method, headers});
-  const j = await r.json().catch(()=>({}));
+async function api(method, path, body = null, useAuth = true) {
+  const base = $('baseUrl').value.trim();
+  const headers = { 'Content-Type': 'application/json' };
+  if (useAuth && token) headers['Authorization'] = `Bearer ${token}`;
+  const options = { method, headers };
+  if (body) options.body = JSON.stringify(body);
+  const r = await fetch(base + path, options);
+  const j = await r.json().catch(() => ({}));
+  $('apiOut').textContent = JSON.stringify(j, null, 2);
   if (!r.ok) throw new Error(j.message || r.statusText);
   return j;
+}
+
+function sysLog(msg, type = "") {
+  const log = $('sysLog');
+  const t = new Date().toLocaleTimeString();
+  log.innerHTML = `<div style="color:${type === 'danger' ? '#f85149' : 'inherit'}">[${t}] ${msg}</div>` + log.innerHTML;
 }
 </script>
 </body>
