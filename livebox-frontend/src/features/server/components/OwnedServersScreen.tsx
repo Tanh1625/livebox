@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { channelApi } from '../../channel/api/channelApi';
 import { serverApi } from '../api/serverApi';
 import { ChannelResponse, ChannelType } from '../../channel/types';
 import { ServerResponse, ServerUpdateRequest } from '../types';
+import InviteFriendsModal from './InviteFriendsModal';
 
 type PopupVariant = 'success' | 'error';
 
@@ -80,6 +81,8 @@ export const OwnedServersScreen: React.FC = () => {
   const [channelEditId, setChannelEditId] = useState<string | null>(null);
   const [channelEditName, setChannelEditName] = useState('');
   const [isChannelRenameOpen, setIsChannelRenameOpen] = useState(false);
+  const [isInviteOpen, setIsInviteOpen] = useState(false);
+  const [inviteServer, setInviteServer] = useState<ServerResponse | null>(null);
 
   useEffect(() => {
     const fetchServers = async () => {
@@ -104,9 +107,18 @@ export const OwnedServersScreen: React.FC = () => {
     void fetchServers();
   }, []);
 
-  const closePopup = () => {
+  useEffect(() => {
+    if (popup && popup.variant === 'success') {
+      const timer = setTimeout(() => {
+        setPopup(null);
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [popup]);
+
+  const closePopup = useCallback(() => {
     setPopup(null);
-  };
+  }, []);
 
   const openEditServer = async (serverId: string) => {
     try {
@@ -134,6 +146,16 @@ export const OwnedServersScreen: React.FC = () => {
     setEditName('');
     setEditAvatarUrl('');
   };
+
+  const openInvite = useCallback((server: ServerResponse) => {
+    setInviteServer(server);
+    setIsInviteOpen(true);
+  }, []);
+
+  const closeInviteModal = useCallback(() => {
+    setIsInviteOpen(false);
+    setInviteServer(null);
+  }, []);
 
   const closeChannelsModal = () => {
     setIsChannelsOpen(false);
@@ -502,13 +524,14 @@ export const OwnedServersScreen: React.FC = () => {
                         <span className="material-symbols-outlined text-sm">edit</span>
                         {loadingServerId === server.id ? 'Dang mo...' : 'Chinh sua server'}
                       </button>
-                      {/* <button
+                      <button
                         type="button"
-                        onClick={() => navigate('/app/main')}
+                        onClick={() => openInvite(server)}
                         className="w-12 h-12 flex items-center justify-center bg-surface-container-high rounded-xl text-primary hover:bg-surface-bright transition-colors"
+                        title="Create invite link"
                       >
-                        <span className="material-symbols-outlined">settings</span>
-                      </button> */}
+                        <span className="material-symbols-outlined">person_add</span>
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -519,7 +542,7 @@ export const OwnedServersScreen: React.FC = () => {
       </main>
 
       {popup && (
-        <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
+        <div className="fixed inset-0 z-[80] flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
           <div className={`w-full max-w-md rounded-2xl border p-6 shadow-[0_24px_64px_rgba(0,0,0,0.45)] ${popup.variant === 'success' ? 'border-primary/30 bg-surface-container' : 'border-error/40 bg-surface-container'}`}>
             <div className="flex items-start justify-between gap-4">
               <div>
@@ -873,6 +896,15 @@ export const OwnedServersScreen: React.FC = () => {
             </form>
           </div>
         </div>
+      )}
+
+      {isInviteOpen && inviteServer && (
+        <InviteFriendsModal
+          server={inviteServer}
+          onClose={closeInviteModal}
+          onSuccess={(msg) => setPopup({ title: 'Success', message: msg, variant: 'success' })}
+          onError={(msg) => setPopup({ title: 'Error', message: msg, variant: 'error' })}
+        />
       )}
     </div>
   );

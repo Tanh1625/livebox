@@ -1,8 +1,22 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuthStore } from '../../auth/store/authStore';
 
 export const ServerEmptyScreen: React.FC = () => {
   const navigate = useNavigate();
+  const logout = useAuthStore((state) => state.logout);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+
+  const handleLogout = () => {
+    setIsSettingsOpen(false);
+    logout();
+    navigate('/login');
+  };
+
+  const handleViewOwnedServers = () => {
+    setIsSettingsOpen(false);
+    navigate('/servers/owned');
+  };
 
   return (
     <div className="bg-background text-on-surface font-body overflow-hidden min-h-screen">
@@ -36,16 +50,42 @@ export const ServerEmptyScreen: React.FC = () => {
           </nav>
         </div>
         {/* Footer Area: Settings + Profile */}
-        <div className="flex flex-col items-center gap-6 w-full">
-          <div className="bg-[#1c2128] hover:bg-[#2d333b] rounded-[2rem] hover:rounded-2xl transition-all duration-300 p-3 text-slate-400 cursor-pointer active:scale-95 hover:scale-110">
-            <span className="material-symbols-outlined">settings</span>
-          </div>
-          {/* Profile Avatar */}
-          <div className="relative group cursor-pointer">
+        <div className="flex flex-col items-center gap-6 w-full relative">
+          <button
+            type="button"
+            onClick={() => setIsSettingsOpen((prev) => !prev)}
+            className="p-1.5 rounded-lg hover:bg-white/5 transition-colors text-outline hover:text-primary active:scale-95"
+            aria-label="Open settings menu"
+            title="Settings"
+          >
+            <span className="material-symbols-outlined text-xl">settings</span>
+          </button>
+
+          {isSettingsOpen && (
+            <div className="absolute left-16 bottom-0 w-56 rounded-xl border border-outline-variant/30 bg-surface-container-high shadow-[0_12px_28px_rgba(0,0,0,0.45)] p-1 z-20">
+              <button
+                type="button"
+                onClick={handleViewOwnedServers}
+                className="w-full text-left px-3 py-2 rounded-lg text-sm text-on-surface hover:bg-white/5 transition-colors"
+              >
+                Xem server của bạn
+              </button>
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="w-full text-left px-3 py-2 rounded-lg text-sm text-error hover:bg-error/15 transition-colors"
+              >
+                Logout
+              </button>
+            </div>
+          )}
+        </div>
+        {/* Profile Avatar */}
+        {/* <div className="relative group cursor-pointer">
             <img alt="User Profile Avatar" className="w-12 h-12 rounded-2xl object-cover border-2 border-transparent group-hover:border-secondary transition-all duration-300" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA6EzhVKTAThzw-HzDRFwr4EYzdUeuUlFaiGPAcCVmsV5m-K56fZVq7YSwIyq5LGAUNEziAeraZraM-tlLF1ZEZcY2-UeHOFi0IbPQIcKQcB9beupOPk796zBkAdE2GvPgAzaRZCsAc2QjI-3Sbi0w6LFHvkVlo1gX0U4URHzA1Q45EuP7LoC2cvZuDxXS-n7JtV1IWh_ZZBi58wzv5kUhLaJMN6dvRMoV37zFb-XGEh2kRwRZOjgh6TH0f8GLmn-tMqhaQ294L_x0" />
             <div className="absolute bottom-0 right-0 w-3 h-3 bg-primary-dim rounded-full border-2 border-[#0b0e14]"></div>
-          </div>
-        </div>
+          </div> */}
+
       </aside>
 
       {/* Main Content Area */}
@@ -82,7 +122,7 @@ export const ServerEmptyScreen: React.FC = () => {
 
           {/* Action Cluster */}
           <div className="flex flex-col sm:flex-row items-center gap-6">
-            <button 
+            <button
               onClick={() => navigate('/servers/create')}
               className="px-10 py-5 bg-gradient-to-br from-primary to-secondary rounded-xl text-on-primary font-display font-bold uppercase tracking-widest text-sm neon-glow-primary hover:scale-105 active:scale-95 transition-all duration-300"
             >
@@ -119,7 +159,7 @@ export const ServerEmptyScreen: React.FC = () => {
       </main>
 
       {/* User Profile Strip */}
-      <div className="fixed bottom-0 left-20 z-50 p-6 flex items-center gap-4 bg-gradient-to-t from-background via-background/80 to-transparent w-64 transition-all duration-300">
+      {/* <div className="fixed bottom-0 left-20 z-50 p-6 flex items-center gap-4 bg-gradient-to-t from-background via-background/80 to-transparent w-64 transition-all duration-300">
         <div className="relative">
           <img alt="User Profile Avatar" className="w-10 h-10 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD_98C090Rmf_l2mC2XtdrBsaCDHn9WZNU_LyYMvh90w9TgH-Fu0_7uBOOTh3pvOIE8McVRHup26HNtwJdBahq6w9gypvGamQZtQbR9h-6h15_d70ac0kIKdND0BTKaHt8UzIvUc11BqYQFjpjd4f_NQP-sIQAN2pTXTNfzp5SoTx1K9UV_tZIY1X6vNDAqAQGro2I2hm7Fqqu5d1UgjYb4MU5mxwtgOBenmsd3qsTbzMb8h-AIBXN1bWJtzagKLdRkUSxn7F0c4eM" />
           <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-primary-dim rounded-full border border-background"></div>
@@ -131,7 +171,7 @@ export const ServerEmptyScreen: React.FC = () => {
         <div className="ml-auto text-slate-500 hover:text-on-surface cursor-pointer">
           <span className="material-symbols-outlined text-sm">more_vert</span>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };
