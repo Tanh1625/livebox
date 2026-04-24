@@ -1,8 +1,8 @@
-import React, { useEffect, useState, useMemo, useRef } from 'react';
+import React, { useEffect, useState, useMemo, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../../auth/store/authStore';
 import { serverApi } from '../api/serverApi';
-import type { ServerResponse } from '../types';
+import type { MemberStatusResponse, ServerResponse } from '../types';
 import { channelApi } from '../../channel/api/channelApi';
 import type { ChannelResponse } from '../../channel/types';
 import { useWebSocket } from '../../../hooks/useWebSocket';
@@ -13,7 +13,7 @@ import type { MessageResponse } from '../../message/types';
 
 export const MainApplicationScreen: React.FC = () => {
   const navigate = useNavigate();
-  const logout = useAuthStore((state) => state.logout);
+  const { logout, user } = useAuthStore();
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isJoinModalOpen, setIsJoinModalOpen] = useState(false);
   const [joinedServers, setJoinedServers] = useState<ServerResponse[]>([]);
@@ -26,6 +26,34 @@ export const MainApplicationScreen: React.FC = () => {
   const [isLoadingMessages, setIsLoadingMessages] = useState(false);
   const [messageInput, setMessageInput] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const [members, setMembers] = useState<MemberStatusResponse[]>([]);
+  const [isLoadingMembers, setIsLoadingMembers] = useState(false);
+
+  // Fetch members logic
+  const fetchMembers = useCallback(async (showLoading = true) => {
+    if (!selectedServerId) {
+      setMembers([]);
+      return;
+    }
+    try {
+      if (showLoading) setIsLoadingMembers(true);
+      const data = await serverApi.getServerMembers(selectedServerId);
+      setMembers(data);
+    } catch (error) {
+      console.error('Failed to fetch members:', error);
+    } finally {
+      if (showLoading) setIsLoadingMembers(false);
+    }
+  }, [selectedServerId]);
+
+  // Initial fetch when server changes
+  useEffect(() => {
+    fetchMembers(true);
+  }, [fetchMembers]);
+
+  const onlineMembers = useMemo(() => members.filter(m => m.online), [members]);
+  const offlineMembers = useMemo(() => members.filter(m => !m.online), [members]);
 
   const selectedServer = useMemo(() => 
     joinedServers.find(s => s.id === selectedServerId), 
@@ -43,56 +71,61 @@ export const MainApplicationScreen: React.FC = () => {
     [channels]
   );
 
+  // Fetch messages logic
+  const fetchMessages = useCallback(async (showLoader = true) => {
+    if (!activeChannelId) {
+      setMessages([]);
+      return;
+    }
+
+    try {
+      if (showLoader) setIsLoadingMessages(true);
+      const data = await messageApi.getMessages(activeChannelId);
+      
+      if (data && Array.isArray(data.content)) {
+        // Backend returns Page<MessageResponse>, newest first (DESC)
+        // For display, we want chronological order (oldest at top)
+        setMessages([...data.content].reverse());
+      } else {
+        setMessages([]);
+      }
+    } catch (error) {
+      console.error('Failed to fetch messages:', error);
+    } finally {
+      if (showLoader) setIsLoadingMessages(false);
+    }
+  }, [activeChannelId]);
+
   // Fetch messages when channel changes
   useEffect(() => {
-    const fetchMessages = async () => {
-      if (!activeChannelId) {
-        setMessages([]);
-        return;
-      }
-
-      try {
-        setIsLoadingMessages(true);
-        console.log('Fetching messages for channel:', activeChannelId);
-        const data = await messageApi.getMessages(activeChannelId);
-        console.log('Messages received:', data);
-        
-        if (data && Array.isArray(data.content)) {
-          // Backend returns Page<MessageResponse>, newest first (DESC)
-          // For display, we want chronological order (oldest at top)
-          setMessages([...data.content].reverse());
-        } else {
-          setMessages([]);
-        }
-      } catch (error) {
-        console.error('Failed to fetch messages:', error);
-      } finally {
-        setIsLoadingMessages(false);
-      }
-    };
-
-    void fetchMessages();
-  }, [activeChannelId]);
+    void fetchMessages(true);
+  }, [fetchMessages]);
 
   // WebSocket integration
   const { sendMessage } = useWebSocket({
     channelId: activeChannelId,
+    serverId: selectedServerId,
     onMessageReceived: (newMsg) => {
       setMessages((prev) => {
         // Prevent duplicate messages if already present in history
         if (prev.some(m => m.id === newMsg.id)) return prev;
         return [...prev, newMsg];
       });
+    },
+    onMemberStatusChanged: () => {
+      // Trigger a silent refresh of the member list to get latest status and counts
+      void fetchMembers(false);
     }
   });
 
-  const handleSendMessage = (e?: React.FormEvent) => {
+  const handleSendMessage = async (e?: React.FormEvent) => {
     e?.preventDefault();
     if (!messageInput.trim()) return;
 
     const sent = sendMessage(messageInput.trim());
     if (sent) {
       setMessageInput('');
+      // UI will be updated via WebSocket broadcast
     }
   };
 
@@ -292,15 +325,23 @@ export const MainApplicationScreen: React.FC = () => {
 
         <footer className="p-3 bg-surface-container-lowest/30 backdrop-blur-md flex items-center gap-3">
           <div className="relative">
-            <img
-              className="w-10 h-10 rounded-full object-cover"
-              alt="User avatar"
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuCrcQqYCdjdv2LMgywEgtJJW9i0gyIG4Mg4g6FLK5cMEHosDGQ2d1iaZ_dfiN6dntZa_IrvCj6NrUE1T2QVXgSG-MidVNKCmZWJQzptAOdJC3PteNyaCjtYhjLYCT0vH3SJYEDtJFXKQ5_8QIT-xGRdVFUOyrB5-s7NHwtptbgXYSK_LAXh7XejB4r4R0LKMuRoA7uHLiGv5JR0uqoTqtcRouaYlOrR6YbPtNFnXmdbBVwy_4fpjPqI1V1Di907P-zRW_qwK1OgKOA"
-            />
+            {user?.email ? (
+               <div className="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center font-bold text-primary border border-outline-variant/20 shadow-md">
+                 {user.email.charAt(0).toUpperCase()}
+               </div>
+            ) : (
+              <img
+                className="w-10 h-10 rounded-full object-cover"
+                alt="User avatar"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCrcQqYCdjdv2LMgywEgtJJW9i0gyIG4Mg4g6FLK5cMEHosDGQ2d1iaZ_dfiN6dntZa_IrvCj6NrUE1T2QVXgSG-MidVNKCmZWJQzptAOdJC3PteNyaCjtYhjLYCT0vH3SJYEDtJFXKQ5_8QIT-xGRdVFUOyrB5-s7NHwtptbgXYSK_LAXh7XejB4r4R0LKMuRoA7uHLiGv5JR0uqoTqtcRouaYlOrR6YbPtNFnXmdbBVwy_4fpjPqI1V1Di907P-zRW_qwK1OgKOA"
+              />
+            )}
             <div className="absolute bottom-0 right-0 w-3 h-3 bg-primary rounded-full ring-2 ring-surface shadow-[0_0_8px_#81ecff]"></div>
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-bold text-on-surface truncate">Lan Anh</p>
+            <p className="text-sm font-bold text-on-surface truncate">
+              {user?.email ? user.email.split('@')[0] : 'Guest'}
+            </p>
             <p className="text-[10px] text-outline truncate tracking-wider uppercase font-headline">Ignition Active</p>
           </div>
           <div className="flex gap-1 relative">
@@ -370,32 +411,36 @@ export const MainApplicationScreen: React.FC = () => {
               <p className="text-outline text-sm font-headline tracking-widest uppercase">Deciphering signals...</p>
             </div>
           ) : messages.length > 0 ? (
-            messages.map((msg) => (
-              <div key={msg.id} className="flex items-start gap-4 max-w-2xl group">
-                <img
-                  className="w-10 h-10 rounded-full mt-1 border border-outline-variant/20 shadow-sm"
-                  alt={msg.sender.displayName}
-                  src={msg.sender.avatarUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(msg.sender.displayName)}&background=random`}
-                />
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2">
-                    <span className="font-bold text-on-surface hover:text-primary transition-colors cursor-pointer">{msg.sender.displayName}</span>
-                    <span className="text-[10px] text-outline font-headline uppercase tracking-[0.1em]">
-                      {new Date(msg.createdAt).toLocaleString([], { 
-                        hour: '2-digit', 
-                        minute: '2-digit',
-                        hour12: true,
-                        day: '2-digit',
-                        month: '2-digit'
-                      })}
-                    </span>
+            messages.map((msg) => {
+              const isMine = user?.id === msg.sender.id;
+              return (
+                <div key={msg.id} className={`flex gap-4 group hover:bg-white/5 px-2 py-1 rounded-xl transition-all duration-300 ${isMine ? 'flex-row-reverse' : ''}`}>
+                  <div className="w-10 h-10 rounded-full bg-surface-container-highest flex-shrink-0 flex items-center justify-center font-bold text-primary border border-outline-variant/20 shadow-md">
+                    {(msg.sender.displayName || '?').charAt(0).toUpperCase()}
                   </div>
-                  <div className="bg-surface-container-high/80 p-4 rounded-r-2xl rounded-bl-2xl text-on-surface leading-relaxed shadow-sm border border-white/5 group-hover:bg-surface-bright transition-all duration-300">
-                    {msg.content}
+                  <div className={`flex-1 min-w-0 flex flex-col ${isMine ? 'items-end' : 'items-start'}`}>
+                    <div className={`flex items-center gap-2 mb-1 ${isMine ? 'flex-row-reverse' : ''}`}>
+                      <span className="font-bold text-on-surface hover:text-primary transition-colors cursor-pointer text-sm">
+                        {msg.sender.displayName}
+                      </span>
+                      <span className="text-[10px] text-outline font-headline uppercase tracking-[0.1em]">
+                        {new Date(msg.createdAt).toLocaleString([], { 
+                          hour: '2-digit', 
+                          minute: '2-digit',
+                        })}
+                      </span>
+                    </div>
+                    <div className={`max-w-[80%] p-3 text-sm leading-relaxed shadow-sm border border-white/5 transition-all duration-300 ${
+                      isMine 
+                        ? 'bg-primary text-on-primary rounded-l-2xl rounded-tr-2xl' 
+                        : 'bg-surface-container-high/80 text-on-surface rounded-r-2xl rounded-tl-2xl'
+                    }`}>
+                      {msg.content}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))
+              );
+            })
           ) : (
             <div className="flex flex-col items-center justify-center h-full text-center opacity-60 py-20">
               <div className="w-24 h-24 bg-surface-container-highest/50 rounded-full flex items-center justify-center mb-8 border border-outline-variant/10 shadow-xl">
@@ -444,84 +489,89 @@ export const MainApplicationScreen: React.FC = () => {
 
       <aside className="w-60 bg-surface-container-low shrink-0 hidden lg:flex flex-col">
         <div className="p-6 overflow-y-auto">
-          <section className="mb-8">
-            <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-outline font-headline mb-4">Online - 3</h3>
-            <div className="space-y-4">
-              <div className="flex items-center gap-3 group cursor-pointer">
-                <div className="relative">
-                  <img
-                    className="w-8 h-8 rounded-full object-cover grayscale-0 group-hover:ring-2 ring-primary ring-offset-2 ring-offset-surface transition-all"
-                    alt="Member avatar"
-                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuCHl6MX6Ch2pc6wyq6zAHmL-BAE7FX_-pwqBcXoxNpprHpicgpDKmvcjkYKThtS1r5L9Q2HIYWegr1Fx4jGtcc_f6M4wSnZ6da693WXr13eh2BEyck2tIqxpYrFu7QaaxAoZRSiogkcmQOZMlYWfRMYMOsnedcxJIEfiAxT10su3_PfnWBnkR7dPaKnemyL47KsRAK_Fp6oYbSBdFrDTCYfbW4YcqwunJLNWkJ8x_lIDhsWxDSCaerfpdnhMZ3Ta-Xetifo64i_Vaw"
-                  />
-                  <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-primary rounded-full ring-2 ring-surface-container-low shadow-[0_0_8px_#81ecff]"></div>
-                </div>
-                <div className="min-w-0">
-                  <p className="text-sm font-semibold text-on-surface truncate group-hover:text-primary transition-colors">Marcus</p>
-                  <p className="text-[10px] text-outline truncate uppercase tracking-tighter">Syncing Neurons</p>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-3 group cursor-pointer">
-                <div className="relative">
-                  <img
-                    className="w-8 h-8 rounded-full object-cover group-hover:ring-2 ring-primary ring-offset-2 ring-offset-surface transition-all"
-                    alt="Member avatar"
-                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuAA38dhJuHOLhaM8nXrP8YXnnft1uYkf7ijPjOfC5oYdFVMyowMuFJ19jf_cUMnNqy--_p_iC1f72oaw00_SqeOEFxIh-Ct0YscxUNNWPus5z9yKCWLGDjLBWCkuFy4f85GiDwb_wpT7fDmnvDxkcM5HgXNpiVWLuc5bpU-Qxk6HGl_bgKYxTJjnPbNkg7IjV5V5ktLw1E8yoMMylre45vBUGa9sGOWIyLgJcPDq-kwUeCDT569mIoKH-gdRroiWGc51vEkqMGxWbc"
-                  />
-                  <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-primary rounded-full ring-2 ring-surface-container-low shadow-[0_0_8px_#81ecff]"></div>
-                </div>
-                <div className="min-w-0">
-                  <p className="text-sm font-semibold text-secondary truncate group-hover:text-primary transition-colors">Sarah</p>
-                  <p className="text-[10px] text-outline truncate uppercase tracking-tighter">Designing Reality</p>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-3 group cursor-pointer opacity-80">
-                <div className="relative">
-                  <img
-                    className="w-8 h-8 rounded-full object-cover"
-                    alt="User avatar"
-                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuCGbR60etsfgpCoPlidAN9R2zgfewaBsDKRwkg6eyTY0vW5QZaN9FCNLwIwj1ntJhfrF1O3CFI7eOOyEOzCt0hxtGXwTKjNMqV_NpdMg6dT1wow_Ps2WrLV09_1GxV0gPsmMBUOqzIIpCDRNMGV9ytn7pn1F5VKg7ADhHLSTeBMMwso7LWsdeqBFHrqgokJSc93J633DMmJCtUWlUhEcoPkTRo0_sbZ8bLTKtWodM09GKxHtZHPxXR_kECWhMQdHUCi1C8NilYL9Rw"
-                  />
-                  <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-primary rounded-full ring-2 ring-surface-container-low shadow-[0_0_8px_#81ecff]"></div>
-                </div>
-                <div className="min-w-0">
-                  <p className="text-sm font-semibold text-on-surface truncate">Lan Anh</p>
-                  <p className="text-[10px] text-outline truncate uppercase tracking-tighter">Active Hub</p>
-                </div>
-              </div>
+          {isLoadingMembers ? (
+            <div className="flex flex-col items-center py-10 gap-2 opacity-50">
+              <div className="w-6 h-6 border-2 border-primary/20 border-t-primary rounded-full animate-spin"></div>
+              <p className="text-[10px] uppercase tracking-widest font-headline">Scanning...</p>
             </div>
-          </section>
+          ) : (
+            <>
+              {onlineMembers.length > 0 && (
+                <section className="mb-8">
+                  <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-outline font-headline mb-4">
+                    Online — {onlineMembers.length}
+                  </h3>
+                  <div className="space-y-4">
+                    {onlineMembers.map((member) => (
+                      <div key={member.userId} className="flex items-center gap-3 group cursor-pointer">
+                        <div className="relative flex-shrink-0">
+                          {member.avatarUrl ? (
+                            <img
+                              className="w-8 h-8 rounded-full object-cover group-hover:ring-2 ring-primary ring-offset-2 ring-offset-surface transition-all"
+                              alt={member.displayName}
+                              src={member.avatarUrl}
+                            />
+                          ) : (
+                            <div className="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center font-bold text-primary text-xs border border-outline-variant/20">
+                              {member.displayName.charAt(0).toUpperCase()}
+                            </div>
+                          )}
+                          <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-primary rounded-full ring-2 ring-surface-container-low shadow-[0_0_8px_#81ecff]"></div>
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-sm font-semibold text-on-surface truncate group-hover:text-primary transition-colors">
+                            {member.displayName}
+                          </p>
+                          <p className="text-[10px] text-outline truncate uppercase tracking-tighter">
+                            {member.role === 'OWNER' ? 'System Admin' : 'Inhabitant'}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              )}
 
-          <section>
-            <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-outline font-headline mb-4">Offline - 14</h3>
-            <div className="space-y-4 opacity-50">
-              <div className="flex items-center gap-3 grayscale cursor-not-allowed">
-                <div className="relative">
-                  <img
-                    className="w-8 h-8 rounded-full object-cover"
-                    alt="Member avatar"
-                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuB3yc72t0U-dP0r0h2YqONV_DK5B__OMsFVsULoFuxX4VdEA8dLnXftajoqbjEAhcqPkCwMJLkpgp337SscRRUlq0ZtMUFXPrb7fUFjCFP2fw2cn7n4huk53cPdqek9H6zzPwbG78lhMEk-EQ7lhq8gfgJ0mbecR4UTIMgmQ7KPTHp0eXnV3sxZrzfVrM1YCjBo3gVqVHIhIz3ICpdjx-wdPQvGEtSXtL8soEO0ivb44jCacVjhgwW5qi79GNFdeEgXDI-aP1faCcw"
-                  />
-                  <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-outline rounded-full ring-2 ring-surface-container-low"></div>
-                </div>
-                <p className="text-sm font-semibold text-outline">Dave_V</p>
-              </div>
+              {offlineMembers.length > 0 && (
+                <section>
+                  <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-outline font-headline mb-4">
+                    Offline — {offlineMembers.length}
+                  </h3>
+                  <div className="space-y-4 opacity-50">
+                    {offlineMembers.map((member) => (
+                      <div key={member.userId} className="flex items-center gap-3 grayscale group cursor-not-allowed">
+                        <div className="relative flex-shrink-0">
+                          {member.avatarUrl ? (
+                            <img
+                              className="w-8 h-8 rounded-full object-cover"
+                              alt={member.displayName}
+                              src={member.avatarUrl}
+                            />
+                          ) : (
+                            <div className="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center font-bold text-outline text-xs border border-outline-variant/20">
+                              {member.displayName.charAt(0).toUpperCase()}
+                            </div>
+                          )}
+                          <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-outline rounded-full ring-2 ring-surface-container-low"></div>
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-sm font-semibold text-outline truncate">
+                            {member.displayName}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              )}
 
-              <div className="flex items-center gap-3 grayscale cursor-not-allowed">
-                <div className="relative">
-                  <img
-                    className="w-8 h-8 rounded-full object-cover"
-                    alt="Member avatar"
-                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuAmHUpoTjltGXevM83IS6oKgmzvJJ9VF2NVn-kRThVgl_Hoq9ZP-COoHOV2PXnlrpcN-n51_3M2EPkLhzbV9RXqPFkyNGsCwgUDZSQeIQJYnysPiusePjH3DDFW6eN_fuSCF6kls0CcbgN9XKmXM866IhX6SqmXMHV5s3UPK9EC69zyqOtdcqUq06gUyKcdDApeK50IKTbbckOhuRtPtY5dPGmbddslrWB-Po51UrukzjO8YXaPC0YiQnuG2GzJFGmauCY0KZnv4eo"
-                  />
-                  <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-outline rounded-full ring-2 ring-surface-container-low"></div>
+              {members.length === 0 && (
+                <div className="py-10 text-center opacity-40">
+                  <p className="text-[10px] uppercase tracking-widest font-headline">Alone in the void</p>
                 </div>
-                <p className="text-sm font-semibold text-outline">Elena_M</p>
-              </div>
-            </div>
-          </section>
+              )}
+            </>
+          )}
         </div>
       </aside>
       <JoinServerModal 

@@ -33,3 +33,11 @@ export interface InvitePreviewResponse {
   expiresAt: string | null;
   alreadyMember: boolean | null;
 }
+
+export interface MemberStatusResponse {
+  userId: string;
+  displayName: string;
+  avatarUrl: string | null;
+  role: string;
+  online: boolean;
+}

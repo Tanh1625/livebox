@@ -1,5 +1,5 @@
 import axiosClient from '../../../config/axiosClient';
-import { ServerCreateRequest, ServerResponse, ServerUpdateRequest } from '../types';
+import { MemberStatusResponse, ServerCreateRequest, ServerResponse, ServerUpdateRequest } from '../types';
 
 const normalizeServerList = (payload: unknown): ServerResponse[] => {
   if (Array.isArray(payload)) {
@@ -76,5 +76,10 @@ export const serverApi = {
     }
 
     return server;
+  },
+
+  getServerMembers: async (serverId: string): Promise<MemberStatusResponse[]> => {
+    const res = await axiosClient.get(`/api/v1/servers/${serverId}/members`);
+    return (res as any).data || [];
   }
 };
