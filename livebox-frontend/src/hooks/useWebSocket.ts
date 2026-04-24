@@ -1,5 +1,5 @@
 import { useEffect, useRef, useCallback } from 'react';
-import { Client, IMessage } from '@stomp/stompjs';
+import { Client, IMessage, StompSubscription } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import { MessageResponse } from '../features/message/types';
 import { MemberStatusResponse } from '../features/server/types';
@@ -11,22 +11,45 @@ interface UseWebSocketOptions {
   onMemberStatusChanged?: (member: MemberStatusResponse) => void;
 }
 
+type ExtendedStompClient = Client & {
+  _subscribeChannel?: (id: string) => void;
+  _subscribeServer?: (id: string) => void;
+};
+
 export const useWebSocket = ({ channelId, serverId, onMessageReceived, onMemberStatusChanged }: UseWebSocketOptions) => {
   const stompClientRef = useRef<Client | null>(null);
 
   const onMessageReceivedRef = useRef(onMessageReceived);
-  onMessageReceivedRef.current = onMessageReceived;
-
   const onMemberStatusChangedRef = useRef(onMemberStatusChanged);
-  onMemberStatusChangedRef.current = onMemberStatusChanged;
+  const channelIdRef = useRef(channelId);
+  const serverIdRef = useRef(serverId);
 
-  const subscriptionsRef = useRef<{ [key: string]: any }>({});
+  const subscriptionsRef = useRef<{ channel: StompSubscription | null; server: StompSubscription | null }>({
+    channel: null,
+    server: null,
+  });
+
+  useEffect(() => {
+    onMessageReceivedRef.current = onMessageReceived;
+  }, [onMessageReceived]);
+
+  useEffect(() => {
+    onMemberStatusChangedRef.current = onMemberStatusChanged;
+  }, [onMemberStatusChanged]);
+
+  useEffect(() => {
+    channelIdRef.current = channelId;
+  }, [channelId]);
+
+  useEffect(() => {
+    serverIdRef.current = serverId;
+  }, [serverId]);
 
   useEffect(() => {
     const token = localStorage.getItem('access_token');
     if (!token) return;
 
-    const socket = new SockJS(`http://localhost:8080/ws?token=${token}`);
+    const socket = new SockJS(`${import.meta.env.VITE_API_URL}/ws?token=${token}`);
     const client = new Client({
       webSocketFactory: () => socket,
       debug: (str) => {
@@ -42,15 +65,15 @@ export const useWebSocket = ({ channelId, serverId, onMessageReceived, onMemberS
       stompClientRef.current = client;
 
       // Initial subscriptions if IDs already present
-      if (channelId) subscribeChannel(channelId);
-      if (serverId) subscribeServer(serverId);
+      if (channelIdRef.current) subscribeChannel(channelIdRef.current);
+      if (serverIdRef.current) subscribeServer(serverIdRef.current);
     };
 
     const subscribeChannel = (id: string) => {
-      if (subscriptionsRef.current['channel']) {
-        subscriptionsRef.current['channel'].unsubscribe();
+      if (subscriptionsRef.current.channel) {
+        subscriptionsRef.current.channel.unsubscribe();
       }
-      subscriptionsRef.current['channel'] = client.subscribe(`/topic/channels/${id}`, (message: IMessage) => {
+      subscriptionsRef.current.channel = client.subscribe(`/topic/channels/${id}`, (message: IMessage) => {
         const receivedMessage = JSON.parse(message.body) as MessageResponse;
         onMessageReceivedRef.current?.(receivedMessage);
       });
@@ -58,10 +81,10 @@ export const useWebSocket = ({ channelId, serverId, onMessageReceived, onMemberS
     };
 
     const subscribeServer = (id: string) => {
-      if (subscriptionsRef.current['server']) {
-        subscriptionsRef.current['server'].unsubscribe();
+      if (subscriptionsRef.current.server) {
+        subscriptionsRef.current.server.unsubscribe();
       }
-      subscriptionsRef.current['server'] = client.subscribe(`/topic/servers/${id}/members`, (message: IMessage) => {
+      subscriptionsRef.current.server = client.subscribe(`/topic/servers/${id}/members`, (message: IMessage) => {
         const memberUpdate = JSON.parse(message.body) as MemberStatusResponse;
         onMemberStatusChangedRef.current?.(memberUpdate);
       });
@@ -69,8 +92,9 @@ export const useWebSocket = ({ channelId, serverId, onMessageReceived, onMemberS
     };
 
     // Expose subscribe methods to be used when props change
-    (client as any)._subscribeChannel = subscribeChannel;
-    (client as any)._subscribeServer = subscribeServer;
+    const extendedClient = client as ExtendedStompClient;
+    extendedClient._subscribeChannel = subscribeChannel;
+    extendedClient._subscribeServer = subscribeServer;
 
     client.onStompError = (frame) => {
       console.error('STOMP Broker error:', frame.headers['message']);
@@ -79,6 +103,8 @@ export const useWebSocket = ({ channelId, serverId, onMessageReceived, onMemberS
     client.activate();
 
     return () => {
+      subscriptionsRef.current.channel?.unsubscribe();
+      subscriptionsRef.current.server?.unsubscribe();
       client.deactivate();
       stompClientRef.current = null;
       console.log('STOMP Deactivated');
@@ -89,7 +115,7 @@ export const useWebSocket = ({ channelId, serverId, onMessageReceived, onMemberS
   useEffect(() => {
     const client = stompClientRef.current;
     if (client && client.connected && channelId) {
-      (client as any)._subscribeChannel(channelId);
+      (client as ExtendedStompClient)._subscribeChannel?.(channelId);
     }
   }, [channelId]);
 
@@ -97,7 +123,7 @@ export const useWebSocket = ({ channelId, serverId, onMessageReceived, onMemberS
   useEffect(() => {
     const client = stompClientRef.current;
     if (client && client.connected && serverId) {
-      (client as any)._subscribeServer(serverId);
+      (client as ExtendedStompClient)._subscribeServer?.(serverId);
     }
   }, [serverId]);
 
