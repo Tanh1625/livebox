@@ -43,7 +43,7 @@ const InviteFriendsModal: React.FC<InviteFriendsModalProps> = ({
 
     try {
       setIsCopying(true);
-      await navigator.clipboard.writeText("http://localhost:5173" + invite.inviteUrl);
+      await navigator.clipboard.writeText(window.location.origin + invite.inviteUrl);
       onSuccess?.('Invite link copied to clipboard!');
       setTimeout(() => setIsCopying(false), 2000);
     } catch (err) {
@@ -110,7 +110,7 @@ const InviteFriendsModal: React.FC<InviteFriendsModalProps> = ({
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full">
               <div className="flex-grow bg-surface-container-highest/50 border border-white/5 rounded-lg px-4 py-3 flex items-center justify-between group transition-all duration-300 focus-within:border-primary/50 overflow-hidden">
                 <span className="text-on-surface/80 font-medium truncate text-sm">
-                  {`http://localhost:5173${invite?.inviteUrl}` || 'Loading...'}
+                  {`${window.location.origin}${invite?.inviteUrl}` || 'Loading...'}
                 </span>
                 <span className="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors text-xl ml-2 shrink-0">
                   link
