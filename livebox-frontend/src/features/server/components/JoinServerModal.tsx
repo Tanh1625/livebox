@@ -6,17 +6,15 @@ import { Input } from '../../../components/ui/Input';
 interface JoinServerModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSuccess?: () => void;
 }
 
 export const JoinServerModal: React.FC<JoinServerModalProps> = ({
   isOpen,
-  onClose,
-  onSuccess
+  onClose
 }) => {
   const navigate = useNavigate();
   const [inviteCode, setInviteCode] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   if (!isOpen) return null;

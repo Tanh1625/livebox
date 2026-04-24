@@ -573,10 +573,6 @@ export const MainApplicationScreen: React.FC = () => {
       <JoinServerModal
         isOpen={isJoinModalOpen}
         onClose={() => setIsJoinModalOpen(false)}
-        onSuccess={() => {
-          // Optionally reload servers or show success
-          window.location.reload();
-        }}
       />
     </div>
   );

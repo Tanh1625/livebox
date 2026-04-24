@@ -180,9 +180,6 @@ export const ServerEmptyScreen: React.FC = () => {
       <JoinServerModal 
         isOpen={isJoinModalOpen} 
         onClose={() => setIsJoinModalOpen(false)} 
-        onSuccess={() => {
-          navigate('/app/main');
-        }}
       />
     </div>
   );
