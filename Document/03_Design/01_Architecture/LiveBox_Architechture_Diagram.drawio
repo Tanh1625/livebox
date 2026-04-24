@@ -1,0 +1,109 @@
+<mxfile host="Electron" agent="Gemini">
+  <diagram id="LiveBox_Refactored_HLD" name="LiveBox Modular Monolith HLD">
+    <mxGraphModel dx="1471" dy="1031" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="client_group" parent="1" style="swimlane;whiteSpace=wrap;html=1;startSize=23;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="Client Side" vertex="1">
+          <mxGeometry height="120" width="160" x="20" y="220" as="geometry" />
+        </mxCell>
+        <mxCell id="web_browser" parent="client_group" style="html=1;dropTarget=0;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="«component»&lt;br/&gt;&lt;b&gt;Web Browser&lt;/b&gt;&lt;br/&gt;(React + Vite)" vertex="1">
+          <mxGeometry height="60" width="130" x="15" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="backend_monolith" parent="1" style="swimlane;whiteSpace=wrap;html=1;startSize=23;fillColor=#f5f5f5;strokeColor=#666666;" value="LiveBox Backend (Modular Monolith)" vertex="1">
+          <mxGeometry height="730" width="680" x="260" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="layer_pres" parent="backend_monolith" style="swimlane;whiteSpace=wrap;html=1;startSize=23;dashed=1;fillColor=none;" value="Presentation Layer" vertex="1">
+          <mxGeometry height="110" width="640" x="20" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="rest_api" parent="layer_pres" style="html=1;fillColor=#d5e8d4;strokeColor=#82b366;" value="«interface»&lt;br/&gt;&lt;b&gt;REST Controllers&lt;/b&gt;" vertex="1">
+          <mxGeometry height="50" width="150" x="100" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="ws_gateway" parent="layer_pres" style="html=1;fillColor=#d5e8d4;strokeColor=#82b366;" value="«component»&lt;br/&gt;&lt;b&gt;WebSocket Gateway&lt;/b&gt;&lt;br/&gt;(STOMP/SignalR)" vertex="1">
+          <mxGeometry height="50" width="160" x="380" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="layer_app" parent="backend_monolith" style="swimlane;whiteSpace=wrap;html=1;startSize=23;dashed=1;fillColor=none;" value="Application &amp; Domain Layer (Business Modules)" vertex="1">
+          <mxGeometry height="360" width="640" x="20" y="194" as="geometry" />
+        </mxCell>
+        <mxCell id="mod_auth" parent="layer_app" style="html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" value="«component»&lt;br/&gt;&lt;b&gt;Auth Module&lt;/b&gt;&lt;br/&gt;(JWT Logic)" vertex="1">
+          <mxGeometry height="60" width="130" x="20" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="mod_user" parent="layer_app" style="html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" value="«component»&lt;br/&gt;&lt;b&gt;User Module&lt;/b&gt;" vertex="1">
+          <mxGeometry height="60" width="130" x="180" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="mod_server" parent="layer_app" style="html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" value="«component»&lt;br/&gt;&lt;b&gt;Server Module&lt;/b&gt;" vertex="1">
+          <mxGeometry height="60" width="130" x="340" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="mod_channel" parent="layer_app" style="html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" value="«component»&lt;br/&gt;&lt;b&gt;Channel Module&lt;/b&gt;" vertex="1">
+          <mxGeometry height="60" width="130" x="490" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="mod_message" parent="layer_app" style="html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" value="«component»&lt;br/&gt;&lt;b&gt;Message Module&lt;/b&gt;" vertex="1">
+          <mxGeometry height="60" width="290" x="180" y="160" as="geometry" />
+        </mxCell>
+        <mxCell id="common_kernel" parent="layer_app" style="html=1;fillColor=#f8cecc;strokeColor=#b85450;" value="«component»&lt;br/&gt;&lt;b&gt;Common Kernel&lt;/b&gt;&lt;br/&gt;(Shared DTOs/Utils)" vertex="1">
+          <mxGeometry height="50" width="600" x="20" y="260" as="geometry" />
+        </mxCell>
+        <mxCell id="dep_auth_user" edge="1" parent="layer_app" source="mod_auth" style="endArrow=open;dashed=1;endFill=0;endSize=12;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="mod_user" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry" />
+        </mxCell>
+        <mxCell id="dep_server_user" edge="1" parent="layer_app" source="mod_server" style="endArrow=open;dashed=1;endFill=0;endSize=12;html=1;exitX=0.25;exitY=0;exitDx=0;exitDy=0;entryX=0.75;entryY=0;entryDx=0;entryDy=0;curved=1;" target="mod_user" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <Array as="points">
+              <mxPoint x="320" y="20" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="dep_channel_server" edge="1" parent="layer_app" source="mod_channel" style="endArrow=open;dashed=1;endFill=0;endSize=12;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="mod_server" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry" />
+        </mxCell>
+        <mxCell id="dep_msg_chan" edge="1" parent="layer_app" source="mod_message" style="endArrow=open;dashed=1;endFill=0;endSize=12;html=1;exitX=0.75;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" target="mod_channel" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry" />
+        </mxCell>
+        <mxCell id="dep_msg_user" edge="1" parent="layer_app" source="mod_message" style="endArrow=open;dashed=1;endFill=0;endSize=12;html=1;exitX=0.25;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" target="mod_user" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry" />
+        </mxCell>
+        <mxCell id="layer_infra" parent="backend_monolith" style="swimlane;whiteSpace=wrap;html=1;startSize=23;dashed=1;fillColor=none;" value="Infrastructure Layer" vertex="1">
+          <mxGeometry height="110" width="640" x="20" y="580" as="geometry" />
+        </mxCell>
+        <mxCell id="repo_jpa" parent="layer_infra" style="html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" value="«component»&lt;br/&gt;&lt;b&gt;Repositories (JPA/Hibernate)&lt;/b&gt;" vertex="1">
+          <mxGeometry height="50" width="260" x="190" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="app_to_infra" edge="1" parent="backend_monolith" source="layer_app" style="endArrow=block;dashed=1;endFill=0;endSize=12;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="layer_infra" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry" />
+        </mxCell>
+        <mxCell id="ext_db" parent="1" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#fff2cc;strokeColor=#d6b656;" value="&lt;b&gt;PostgreSQL Database&lt;/b&gt;" vertex="1">
+          <mxGeometry height="90" width="110" x="1010" y="640" as="geometry" />
+        </mxCell>
+        <mxCell id="ext_turn" parent="1" style="ellipse;shape=cloud;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="«system»&lt;br/&gt;&lt;b&gt;STUN/TURN Server&lt;/b&gt;&lt;br/&gt;(WebRTC Connectivity)" vertex="1">
+          <mxGeometry height="90" width="150" x="1000" y="235" as="geometry" />
+        </mxCell>
+        <mxCell id="ext_s3" parent="1" style="shape=folder;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="«system»&lt;br/&gt;&lt;b&gt;Object Storage&lt;/b&gt;&lt;br/&gt;(S3 Compatible)" vertex="1">
+          <mxGeometry height="80" width="100" x="1020" y="374" as="geometry" />
+        </mxCell>
+        <mxCell id="conn_rest" edge="1" parent="1" source="web_browser" style="endArrow=classic;html=1;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="rest_api" value="REST / HTTPS">
+          <mxGeometry height="50" relative="1" width="50" as="geometry" />
+        </mxCell>
+        <mxCell id="conn_ws" edge="1" parent="1" source="web_browser" style="endArrow=classic;html=1;exitX=1;exitY=0.75;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="ws_gateway" value="WSS (STOMP)">
+          <mxGeometry height="50" relative="1" width="50" as="geometry" />
+        </mxCell>
+        <mxCell id="pres_to_app" edge="1" parent="1" source="layer_pres" style="endArrow=block;dashed=1;endFill=0;endSize=12;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="layer_app" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry" />
+        </mxCell>
+        <mxCell id="infra_to_db" edge="1" parent="1" source="repo_jpa" style="endArrow=classic;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;" target="ext_db" value="JDBC / SQL">
+          <mxGeometry height="50" relative="1" width="50" as="geometry" />
+        </mxCell>
+        <mxCell id="app_to_s3" edge="1" parent="1" source="layer_app" style="endArrow=classic;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="ext_s3" value="AWS SDK">
+          <mxGeometry height="50" relative="1" width="50" as="geometry" />
+        </mxCell>
+        <mxCell id="client_to_turn" edge="1" parent="1" source="web_browser" style="endArrow=classic;startArrow=classic;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="ext_turn" value="ICE Candidates">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <Array as="points">
+              <mxPoint x="100" y="100" />
+              <mxPoint x="900" y="100" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
