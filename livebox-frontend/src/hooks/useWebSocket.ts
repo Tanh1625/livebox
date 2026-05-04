@@ -49,9 +49,8 @@ export const useWebSocket = ({ channelId, serverId, onMessageReceived, onMemberS
     const token = localStorage.getItem('access_token');
     if (!token) return;
 
-    const socket = new SockJS(`${import.meta.env.VITE_API_URL}/ws?token=${token}`);
     const client = new Client({
-      webSocketFactory: () => socket,
+      webSocketFactory: () => new SockJS(`${import.meta.env.VITE_API_URL}/ws?token=${token}`),
       debug: (str) => {
         console.log('STOMP: ' + str);
       },
@@ -59,10 +58,10 @@ export const useWebSocket = ({ channelId, serverId, onMessageReceived, onMemberS
       heartbeatIncoming: 4000,
       heartbeatOutgoing: 4000,
     });
+    stompClientRef.current = client;
 
     client.onConnect = (frame) => {
       console.log('STOMP Connected:', frame);
-      stompClientRef.current = client;
 
       // Initial subscriptions if IDs already present
       if (channelIdRef.current) subscribeChannel(channelIdRef.current);
@@ -136,6 +135,7 @@ export const useWebSocket = ({ channelId, serverId, onMessageReceived, onMemberS
       });
       return true;
     }
+    console.warn("Failed to send message", { client: !!client, connected: client?.connected, channelId });
     return false;
   }, [channelId]);
 
