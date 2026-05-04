@@ -21,39 +21,39 @@ createRoot(document.getElementById('root')!).render(
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/invite/:code" element={<InvitePreviewPage />} />
-        
+
         {/* Protected Routes */}
-        <Route 
-          path="/servers/empty" 
+        <Route
+          path="/servers/empty"
           element={
             <ProtectedRoute>
               <ServerEmptyPage />
             </ProtectedRoute>
-          } 
+          }
         />
-        <Route 
-          path="/servers/create" 
+        <Route
+          path="/servers/create"
           element={
             <ProtectedRoute>
               <CreateServerPage />
             </ProtectedRoute>
-          } 
+          }
         />
-        <Route 
-          path="/servers/owned" 
+        <Route
+          path="/servers/owned"
           element={
             <ProtectedRoute>
               <OwnedServersPage />
             </ProtectedRoute>
-          } 
+          }
         />
-        <Route 
-          path="/app/main" 
+        <Route
+          path="/app/main"
           element={
             <ProtectedRoute>
               <MainApplicationPage />
             </ProtectedRoute>
-          } 
+          }
         />
       </Routes>
     </BrowserRouter>
