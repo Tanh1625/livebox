@@ -21,6 +21,10 @@ export const MainApplicationScreen: React.FC = () => {
   const [channels, setChannels] = useState<ChannelResponse[]>([]);
   const [activeChannelId, setActiveChannelId] = useState<string | null>(null);
 
+  // Responsive state
+  const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
+  const [isMobileMembersOpen, setIsMobileMembersOpen] = useState(false);
+
   // Message state
   const [messages, setMessages] = useState<MessageResponse[]>([]);
   const [isLoadingMessages, setIsLoadingMessages] = useState(false);
@@ -196,7 +200,17 @@ export const MainApplicationScreen: React.FC = () => {
 
   return (
     <div className="bg-surface text-on-surface flex h-screen overflow-hidden">
-      <aside className="w-[72px] bg-surface-container-lowest flex flex-col items-center py-4 gap-4 z-50">
+      {/* Mobile Nav Overlay */}
+      {isMobileNavOpen && (
+        <div 
+          className="fixed inset-0 bg-black/60 z-40 md:hidden backdrop-blur-sm transition-opacity"
+          onClick={() => setIsMobileNavOpen(false)}
+        />
+      )}
+
+      {/* Left Navigation (Servers + Channels) */}
+      <div className={`fixed inset-y-0 left-0 z-50 flex transform transition-transform duration-300 ease-in-out md:relative md:translate-x-0 ${isMobileNavOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full'}`}>
+        <aside className="w-[72px] bg-surface-container-lowest flex flex-col items-center py-4 gap-4 z-50 shrink-0">
         <div className="w-12 h-12 bg-primary rounded-2xl flex items-center justify-center text-on-primary cursor-pointer active:scale-90 transition-transform">
           <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>bolt</span>
         </div>
@@ -272,7 +286,10 @@ export const MainApplicationScreen: React.FC = () => {
                 {textChannels.map((channel) => (
                   <div
                     key={channel.id}
-                    onClick={() => setActiveChannelId(channel.id)}
+                    onClick={() => {
+                      setActiveChannelId(channel.id);
+                      setIsMobileNavOpen(false);
+                    }}
                     className={`flex items-center gap-3 px-3 py-2 rounded-xl transition-all cursor-pointer group/channel ${activeChannelId === channel.id
                         ? 'bg-gradient-to-br from-primary/20 to-secondary/20 text-primary font-bold shadow-[inset_0_0_15px_rgba(129,236,255,0.1)]'
                         : 'text-on-surface-variant hover:bg-white/5 hover:text-on-surface'
@@ -376,27 +393,42 @@ export const MainApplicationScreen: React.FC = () => {
           </div>
         </footer>
       </nav>
+      </div> {/* End Left Navigation Container */}
 
-      <main className="flex-1 flex flex-col bg-surface overflow-hidden">
-        <header className="h-16 px-6 flex items-center justify-between shrink-0 bg-surface/60 backdrop-blur-2xl z-10">
-          <div className="flex items-center gap-3">
-            <span className="text-2xl font-medium text-outline">#</span>
-            <h2 className="font-headline font-bold text-lg text-on-surface">
+      <main className="flex-1 flex flex-col bg-surface overflow-hidden relative z-0">
+        <header className="h-16 px-4 md:px-6 flex items-center justify-between shrink-0 bg-surface/60 backdrop-blur-2xl z-10">
+          <div className="flex items-center gap-2 md:gap-3">
+            <button
+              onClick={() => setIsMobileNavOpen(true)}
+              className="md:hidden p-1 mr-1 text-outline hover:text-primary hover:bg-white/5 rounded-lg transition-all active:scale-90"
+              title="Open Navigation"
+            >
+              <span className="material-symbols-outlined text-2xl">menu</span>
+            </button>
+            <span className="text-2xl font-medium text-outline hidden sm:inline">#</span>
+            <h2 className="font-headline font-bold text-lg text-on-surface truncate max-w-[150px] sm:max-w-none">
               {channels.find(c => c.id === activeChannelId)?.name || 'general'}
             </h2>
           </div>
-          <div className="flex items-center gap-4">
-            <div className="flex items-center bg-surface-container-high px-4 py-1.5 rounded-full gap-2 w-64 border border-outline-variant/10">
+          <div className="flex items-center gap-2 md:gap-4">
+            <div className="hidden sm:flex items-center bg-surface-container-high px-4 py-1.5 rounded-full gap-2 w-48 md:w-64 border border-outline-variant/10">
               <span className="material-symbols-outlined text-lg text-outline">search</span>
-              <input className="bg-transparent border-none focus:ring-0 text-sm text-on-surface placeholder:text-outline w-full" placeholder="Search the void..." type="text" />
+              <input className="bg-transparent border-none focus:ring-0 text-sm text-on-surface placeholder:text-outline w-full" placeholder="Search..." type="text" />
             </div>
-            <span className="material-symbols-outlined text-outline cursor-pointer hover:text-primary transition-colors">notifications</span>
+            <span className="material-symbols-outlined text-outline cursor-pointer hover:text-primary transition-colors hidden md:block">notifications</span>
             <button
               onClick={() => setIsJoinModalOpen(true)}
               className="flex items-center justify-center p-1 rounded-lg text-outline hover:text-primary hover:bg-white/5 transition-all active:scale-90"
               title="Join a Server"
             >
               <span className="material-symbols-outlined">group_add</span>
+            </button>
+            <button
+              onClick={() => setIsMobileMembersOpen(true)}
+              className="lg:hidden flex items-center justify-center p-1 rounded-lg text-outline hover:text-primary hover:bg-white/5 transition-all active:scale-90"
+              title="Toggle Members"
+            >
+              <span className="material-symbols-outlined">group</span>
             </button>
           </div>
         </header>
@@ -483,8 +515,23 @@ export const MainApplicationScreen: React.FC = () => {
         </footer>
       </main>
 
-      <aside className="w-60 bg-surface-container-low shrink-0 hidden lg:flex flex-col">
-        <div className="p-6 overflow-y-auto">
+      {/* Mobile Members Overlay */}
+      {isMobileMembersOpen && (
+        <div 
+          className="fixed inset-0 bg-black/60 z-40 lg:hidden backdrop-blur-sm transition-opacity"
+          onClick={() => setIsMobileMembersOpen(false)}
+        />
+      )}
+
+      {/* Right Sidebar (Members) */}
+      <aside className={`fixed inset-y-0 right-0 z-50 w-60 bg-surface-container-low shrink-0 flex flex-col transform transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0 ${isMobileMembersOpen ? 'translate-x-0 shadow-[-10px_0_30px_rgba(0,0,0,0.5)]' : 'translate-x-full lg:translate-x-0'} ${isMobileMembersOpen ? 'flex' : 'hidden lg:flex'}`}>
+        <div className="h-16 flex items-center px-6 border-b border-outline-variant/5 shrink-0 lg:hidden justify-between">
+          <h3 className="font-headline font-bold text-on-surface">Members</h3>
+          <button onClick={() => setIsMobileMembersOpen(false)} className="p-1 text-outline hover:text-primary">
+             <span className="material-symbols-outlined">close</span>
+          </button>
+        </div>
+        <div className="p-6 overflow-y-auto flex-1">
           {isLoadingMembers ? (
             <div className="flex flex-col items-center py-10 gap-2 opacity-50">
               <div className="w-6 h-6 border-2 border-primary/20 border-t-primary rounded-full animate-spin"></div>
