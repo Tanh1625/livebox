@@ -66,6 +66,8 @@ public class SecurityConfig {
                         .requestMatchers("/ws/**").permitAll()
                         // Swagger UI
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+                        // Actuator health — public for keep-alive cron pings (no sensitive info exposed)
+                        .requestMatchers("/actuator/health").permitAll()
                         // Everything else requires a valid JWT
                         .anyRequest().authenticated());
 
