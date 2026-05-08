@@ -10,6 +10,7 @@ import { useWebSocket } from '../../../hooks/useWebSocket';
 import { JoinServerModal } from './JoinServerModal';
 import { messageApi } from '../../message/api/messageApi';
 import type { MessageResponse } from '../../message/types';
+import { VoiceRoomTest } from '../../channel/components/VoiceRoomTest';
 
 export const MainApplicationScreen: React.FC = () => {
   const navigate = useNavigate();
@@ -314,12 +315,23 @@ export const MainApplicationScreen: React.FC = () => {
                 {voiceChannels.map((channel) => (
                   <div
                     key={channel.id}
-                    className="flex items-center justify-between px-3 py-2 rounded-xl text-on-surface-variant hover:bg-white/5 hover:text-on-surface transition-all cursor-pointer group/voice"
+                    onClick={() => {
+                      setActiveChannelId(channel.id);
+                      setIsMobileNavOpen(false);
+                    }}
+                    className={`flex items-center justify-between px-3 py-2 rounded-xl transition-all cursor-pointer group/voice ${
+                      activeChannelId === channel.id
+                        ? 'bg-gradient-to-br from-primary/20 to-secondary/20 text-primary font-bold shadow-[inset_0_0_15px_rgba(129,236,255,0.1)]'
+                        : 'text-on-surface-variant hover:bg-white/5 hover:text-on-surface'
+                    }`}
                   >
                     <div className="flex items-center gap-3">
                       <span className="material-symbols-outlined text-lg opacity-60 group-hover/voice:opacity-100">volume_up</span>
                       <span className="text-sm truncate">{channel.name}</span>
                     </div>
+                    {activeChannelId === channel.id && (
+                      <span className="w-2 h-2 rounded-full bg-primary animate-pulse shadow-[0_0_8px_#81ecff]" />
+                    )}
                   </div>
                 ))}
               </div>
@@ -396,6 +408,15 @@ export const MainApplicationScreen: React.FC = () => {
       </div> {/* End Left Navigation Container */}
 
       <main className="flex-1 flex flex-col bg-surface overflow-hidden relative z-0">
+        {/* ── VOICE CHANNEL VIEW ── */}
+        {channels.find(c => c.id === activeChannelId)?.type === 'VOICE' ? (
+          <VoiceRoomTest
+            channelId={activeChannelId!}
+            channelName={channels.find(c => c.id === activeChannelId)?.name ?? 'Voice Channel'}
+            onLeave={() => setActiveChannelId(null)}
+          />
+        ) : (
+        <>
         <header className="h-16 px-4 md:px-6 flex items-center justify-between shrink-0 bg-surface/60 backdrop-blur-2xl z-10">
           <div className="flex items-center gap-2 md:gap-3">
             <button
@@ -513,6 +534,8 @@ export const MainApplicationScreen: React.FC = () => {
             </div>
           </form>
         </footer>
+        </>
+        )}
       </main>
 
       {/* Mobile Members Overlay */}

@@ -1,11 +1,17 @@
-import axios from 'axios';
+import axios from "axios";
+
+const USE_LOCAL_API = true;
+
+const LOCAL_API_URL = "http://localhost:8080/api/v1";
+
+const DEPLOYED_API_URL = import.meta.env.VITE_API_URL;
 
 // Create a configured axios instance
 const axiosInstance = axios.create({
-  baseURL: `${import.meta.env.VITE_API_URL}/api/v1`,
+  baseURL: USE_LOCAL_API ? LOCAL_API_URL : DEPLOYED_API_URL,
   timeout: 10000,
   headers: {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   },
 });
 

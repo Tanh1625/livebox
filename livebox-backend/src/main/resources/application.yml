@@ -66,3 +66,9 @@ springdoc:
     operationsSorter: method          # Sắp xếp các endpoint theo HTTP method
     tagsSorter: alpha                 # Sắp xếp các tag theo bảng chữ cái
     displayRequestDuration: true      # Hiển thị thời gian thực thi request
+
+# ── LiveKit ───────────────────────────────────────────────────────────────────
+livekit:
+  url: ${LIVEKIT_URL}
+  api-key: ${LIVEKIT_API_KEY}
+  api-secret: ${LIVEKIT_API_SECRET}

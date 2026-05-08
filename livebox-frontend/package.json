@@ -10,9 +10,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@livekit/components-react": "^2.9.21",
+    "@livekit/components-styles": "^1.2.0",
     "@stomp/stompjs": "^7.3.0",
     "axios": "^1.15.1",
     "clsx": "^2.1.1",
+    "livekit-client": "^2.18.9",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
     "react-hook-form": "^7.73.1",

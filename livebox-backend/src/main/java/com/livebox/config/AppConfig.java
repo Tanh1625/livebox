@@ -42,7 +42,7 @@ public class AppConfig {
         CorsConfiguration config = new CorsConfiguration();
 
         // React dev server (localhost:3000) — extend list for Vercel preview URLs in staging
-        config.setAllowedOrigins(List.of("http://localhost:3000", "http://localhost:5173", "https://livebox-pi.vercel.app"));
+        config.setAllowedOrigins(List.of("http://localhost:3000", "http://localhost:5173", "http://127.0.0.1:5500/","https://livebox-pi.vercel.app"));
 
         // Standard HTTP methods for a RESTful + WebSocket upgrade handshake
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));

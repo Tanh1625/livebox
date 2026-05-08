@@ -33,3 +33,8 @@ livebox:
     secret: ${JWT_SECRET:404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970}
     expiration: ${JWT_EXPIRATION:3600000} # 1 hour in ms
     refresh-expiration: ${JWT_REFRESH_EXPIRATION:604800000} # 7 days in ms
+
+livekit:
+  url: ${LIVEKIT_URL:wss://livebox-dev.livekit.cloud}
+  api-key: ${LIVEKIT_API_KEY:dev-api-key}
+  api-secret: ${LIVEKIT_API_SECRET:dev-api-secret}
