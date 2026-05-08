@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>LiveBox - Voice Lobby</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-primary-container": "#004d57",
+                    "inverse-primary": "#006976",
+                    "secondary-fixed-dim": "#cabaff",
+                    "surface": "#0b0e14",
+                    "surface-container-highest": "#22262f",
+                    "secondary-container": "#591adc",
+                    "outline-variant": "#45484f",
+                    "tertiary-dim": "#5c9ffc",
+                    "surface-container-high": "#1c2028",
+                    "primary-fixed-dim": "#00d4ec",
+                    "on-primary": "#005762",
+                    "on-primary-fixed": "#003840",
+                    "on-primary-fixed-variant": "#005762",
+                    "surface-variant": "#22262f",
+                    "secondary": "#a68cff",
+                    "on-tertiary-container": "#001d3f",
+                    "background": "#0b0e14",
+                    "on-surface": "#ecedf6",
+                    "primary-container": "#00e3fd",
+                    "tertiary-fixed-dim": "#65a4ff",
+                    "surface-container-lowest": "#000000",
+                    "on-tertiary": "#002a55",
+                    "on-error": "#490006",
+                    "surface-container-low": "#10131a",
+                    "secondary-dim": "#7e51ff",
+                    "error-dim": "#d7383b",
+                    "error-container": "#9f0519",
+                    "on-tertiary-fixed-variant": "#003971",
+                    "on-tertiary-fixed": "#001835",
+                    "inverse-on-surface": "#52555c",
+                    "surface-container": "#161a21",
+                    "surface-bright": "#282c36",
+                    "on-secondary": "#25006b",
+                    "tertiary": "#70aaff",
+                    "surface-tint": "#81ecff",
+                    "on-error-container": "#ffa8a3",
+                    "inverse-surface": "#f9f9ff",
+                    "primary-dim": "#00d4ec",
+                    "on-secondary-fixed-variant": "#591bdc",
+                    "primary-fixed": "#00e3fd",
+                    "outline": "#73757d",
+                    "on-secondary-container": "#e4daff",
+                    "on-secondary-fixed": "#3b00a0",
+                    "surface-dim": "#0b0e14",
+                    "tertiary-fixed": "#80b2ff",
+                    "primary": "#81ecff",
+                    "tertiary-container": "#599cf9",
+                    "on-surface-variant": "#a9abb3",
+                    "secondary-fixed": "#d8caff",
+                    "on-background": "#ecedf6",
+                    "error": "#ff716c"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Plus Jakarta Sans"],
+                    "display": ["Plus Jakarta Sans"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .neon-glow-primary {
+            box-shadow: 0 0 15px rgba(129, 236, 255, 0.4);
+        }
+        .neon-glow-secondary {
+            box-shadow: 0 0 20px rgba(166, 140, 255, 0.3);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface font-body selection:bg-primary/30 antialiased overflow-hidden">
+<!-- Top App Bar -->
+<header class="fixed top-0 w-full z-50 bg-surface/60 backdrop-blur-xl flex justify-between items-center px-6 py-4 w-full">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">graphic_eq</span>
+<h1 class="Plus Jakarta Sans headline-md text-on-surface text-headline-md font-headline font-bold text-primary tracking-tight">Voice Lobby / General</h1>
+</div>
+<div class="flex items-center gap-2 px-3 py-1 bg-surface-container-high rounded-full">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse shadow-[0_0_8px_#81ecff]"></span>
+<span class="text-on-surface-variant text-label-md font-label uppercase tracking-widest text-[10px]">128 Online</span>
+</div>
+</header>
+<!-- Main Canvas -->
+<main class="pt-24 pb-32 px-6 min-h-screen flex flex-col items-center justify-center bg-surface">
+<!-- Active Channel Header -->
+<div class="text-center mb-8">
+<h2 class="font-headline font-extrabold text-4xl text-on-surface tracking-tighter mb-2">Main Hub</h2>
+<div class="flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-tertiary text-sm">sensors</span>
+<p class="text-on-surface-variant font-label text-sm uppercase tracking-widest">Signal Status: <span class="text-primary">Optimal</span></p>
+</div>
+</div>
+<!-- Participant Grid (Asymmetric/Editorial Layout) -->
+<div class="grid grid-cols-2 gap-6 w-full max-w-md">
+<!-- Speaker 1 (Active) -->
+<div class="flex flex-col items-center gap-3">
+<div class="relative group">
+<div class="absolute -inset-1.5 bg-gradient-to-tr from-primary to-secondary rounded-full blur opacity-40 group-hover:opacity-70 transition duration-500"></div>
+<div class="relative w-32 h-32 rounded-full p-1 bg-surface-container-highest border-2 border-primary neon-glow-primary">
+<img class="w-full h-full rounded-full object-cover grayscale-[0.2] hover:grayscale-0 transition-all" data-alt="A portrait of a stylish young man with artistic lighting against a dark urban backdrop. The scene is illuminated by neon cyan and violet highlights that reflect off his features, aligning with a high-tech Electric Noir aesthetic. The composition is clean and focused, emphasizing a modern digital communication vibe." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA-c8wJjS7A8DzI83oNwN41xqYGrh_-jl3IEoDpXIJ3NCDArrSlOzJI4a5MDaHemknP63S_3uGllQoPG34r73L8C80JIqh2_BjmupdOjzm2tVAa_mi39ugP1MvdXXc6-0LAfUZwFANfJBmAbWS6HuozcvbcVmjitP8FEp8Q-PZrmkjl8Ay9nAFoV53ufVRpJvQExu95j4Vl4vt2vAYO2ZzfPoNX-eEMDDC5zmniiM6PT4F_ZbFDyKngVunK-kBfdPz7wQbIoJfxvf4"/>
+</div>
+<div class="absolute bottom-0 right-2 w-8 h-8 bg-primary rounded-full flex items-center justify-center shadow-lg">
+<span class="material-symbols-outlined text-on-primary-container text-lg" style="font-variation-settings: 'FILL' 1;">mic</span>
+</div>
+</div>
+<span class="font-headline font-bold text-on-surface">Alex Rivera</span>
+</div>
+<!-- Speaker 2 (Active) -->
+<div class="flex flex-col items-center gap-3 mt-8">
+<div class="relative group">
+<div class="absolute -inset-1.5 bg-gradient-to-tr from-secondary to-tertiary rounded-full blur opacity-40 group-hover:opacity-70 transition duration-500"></div>
+<div class="relative w-32 h-32 rounded-full p-1 bg-surface-container-highest border-2 border-secondary-dim neon-glow-secondary">
+<img class="w-full h-full rounded-full object-cover grayscale-[0.2] hover:grayscale-0 transition-all" data-alt="A close-up portrait of a woman with vibrant neon violet lighting casting deep shadows on her face. The environment is dark and moody, reminiscent of a futuristic cyberpunk lounge. The color palette features intense purples and soft cyan glows, creating a premium and high-fidelity appearance suitable for a voice chat avatar." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBpYLpaLby7M-7sDcRT_jaHZoXaVHqQ2Ut0rBwfnvnMbzi1mTj4IU225Pn7K0GX-9PyQyOLWLqfoeMChWuElLJ3XCzEH-hIiOsACOICxM4efisqSBXf9AOU0u3trUHsGe-pzgEeFuagAgzTTwqnNQOdPlpCbhLxjYysbvCJSCs6ArGIyQjBHifbICR8PQ2pfl3ATC7FZSgmBOpWaOpD1bsXY7O8_g1PuR-B63dZo0G6jfCYYUn4vf2HaZ5nkvNRo2ob0NMLNxmPxdU"/>
+</div>
+<div class="absolute bottom-0 right-2 w-8 h-8 bg-secondary rounded-full flex items-center justify-center shadow-lg">
+<span class="material-symbols-outlined text-on-secondary text-lg" style="font-variation-settings: 'FILL' 1;">mic</span>
+</div>
+</div>
+<span class="font-headline font-bold text-on-surface">Sarah Chen</span>
+</div>
+<!-- Speaker 3 (Passive) -->
+<div class="flex flex-col items-center gap-3 -mt-4">
+<div class="relative">
+<div class="w-28 h-28 rounded-full p-1 bg-surface-container-high border-2 border-outline-variant/30">
+<img class="w-full h-full rounded-full object-cover opacity-60" data-alt="A professional male avatar presented in a moody, low-light setting with subtle blue ambient light. The background is a dark, out-of-focus tech environment. The visual style is minimalist and high-end, utilizing the dark surface tones of the Electric Noir design system to represent an inactive voice participant." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDWQ0-nmWBhGxlhSMO0YL__zgv1qlDWj0qas8Ae1rzxUn1BEUR-tAd3w4QF3go8aH1cRdAr3QSQmzrsH4gIse-nQXtaAG_PDm3qqrCk5v6giubTHgA_KeJTq1JU0rqcvbmds5g8-v121EaIXnTh1GZCwR9OQa8B-gZiXbqEXn06USoeCKmqGBD2cL0AuMR9TxBxgzODLNKhVF9vmKUfV0W7d2wMeXPaw-9bpX15Mc9Sspp7IVf2aR_Cx8BbuLD4oQXW7toJcgs1Yo8"/>
+</div>
+</div>
+<span class="font-headline font-medium text-on-surface-variant">Jordan M.</span>
+</div>
+<!-- Speaker 4 (Passive) -->
+<div class="flex flex-col items-center gap-3 mt-4">
+<div class="relative">
+<div class="w-28 h-28 rounded-full p-1 bg-surface-container-high border-2 border-outline-variant/30">
+<img class="w-full h-full rounded-full object-cover opacity-60" data-alt="A cinematic portrait of a young woman in a dimly lit setting with neon blue accents tracing the edges of the frame. The overall atmosphere is futuristic and serene. The aesthetic is strictly dark mode, with rich black surfaces and glowing electric cyan details that highlight the participant's silhouette." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBeP3IuCqZkVwkcy9-vGAWgbpiN26VP0LDnvEHX5naj4G0Vp3J-E6fe6GycU5k0RVodRwCIoMOWHKfla7WMcehDeJyd_-y8OGlRATLPYy3XTkCxZFAkf1ukYknObNXtSdDZzKacXAaPex3QoP6ncat0a15UI2bRkL1aDb_EDJtyOzaaeCefDoPCddmqLPZQM7qyZXrouRdWYk-wFv2erljWulKcAshxxKef5lBQV1cN8Ykplz55wA0ASwYDkrqEUd3RYKY72dh4lpc"/>
+</div>
+</div>
+<span class="font-headline font-medium text-on-surface-variant">Lia K.</span>
+</div>
+</div>
+<!-- Signal Indicator Detail -->
+<div class="mt-16 bg-surface-container-low px-6 py-3 rounded-full flex items-center gap-4">
+<div class="flex gap-1 items-end h-4">
+<div class="w-1 bg-primary h-2 rounded-full"></div>
+<div class="w-1 bg-primary h-3 rounded-full"></div>
+<div class="w-1 bg-primary h-4 rounded-full"></div>
+<div class="w-1 bg-primary h-3 rounded-full"></div>
+<div class="w-1 bg-primary/30 h-1 rounded-full"></div>
+</div>
+<span class="text-on-surface-variant text-xs font-label uppercase tracking-tighter">Live Latency: 24ms</span>
+</div>
+</main>
+<!-- Bottom Navigation (Active Shell) -->
+<nav class="fixed bottom-0 w-full z-50 flex justify-around items-center px-4 pb-10 pt-4 bg-surface-container-low/80 backdrop-blur-2xl rounded-t-xl shadow-[0_-16px_64px_rgba(172,187,246,0.05)]">
+<!-- Microphone Button (Active) -->
+<button class="flex items-center justify-center bg-primary-container text-on-primary-container rounded-full p-4 scale-110 shadow-[0_0_15px_rgba(129,236,255,0.4)] active:scale-95 duration-200">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">mic</span>
+</button>
+<!-- Headphones Button (Active) -->
+<button class="flex items-center justify-center bg-primary-container text-on-primary-container rounded-full p-4 scale-110 shadow-[0_0_15px_rgba(129,236,255,0.4)] active:scale-95 duration-200">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">headphones</span>
+</button>
+<!-- End Call Button -->
+<button class="flex items-center justify-center bg-error text-on-error rounded-full p-4 active:scale-95 duration-200 hover:bg-error-dim transition-colors shadow-[0_0_20px_rgba(255,113,108,0.2)]">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">call_end</span>
+</button>
+<!-- Settings (Inactive) -->
+<button class="flex items-center justify-center text-on-surface-variant p-4 hover:text-primary transition-colors active:scale-95 duration-200">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<!-- View Mode (Inactive) -->
+<button class="flex items-center justify-center text-on-surface-variant p-4 hover:text-primary transition-colors active:scale-95 duration-200">
+<span class="material-symbols-outlined">grid_view</span>
+</button>
+</nav>
+</body></html>
