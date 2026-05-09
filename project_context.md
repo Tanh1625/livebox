@@ -148,7 +148,7 @@
     <feature story="LB-302">Tạo, đổi tên, xóa kênh text (Owner only)</feature>
     <feature story="LB-303">Danh sách thành viên online/offline (auto-update realtime)</feature>
     <!-- Epic 4: Voice -->
-    <feature story="LB-401">Voice channel 1-click via WebRTC, tối đa 20 người/phòng, speaking indicator</feature>
+    <feature story="LB-401">Voice channel 1-click via LiveKit SFU, tối đa 20 người/phòng, speaking indicator</feature>
     <!-- Epic 5: Notification -->
     <feature story="LB-501">Badge unread tin nhắn theo kênh – tự xóa khi vào kênh</feature>
     <!-- Epic 6: Profile -->
@@ -167,7 +167,7 @@
 
   <constraints>
     <constraint id="C01">Concurrent users tối đa Phase 1: 500 users trên 1 instance Spring Boot</constraint>
-    <constraint id="C02">Voice room tối đa: 20 người/phòng (WebRTC P2P / SFU free-tier)</constraint>
+    <constraint id="C02">Voice room tối đa: 20 người/phòng (LiveKit SFU – LiveKit Cloud free-tier)</constraint>
     <constraint id="C03">Database: PostgreSQL duy nhất; không dùng Redis cache ở Phase 1</constraint>
     <constraint id="C04">JWT stateless; Refresh Token lưu DB để hỗ trợ revoke khi logout</constraint>
     <constraint id="C05">File upload giới hạn ≤ 2MB (ảnh đại diện server và user avatar)</constraint>
@@ -179,9 +179,9 @@
   <tech_stack>
     <layer name="Frontend">ReactJS (TypeScript) + TailwindCSS / CSS Modules</layer>
     <layer name="Backend">Spring Boot + Spring Security + JWT</layer>
-    <layer name="Realtime">WebSocket / STOMP (messaging) + WebRTC (voice)</layer>
+    <layer name="Realtime">WebSocket / STOMP (messaging) + LiveKit SFU (voice)</layer>
     <layer name="Database">PostgreSQL (users, servers, channels, messages, memberships, invite_codes)</layer>
-    <layer name="Infrastructure">Render / Railway (backend) · Neon.tech (PostgreSQL) · Cloudflare TURN (WebRTC)</layer>
+    <layer name="Infrastructure">Render / Railway (backend) · Neon.tech (PostgreSQL) · LiveKit Cloud (Voice SFU)</layer>
     <layer name="Dev Approach">Vibe Coding (AI-assisted) + Agile 1-week Sprints</layer>
   </tech_stack>
 
@@ -223,7 +223,8 @@
   </term>
 
   <term id="G04" en="Voice Channel" vi="Voice channel">
-    Kênh dùng để voice call qua WebRTC. Không phải "phòng họp" hay "meeting room".
+    Kênh dùng để voice call qua LiveKit SFU. Không phải "phòng họp" hay "meeting room".
+    Phase 1: tối đa 20 người/phòng. Backend cấp JWT token; Frontend kết nối LiveKit Room.
   </term>
 
   <term id="G05" en="Server Owner" vi="Chủ server / Owner">
@@ -276,9 +277,11 @@
     Dùng cho: tin nhắn text, badge unread, member presence (online/offline).
   </term>
 
-  <term id="G15" en="WebRTC" vi="WebRTC">
-    Giao thức P2P cho voice channel. Cần STUN/TURN server cho NAT traversal.
-    Phase 1: tối đa 20 người/phòng.
+  <term id="G15" en="LiveKit SFU" vi="LiveKit SFU">
+    Kiến trúc SFU (Selective Forwarding Unit) cho voice channel, thay thế WebRTC P2P thuần.
+    Backend generate JWT Room Token qua LiveKit Server SDK; Frontend dùng @livekit/components-react
+    để kết nối LiveKit Room. TURN/STUN được LiveKit Cloud quản lý nội bộ.
+    Phase 1: tối đa 20 người/phòng trên LiveKit Cloud free-tier.
   </term>
 
   <term id="G16" en="JWT" vi="JWT (JSON Web Token)">

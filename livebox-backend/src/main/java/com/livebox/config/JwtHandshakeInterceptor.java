@@ -14,14 +14,14 @@ import org.springframework.web.socket.server.HandshakeInterceptor;
 import java.util.Map;
 
 /**
- * JwtHandshakeInterceptor — SCRUM-56: Xác thực JWT tại WebSocket handshake.
+ * JwtHandshakeInterceptor — validates JWT at the WebSocket handshake.
  *
  * <p>Flow:
  * <ol>
- *   <li>Client kết nối tới /ws?token=<jwt_access_token></li>
- *   <li>Interceptor này bóc tách token từ query param</li>
- *   <li>Validate token và nạp UserDetails vào WebSocket session attributes</li>
- *   <li>Spring Security tự động nhận diện Principal cho @MessageMapping</li>
+ *   <li>Client connects to /ws?token=&lt;jwt_access_token&gt;</li>
+ *   <li>Extracts the token from the query parameter</li>
+ *   <li>Validates the token and stores UserDetails in the WebSocket session attributes</li>
+ *   <li>Spring Security automatically recognises the Principal for @MessageMapping</li>
  * </ol>
  */
 @Slf4j
@@ -40,15 +40,15 @@ public class JwtHandshakeInterceptor implements HandshakeInterceptor {
         if (StringUtils.hasText(token) && jwtProvider.validateToken(token)) {
             try {
                 String email = jwtProvider.getEmailFromToken(token);
-                String userId = jwtProvider.getUserIdFromToken(token); // UUID string từ JWT claim
+                String userId = jwtProvider.getUserIdFromToken(token); // UUID string from JWT claim
                 UserDetails userDetails = userDetailsService.loadUserByUsername(email);
 
                 UsernamePasswordAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 
-                // Lưu principal vào WebSocket session để Spring Security dùng trong @MessageMapping
+                // Store principal in WebSocket session for Spring Security @MessageMapping resolution
                 attributes.put("principal", authentication);
-                // Lưu userId để SubscribeInterceptor check membership mà không cần DB call thêm
+                // Store userId so the subscribe interceptor can check membership without an extra DB call
                 attributes.put("userId", userId);
                 log.debug("WebSocket handshake authenticated for user: {} (id={})", email, userId);
                 return true;

@@ -51,17 +51,13 @@ export const useWebSocket = ({ channelId, serverId, onMessageReceived, onMemberS
 
     const client = new Client({
       webSocketFactory: () => new SockJS(`${import.meta.env.VITE_API_URL}/ws?token=${token}`),
-      debug: (str) => {
-        console.log('STOMP: ' + str);
-      },
       reconnectDelay: 5000,
       heartbeatIncoming: 4000,
       heartbeatOutgoing: 4000,
     });
     stompClientRef.current = client;
 
-    client.onConnect = (frame) => {
-      console.log('STOMP Connected:', frame);
+    client.onConnect = () => {
 
       // Initial subscriptions if IDs already present
       if (channelIdRef.current) subscribeChannel(channelIdRef.current);
@@ -76,7 +72,6 @@ export const useWebSocket = ({ channelId, serverId, onMessageReceived, onMemberS
         const receivedMessage = JSON.parse(message.body) as MessageResponse;
         onMessageReceivedRef.current?.(receivedMessage);
       });
-      console.log(`STOMP Subscribed to /topic/channels/${id}`);
     };
 
     const subscribeServer = (id: string) => {
@@ -87,7 +82,6 @@ export const useWebSocket = ({ channelId, serverId, onMessageReceived, onMemberS
         const memberUpdate = JSON.parse(message.body) as MemberStatusResponse;
         onMemberStatusChangedRef.current?.(memberUpdate);
       });
-      console.log(`STOMP Subscribed to /topic/servers/${id}/members`);
     };
 
     // Expose subscribe methods to be used when props change
@@ -106,9 +100,8 @@ export const useWebSocket = ({ channelId, serverId, onMessageReceived, onMemberS
       subscriptionsRef.current.server?.unsubscribe();
       client.deactivate();
       stompClientRef.current = null;
-      console.log('STOMP Deactivated');
     };
-  }, []); // Only connect once
+  }, []);
 
   // Handle dynamic channel subscription changes
   useEffect(() => {

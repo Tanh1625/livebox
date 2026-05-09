@@ -40,7 +40,6 @@ public class AuthService {
     @Transactional
     public TokenResponse register(RegisterRequest request) {
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
-            // LB-101: Trả về 409 Conflict thay vì 500/400 generic
             throw new LiveBoxException(HttpStatus.CONFLICT, "Email '" + request.getEmail() + "' is already in use.");
         }
 
@@ -89,7 +88,7 @@ public class AuthService {
         return generateTokenResponse(user);
     }
 
-    // LB-103: Đăng xuất an toàn – Revoke Refresh Token trong DB
+    // LB-103: Safe logout — revoke Refresh Token in DB
     @Transactional
     public void logout(LogoutRequest request) {
         refreshTokenRepository.findByTokenValue(request.getRefreshToken())

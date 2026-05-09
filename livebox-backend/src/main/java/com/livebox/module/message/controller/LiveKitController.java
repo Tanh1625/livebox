@@ -34,9 +34,9 @@ public class LiveKitController {
         
         // Extract user details from Spring Security Authentication
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        // In JwtAuthenticationFilter, we stored the userId (String) in the credentials field
+        // Extract userId from credentials field set by JwtAuthenticationFilter
         UUID userId = UUID.fromString((String) authentication.getCredentials());
-        String displayName = userDetails.getUsername(); // use email as display name for now
+        String displayName = userDetails.getUsername();
         
         String token = liveKitService.generateToken(userId, displayName, channelId);
         

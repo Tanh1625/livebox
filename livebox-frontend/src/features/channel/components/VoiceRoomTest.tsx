@@ -1,15 +1,3 @@
-/**
- * VoiceRoomTest.tsx — All-in-one component for testing LiveKit realtime voice chat.
- *
- * HOW TO USE:
- *   1. Mount this component anywhere, passing a valid `channelId` (UUID of a VOICE channel).
- *   2. The component will call the backend `/api/v1/channels/{channelId}/voice/token` to get
- *      a LiveKit access token, then connect to the LiveKit Cloud room automatically.
- *   3. You will see all participants, their audio levels, and can mute/unmute yourself.
- *
- * EXAMPLE (in MainApplicationScreen.tsx):
- *   {activeChannel?.type === 'VOICE' && <VoiceRoomTest channelId={activeChannelId!} />}
- */
 
 import React, { useEffect, useState, useCallback } from 'react';
 import {
@@ -100,10 +88,10 @@ const ParticipantCard: React.FC<{
       {/* Status badges */}
       <div style={styles.badges}>
         {!micEnabled && (
-          <span style={styles.badgeMuted}>🔇 Muted</span>
+          <span style={styles.badgeMuted}>Muted</span>
         )}
         {isSpeaking && (
-          <span style={styles.badgeSpeaking}>🟢 Speaking</span>
+          <span style={styles.badgeSpeaking}>Speaking</span>
         )}
       </div>
     </div>
@@ -135,7 +123,6 @@ const RoomUI: React.FC<{ channelName: string; onLeave?: () => void }> = ({ chann
 
       {/* Header */}
       <div style={styles.header}>
-        <span style={styles.headerIcon}>🔊</span>
         <div>
           <h2 style={styles.headerTitle}>{channelName}</h2>
           <p style={styles.headerSub}>
@@ -162,14 +149,14 @@ const RoomUI: React.FC<{ channelName: string; onLeave?: () => void }> = ({ chann
           style={{ ...styles.controlBtn, ...(isMuted ? styles.btnDanger : styles.btnNormal) }}
           title={isMuted ? 'Unmute microphone' : 'Mute microphone'}
         >
-          {isMuted ? '🔇 Unmuted' : '🎤 Mute'}
+          {isMuted ? 'Unmute' : 'Mute'}
         </button>
         <button
           onClick={handleLeave}
           style={{ ...styles.controlBtn, ...styles.btnLeave }}
           title="Leave voice channel"
         >
-          📵 Leave
+          Leave
         </button>
       </div>
     </div>
@@ -220,7 +207,6 @@ export const VoiceRoomTest: React.FC<VoiceRoomTestProps> = ({
     return (
       <div style={styles.joinScreen}>
         <div style={styles.joinCard}>
-          <div style={styles.joinIcon}>🔊</div>
           <h2 style={styles.joinTitle}>{channelName}</h2>
           <p style={styles.joinSub}>Voice Channel — powered by LiveKit</p>
           {error && <p style={styles.errorMsg}>⚠️ {error}</p>}
@@ -229,7 +215,7 @@ export const VoiceRoomTest: React.FC<VoiceRoomTestProps> = ({
             disabled={loading}
             style={{ ...styles.joinBtn, ...(loading ? styles.btnDisabled : {}) }}
           >
-            {loading ? '⏳ Connecting...' : '🎤 Join Voice Channel'}
+            {loading ? 'Connecting...' : 'Join Voice Channel'}
           </button>
           <p style={styles.joinHint}>Your microphone will be enabled upon joining</p>
         </div>

@@ -13,13 +13,13 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- * WebSocketEventListener — SCRUM-58: Lắng nghe STOMP session connect/disconnect.
+ * WebSocketEventListener — listens to STOMP session connect/disconnect events.
  *
- * <p>Lưu ý quan trọng về Spring WS events:
+ * <p>Important note on Spring WS events:
  * <ul>
- *   <li>{@link SessionConnectEvent}: Client gửi STOMP CONNECT frame → CÓ session attributes (userId)</li>
- *   <li>SessionConnectedEvent: Server gửi CONNECTED về client → KHÔNG có session attributes</li>
- *   <li>{@link SessionDisconnectEvent}: WS session đóng → CÓ session attributes</li>
+ *   <li>{@link SessionConnectEvent}: client sends STOMP CONNECT frame — session attributes (userId) are present</li>
+ *   <li>SessionConnectedEvent: server sends CONNECTED back to client — session attributes are NOT present</li>
+ *   <li>{@link SessionDisconnectEvent}: WS session closed — session attributes are present</li>
  * </ul>
  */
 @Slf4j
@@ -30,8 +30,8 @@ public class WebSocketEventListener {
     private final PresenceService presenceService;
 
     /**
-     * SCRUM-58/59: User gửi STOMP CONNECT → đánh dấu online.
-     * Dùng SessionConnectEvent (không phải SessionConnectedEvent) vì chỉ event này có session attributes.
+     * Marks the user online when a STOMP CONNECT frame is received.
+     * Uses SessionConnectEvent (not SessionConnectedEvent) because only this event carries session attributes.
      */
     @EventListener
     public void handleSessionConnected(SessionConnectEvent event) {
@@ -57,7 +57,7 @@ public class WebSocketEventListener {
     }
 
     /**
-     * SCRUM-58/59: User ngắt kết nối → đánh dấu offline (nếu hết tất cả session).
+     * Marks the user offline when the WS session disconnects (only when all sessions are closed).
      */
     @EventListener
     public void handleSessionDisconnected(SessionDisconnectEvent event) {

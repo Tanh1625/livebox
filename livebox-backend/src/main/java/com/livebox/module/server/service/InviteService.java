@@ -30,13 +30,13 @@ import java.util.UUID;
 
 
 /**
- * InviteService — LB-202: Invite link TTL 7 ngày → auto join server.
+ * InviteService — LB-202: Invite link with a 7-day TTL that auto-joins the user to a server.
  */
 @Service
 @RequiredArgsConstructor
 public class InviteService {
 
-    // C06: TTL 7 ngày cho invite link
+    // C06: Invite link TTL — 7 days
     private static final long INVITE_TTL_DAYS = 7;
 
     private final ServerRepository serverRepository;
@@ -47,8 +47,8 @@ public class InviteService {
     private final MembershipGuard membershipGuard;
 
     /**
-     * LB-202: Owner tạo invite link mới cho server.
-     * Mỗi lần gọi tạo một code mới (UUID ngắn) với TTL 7 ngày.
+     * LB-202: Generates a new invite link for the server (Owner only).
+     * Each call creates a new code (short UUID) with a 7-day TTL.
      */
     @Transactional
     public InviteResponse generateInvite(UUID serverId) {
@@ -58,7 +58,7 @@ public class InviteService {
         Server server = serverRepository.findById(serverId)
                 .orElseThrow(() -> new LiveBoxException(HttpStatus.NOT_FOUND, "Server not found: " + serverId));
 
-        // Tạo code ngắn gọn dễ share (8 ký tự đầu của UUID)
+        // Short, shareable code (first 8 characters of a UUID, uppercased)
         String code = UUID.randomUUID().toString().replace("-", "").substring(0, 8).toUpperCase();
         Instant expiresAt = Instant.now().plus(INVITE_TTL_DAYS, ChronoUnit.DAYS);
 
@@ -78,13 +78,13 @@ public class InviteService {
     }
 
     /**
-     * Bước 1 của invite flow: Xem preview server trước khi quyết định tham gia.
+     * Step 1 of the invite flow: shows a server preview before the user decides to join.
      *
-     * <p>Không yêu cầu auth nghiêm ngặt — nhưng nếu đã đăng nhập,
-     * trả về {@code alreadyMember=true/false} để FE ẩn/hiện nút "Tham gia".
+     * <p>No strict authentication required — but if the user is already logged in,
+     * returns {@code alreadyMember=true/false} so the frontend can show/hide the join button.
      *
-     * @param code invite code (8 ký tự)
-     * @return thông tin preview của server
+     * @param code invite code (8 characters)
+     * @return server preview information
      */
     @Transactional(readOnly = true)
     public InvitePreviewResponse previewInvite(String code) {
@@ -98,7 +98,7 @@ public class InviteService {
         Server server = invite.getServer();
         long memberCount = membershipRepository.countByServerId(server.getId());
 
-        // Nếu user đã đăng nhập → trả về alreadyMember, chưa đăng nhập → null
+        // If logged in, return alreadyMember status; if not authenticated, return null
         Boolean alreadyMember = null;
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null && auth.isAuthenticated() && !"anonymousUser".equals(auth.getPrincipal())) {
@@ -106,7 +106,7 @@ public class InviteService {
                 UUID currentUserId = SecurityUtils.getCurrentUserId();
                 alreadyMember = membershipRepository.existsByUserIdAndServerId(currentUserId, server.getId());
             } catch (Exception ignored) {
-                // Nếu không lấy được userId → coi như chưa đăng nhập
+                // Cannot resolve userId — treat as unauthenticated
             }
         }
 
@@ -122,10 +122,10 @@ public class InviteService {
     }
 
     /**
-     * LB-202: User nhấn invite link → tự động join server nếu:
-     * 1. Code hợp lệ và chưa hết hạn
-     * 2. User chưa bị ban khỏi server này
-     * 3. User chưa là member
+     * LB-202: Joins a server via invite link if:
+     * 1. The code is valid and not expired
+     * 2. The user is not banned from this server
+     * 3. The user is not already a member
      */
     @Transactional
     public ServerResponse joinByInvite(String code) {
@@ -140,17 +140,17 @@ public class InviteService {
 
         UUID serverId = invite.getServer().getId();
 
-        // Kiểm tra ban
+        // Check if the user is banned from this server
         if (banListRepository.existsByServerIdAndBannedUserId(serverId, currentUserId)) {
-            throw new LiveBoxException(HttpStatus.FORBIDDEN, "Bạn đã bị cấm khỏi server này.");
+            throw new LiveBoxException(HttpStatus.FORBIDDEN, "You have been banned from this server.");
         }
 
-        // Kiểm tra đã là member chưa
+        // Check if the user is already a member
         if (membershipRepository.existsByUserIdAndServerId(currentUserId, serverId)) {
             return ServerResponse.fromEntity(invite.getServer());
         }
 
-        // Tạo Membership mới
+        // Create a new Membership
         User user = userRepository.getReferenceById(currentUserId);
         Membership membership = new Membership();
         membership.setUser(user);

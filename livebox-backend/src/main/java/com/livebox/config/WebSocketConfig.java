@@ -24,15 +24,15 @@ import java.util.UUID;
 
 
 /**
- * WebSocketConfig — STOMP over WebSocket configuration (SCRUM-56 updated).
+ * WebSocketConfig — STOMP over WebSocket configuration.
  *
  * <p>Architecture ref: ADR-001 §3.1 — Spring Boot embedded SimpleBroker.
  *
  * <p>Authentication flow:
  * <ol>
- *   <li>Client kết nối: /ws?token={jwt}</li>
- *   <li>JwtHandshakeInterceptor validate và đặt principal vào WS session attributes</li>
- *   <li>ChannelInterceptor (bên dưới) propagate principal vào STOMP CONNECT frame</li>
+ *   <li>Client connects to /ws?token={jwt}</li>
+ *   <li>JwtHandshakeInterceptor validates the token and stores the principal in WS session attributes</li>
+ *   <li>ChannelInterceptor (below) propagates the principal into the STOMP CONNECT frame</li>
  * </ol>
  *
  * <p>Topic destinations:
@@ -52,7 +52,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     private final JwtHandshakeInterceptor jwtHandshakeInterceptor;
     private final MembershipGuard membershipGuard;
 
-    /** Destination prefix cho channel messages: /topic/channels/{channelId} */
+    /** Destination prefix for channel messages: /topic/channels/{channelId} */
     private static final String CHANNEL_TOPIC_PREFIX = "/topic/channels/";
 
     @Override
@@ -72,11 +72,11 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     }
 
     /**
-     * Inbound channel interceptor — xử lý 2 trường hợp:
+     * Inbound channel interceptor — handles two cases:
      *
      * <ul>
-     *   <li>CONNECT: propagate Principal từ session vào STOMP frame (bắt buộc cho @MessageMapping)</li>
-     *   <li>SUBSCRIBE: kiểm tra membership trước khi cho phép subscribe channel topic (🔒 security fix)</li>
+     *   <li>CONNECT: propagates the Principal from session into the STOMP frame (required for @MessageMapping)</li>
+     *   <li>SUBSCRIBE: validates channel membership before allowing subscription (security check)</li>
      * </ul>
      */
     @Override
@@ -92,7 +92,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                 StompCommand command = accessor.getCommand();
 
                 if (StompCommand.CONNECT.equals(command)) {
-                    // Propagate Principal từ WebSocket session vào STOMP session
+                    // Propagate Principal from WebSocket session into STOMP session
                     Map<String, Object> sessionAttributes = accessor.getSessionAttributes();
                     if (sessionAttributes != null) {
                         Object principal = sessionAttributes.get("principal");
@@ -101,7 +101,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                         }
                     }
                 } else if (StompCommand.SUBSCRIBE.equals(command)) {
-                    // Security: chặn subscribe nếu không phải member của server chứa channel
+                    // Security: block subscription if the user is not a member of the server owning this channel
                     String destination = accessor.getDestination();
                     if (destination != null && destination.startsWith(CHANNEL_TOPIC_PREFIX)) {
                         String channelIdStr = destination.substring(CHANNEL_TOPIC_PREFIX.length());
@@ -121,17 +121,17 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                         try {
                             UUID channelId = UUID.fromString(channelIdStr);
                             UUID userId = UUID.fromString(userIdStr);
-                            // Throws LiveBoxException(403) nếu không phải member
+                            // Throws LiveBoxException(403) if the user is not a member
                             membershipGuard.requireChannelMembership(channelId, userId);
                             log.debug("SUBSCRIBE authorized: user={} channel={}", userId, channelId);
                         } catch (IllegalArgumentException e) {
-                            // channelId không phải UUID hợp lệ → destination lạ → bỏ qua
+                            // Non-UUID channel destination (e.g. presence topics) — skip membership check
                             log.debug("SUBSCRIBE: non-UUID channel destination '{}', skipping check",
                                     destination);
                         }
                     }
                 }
-                // Các /topic khác (/topic/servers/..., /user/queue/...) hoặc các command khác (SEND, DISCONNECT) → allow through
+                // Other topics (/topic/servers/..., /user/queue/...) and other commands (SEND, DISCONNECT) pass through
 
                 return message;
             }

@@ -391,7 +391,7 @@ export const MainApplicationScreen: React.FC = () => {
                   onClick={handleViewOwnedServers}
                   className="w-full text-left px-3 py-2 rounded-lg text-sm text-on-surface hover:bg-white/5 transition-colors"
                 >
-                  Xem server cua ban
+                  My Servers
                 </button>
                 <button
                   type="button"

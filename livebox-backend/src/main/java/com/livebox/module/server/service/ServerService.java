@@ -67,8 +67,9 @@ public class ServerService {
     }
 
     /**
-     * Lấy danh sách server mà mình là OWNER (dùng cho màn hình quản lý: sửa/xóa server).
-     * Khác với getMyServers() trả về tất cả server mình tham gia (kể cả server của người khác).
+     * Returns only the servers owned by the current user (used by the management screen
+     * where they can edit or delete their own servers).
+     * Unlike getMyServers(), this excludes servers where the user is just a member.
      */
     @Transactional(readOnly = true)
     public List<ServerResponse> getMyOwnedServers() {
@@ -114,7 +115,7 @@ public class ServerService {
     // ── LB-203: Kick Member (Owner only) ─────────────────────────────────────
 
     /**
-     * Owner kick một member ra khỏi server. Member vẫn có thể rejoin qua invite link mới.
+     * Removes a member from the server (Owner only). The member can re-join via a new invite link.
      */
     @Transactional
     public void kickMember(UUID serverId, UUID targetUserId) {
@@ -134,7 +135,7 @@ public class ServerService {
     // ── LB-203: Ban Member (Owner only) ──────────────────────────────────────
 
     /**
-     * Owner ban vĩnh viễn một member. User sẽ không thể join lại dù có invite link.
+     * Permanently bans a member from the server (Owner only). The user cannot re-join even with an invite link.
      */
     @Transactional
     public void banMember(UUID serverId, UUID targetUserId, String reason) {
@@ -148,7 +149,7 @@ public class ServerService {
             throw new LiveBoxException(HttpStatus.CONFLICT, "User is already banned from this server.");
         }
 
-        // Kick khỏi server trước (nếu đang là member)
+        // Remove from server membership first (if still an active member)
         if (membershipRepository.existsByUserIdAndServerId(targetUserId, serverId)) {
             membershipRepository.deleteByUserIdAndServerId(targetUserId, serverId);
         }
@@ -169,7 +170,8 @@ public class ServerService {
     // ── LB-204: Leave Server (Member tự rời) ─────────────────────────────────
 
     /**
-     * Member tự rời server. Owner phải chuyển quyền trước (chưa implement transfer — trả lỗi rõ ràng).
+     * Allows a member to leave a server voluntarily.
+     * The owner must transfer ownership first (transfer not yet implemented — returns a clear error).
      */
     @Transactional
     public void leaveServer(UUID serverId) {

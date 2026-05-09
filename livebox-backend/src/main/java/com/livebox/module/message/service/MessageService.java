@@ -25,13 +25,13 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.UUID;
 
 /**
- * MessageService — Core logic cho Text Messaging (SCRUM-53, 54, 55).
+ * MessageService — core logic for text messaging.
  *
- * <p>Flow khi gửi tin nhắn:
+ * <p>Message send flow:
  * <ol>
- *   <li>Validate channel tồn tại và là TEXT type</li>
- *   <li>Lưu Message vào DB (persistent)</li>
- *   <li>Broadcast MessageResponse tới /topic/channels/{channelId} qua STOMP</li>
+ *   <li>Validate that the channel exists and is of type TEXT</li>
+ *   <li>Persist the Message to the database</li>
+ *   <li>Broadcast the MessageResponse to /topic/channels/{channelId} via STOMP</li>
  * </ol>
  */
 @Slf4j
@@ -46,16 +46,16 @@ public class MessageService {
     private final MembershipGuard membershipGuard;
 
     /**
-     * SCRUM-53: Lấy lịch sử tin nhắn của Channel, phân trang.
+     * Returns paginated message history for a channel.
      *
-     * @param channelId ID của Channel cần lấy lịch sử
-     * @param page      số trang (0-indexed)
-     * @param size      số tin nhắn mỗi trang (mặc định 50)
-     * @return Page<MessageResponse>
+     * @param channelId the channel ID
+     * @param page      page number (0-indexed)
+     * @param size      page size (capped at 100)
+     * @return Page of MessageResponse
      */
     @Transactional(readOnly = true)
     public Page<MessageResponse> getMessageHistory(UUID channelId, int page, int size) {
-        // 🔒 Security: chỉ member của server chứa channel mới được đọc lịch sử
+        // Security: only server members can read channel message history
         UUID currentUserId = SecurityUtils.getCurrentUserId();
         membershipGuard.requireChannelMembership(channelId, currentUserId);
 
@@ -65,12 +65,12 @@ public class MessageService {
     }
 
     /**
-     * SCRUM-54 + 55: Lưu tin nhắn vào DB và broadcast realtime qua STOMP.
+     * Persists a message to the database and broadcasts it in real time via STOMP.
      *
-     * @param channelId ID của Channel
-     * @param senderEmail Email của người gửi (từ JWT principal)
-     * @param request payload chứa content
-     * @return MessageResponse đã được lưu
+     * @param channelId   the channel ID
+     * @param senderEmail email of the sender (from JWT principal)
+     * @param request     payload containing the message content
+     * @return saved MessageResponse
      */
     @Transactional
     public MessageResponse sendAndBroadcast(UUID channelId, String senderEmail, SendMessageRequest request) {
@@ -84,7 +84,7 @@ public class MessageService {
         User sender = userRepository.findByEmail(senderEmail)
                 .orElseThrow(() -> new LiveBoxException(HttpStatus.NOT_FOUND, "User not found: " + senderEmail));
 
-        // 🔒 Security: kiểm tra sender là member của server chứa channel
+        // Security: verify the sender is a member of the server that owns this channel
         membershipGuard.requireMembership(channel.getServerId(), sender.getId());
 
         Message message = Message.builder()

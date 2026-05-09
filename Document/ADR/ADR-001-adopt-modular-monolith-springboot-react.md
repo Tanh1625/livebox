@@ -27,12 +27,12 @@ We are building the **LiveBox Real-time Chat Platform**, a centralized collabora
 | **Team Skill**  | Java/Spring Boot proficient. React (TypeScript). Limited heavy DevOps.   |
 | **Budget**      | $0 (Zero Budget). Must rely on free-tier cloud platforms (Render, Neon). |
 | **Timeline**    | 1 Month MVP. No room for complex infrastructure setup.                   |
-| **Voice Rooms** | Max 20 concurrent participants per WebRTC room.                          |
+| **Voice Rooms** | Max 20 concurrent participants per Voice Channel (LiveKit SFU).          |
 | **Caching**     | No Redis cache allowed in Phase 1 (`C03` constraint). PostgreSQL only. |
 
 ### 1.3 Problem Statement
 
-> **We need a single, reusable architecture pattern and tech stack that enables rapid real-time capabilities (WebSocket + WebRTC) with zero budget**, ensuring fast delivery, high developer productivity, and sufficient stability for 500 CCUs.
+> **We need a single, reusable architecture pattern and tech stack that enables rapid real-time capabilities (WebSocket + LiveKit SFU) with zero budget**, ensuring fast delivery, high developer productivity, and sufficient stability for 500 CCUs.
 
 ---
 
@@ -79,7 +79,7 @@ We are building the **LiveBox Real-time Chat Platform**, a centralized collabora
 ┌─────────────────────────────────────────────────────────┐
 │                      CLIENT LAYER                        │
 │                React 18 + Vite (SPA)                     │
-│         TailwindCSS / Zustand / WebRTC APIs              │
+│      TailwindCSS / Zustand / LiveKit Components React     │
 └──────────────────────┬─────────────────┬────────────────┘
          HTTPS / REST API                WebSocket (STOMP)
 ┌──────────────────────▼─────────────────▼────────────────┐
@@ -115,6 +115,7 @@ We are building the **LiveBox Real-time Chat Platform**, a centralized collabora
 | **Framework** | Spring Boot                                    | 3.5.13  | Industry standard, massive ecosystem.                       |
 | **Security**  | Spring Security + JWT   +  OAuth 2 With Google | —      | Stateless API auth, with stateful Refresh token for revoke. |
 | **Real-time** | Spring STOMP over WebSocket                    | —      | Standardized pub/sub messaging inside the JVM.              |
+| **Voice**     | LiveKit Server SDK (Java)                      | 0.6.x  | JWT token generation for LiveKit SFU rooms.                 |
 | **ORM**       | Spring Data JPA (Hibernate)                    | —      | Type-safe queries, fast schema generation.                  |
 | **Database**  | PostgreSQL                                     | 17      | Phase 1 Single Source of Truth `C03`.                     |
 
@@ -127,7 +128,7 @@ We are building the **LiveBox Real-time Chat Platform**, a centralized collabora
 | **Router**   | React Router  | 7      | Enables client-side routing and navigation between pages.                      |
 | **Styling**    | TailwindCSS | 3+      | Fast, utility-first styling for chat UIs.                    |
 | **State Mgmt** | Zustand     | —      | Zero-boilerplate state management for active rooms/messages. |
-| **Signaling**  | WebRTC APIs | —      | Native browser APIs for peer-to-peer voice channels.         |
+| **Voice**      | LiveKit Components React | 2.x  | Pre-built hooks & components for LiveKit SFU voice channels. |
 
 #### DevOps & Infrastructure
 
@@ -136,7 +137,7 @@ We are building the **LiveBox Real-time Chat Platform**, a centralized collabora
 | **Hosting (BE)**  | Render / Railway (Free)     | Minimal config deployment. Connects to persistent DB.          |
 | **Hosting (FE)**  | Vercel / Netlify (Free)     | Zero-config React deployment. Auto CDN.                        |
 | **DB Hosting**    | Neon.tech/ Supabase (Free) | Serverless Postgres, scales to zero.                           |
-| **NAT Traversal** | Cloudflare TURN (Free)      | Essential for WebRTC connections across restrictive firewalls. |
+| **Voice Infra** | LiveKit Cloud (Free Tier)   | Managed SFU with built-in TURN/STUN. No self-hosted server. |
 
 ### 3.3 Project Structure (Chuẩn thư mục)
 
@@ -170,9 +171,9 @@ livebox-backend/
 
 | # | Risk                               | Mitigation                                                                                                                                         |
 | - | ---------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1 | **Cold Starts on Free-Tier** | Spring Boot deployed on Render Free takes ~1-2 mins to boot from sleep.**Mitigation:** Setup cron-job.org to ping the API every 14 minutes.  |
-| 2 | **WebRTC Mesh CPU Load**     | Without a dedicated SFU server, connecting 20 users P2P strains client CPU.**Mitigation:** Strictly cap Voice Channels to 20 users.          |
-| 3 | **Vertical Scaling Ceiling** | SimpleBroker cannot broadcast messages between two backend servers.**Mitigation:** Post-MVP, swap SimpleBroker for a `RedisMessageBroker`. |
+| 1 | **Cold Starts on Free-Tier**     | Spring Boot deployed on Render Free takes ~1-2 mins to boot from sleep. **Mitigation:** Setup cron-job.org to ping the API every 14 minutes.    |
+| 2 | **LiveKit Cloud Dependency**     | Voice channels depend on LiveKit Cloud availability. **Mitigation:** Free tier provides sufficient uptime for Phase 1 scale (≤ 20 users/room). |
+| 3 | **Vertical Scaling Ceiling**     | SimpleBroker cannot broadcast messages between two backend servers. **Mitigation:** Post-MVP, swap SimpleBroker for a `RedisMessageBroker`.     |
 
 ---
 
@@ -180,8 +181,8 @@ livebox-backend/
 
 | # | Verification Action                                                              | Owner     | Deadline |
 | - | -------------------------------------------------------------------------------- | --------- | -------- |
-| 1 | Load test WebSocket STOMP for 500 CCUs using JMeter. Ensure latency < 500ms.     | QA / Team | Sprint 3 |
-| 2 | WebRTC connection verification across restrictive firewalls via Cloudflare TURN. | Frontend  | Sprint 4 |
+| 1 | Load test WebSocket STOMP for 500 CCUs using JMeter. Ensure latency < 500ms.       | QA / Team | Sprint 3 |
+| 2 | LiveKit Room join flow: verify JWT token generation → room connection → audio stream. | Frontend  | Sprint 4 |
 | 3 | Verify Refresh Token Revoke functionality (Security Logouts).                    | Backend   | Sprint 2 |
 
 ---
@@ -197,10 +198,13 @@ livebox-backend/
 
 ## 7. Decision Log (Nhật ký Quyết định)
 
-| Date       | Action                                                  | By           |
-| ---------- | ------------------------------------------------------- | ------------ |
-| 2026-04-16 | ADR-001 updated for LiveBox. Status:**Accepted**. | Tech Lead AI |
+| Date       | Action                                                                                              | By           |
+| ---------- | --------------------------------------------------------------------------------------------------- | ------------ |
+| 2026-04-16 | ADR-001 created for LiveBox. Status: **Accepted**.                                                  | Tech Lead AI |
+| 2026-05-09 | Updated Voice layer: replaced native WebRTC P2P with LiveKit SFU. See **ADR-002** for full rationale. | Tech Lead AI |
 
 ---
 
 > **Architect's Note:** For an MVP aiming to capture core chat functionality within 1 month, avoiding premature optimization is paramount. Redis and Kafka are powerful, but maintaining a stateless HTTP layer alongside a stateful JVM WebSocket broker attached to PostgreSQL is the absolute fastest path to victory. Limits are known and documented.
+>
+> **Amendment (2026-05-09):** Voice infrastructure has been upgraded from a native WebRTC P2P mesh to LiveKit SFU (see ADR-002). This eliminates the client-side CPU bottleneck of mesh topologies and removes the need for a self-managed TURN server, while remaining within the zero-budget constraint via LiveKit Cloud free tier.

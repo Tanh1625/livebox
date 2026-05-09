@@ -19,16 +19,16 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 /**
- * PresenceService — SCRUM-59, 60: Quản lý trạng thái online/offline.
+ * PresenceService — manages online/offline status for server members.
  *
- * <p>Phase 1: In-memory store (ConcurrentHashMap). Trade-off đã chấp nhận:
- * restart server → reset presence (user reconnect WS sẽ tự cập nhật lại).
+ * <p>Phase 1: In-memory store (ConcurrentHashMap). Accepted trade-off:
+ * server restart resets presence (clients will re-broadcast ONLINE on WebSocket reconnect).
  *
  * <p>Data structure:
  * <pre>
  *   onlineUsers: Map&lt;userId, Set&lt;sessionId&gt;&gt;
- *   — Một user có thể mở nhiều tab → nhiều sessionId.
- *   — Chỉ OFFLINE khi Set rỗng (tất cả tab đóng).
+ *   — A user can open multiple tabs, resulting in multiple sessionIds.
+ *   — OFFLINE is only broadcast when the Set is empty (all tabs closed).
  * </pre>
  */
 @Slf4j
@@ -44,8 +44,7 @@ public class PresenceService {
     private final SimpMessagingTemplate messagingTemplate;
 
     /**
-     * SCRUM-58/59: Đánh dấu user online khi WS CONNECT.
-     * Broadcast ONLINE event đến tất cả server user đang tham gia.
+     * Marks the user online on STOMP CONNECT. Broadcasts ONLINE event to all servers the user belongs to.
      */
     public void markOnline(UUID userId, String sessionId) {
         onlineUsers.computeIfAbsent(userId, k -> ConcurrentHashMap.newKeySet()).add(sessionId);
@@ -54,8 +53,8 @@ public class PresenceService {
     }
 
     /**
-     * SCRUM-58/59: Đánh dấu user offline khi WS DISCONNECT.
-     * Chỉ broadcast OFFLINE khi không còn session nào active (đóng hết tab).
+     * Marks the user offline on STOMP DISCONNECT.
+     * Only broadcasts OFFLINE when no active sessions remain (all tabs closed).
      */
     public void markOffline(UUID userId, String sessionId) {
         Set<String> sessions = onlineUsers.get(userId);
@@ -69,13 +68,13 @@ public class PresenceService {
         }
     }
 
-    /** Kiểm tra user có đang online không. */
+    /** Returns true if the user currently has at least one active WebSocket session. */
     public boolean isOnline(UUID userId) {
         return onlineUsers.containsKey(userId);
     }
 
     /**
-     * SCRUM-60: Broadcast presence event đến tất cả server mà user là member.
+     * Broadcasts a presence event to all servers the user belongs to.
      * Destination: /topic/servers/{serverId}/members
      */
     private void broadcastPresence(UUID userId, PresenceEvent.Status status) {
@@ -89,7 +88,7 @@ public class PresenceService {
                 .status(status)
                 .build();
 
-        // Broadcast đến mọi server user là thành viên
+        // Broadcast to every server the user is a member of
         membershipRepository.findByUserId(userId).forEach(membership -> {
             String destination = "/topic/servers/" + membership.getServer().getId() + "/members";
             messagingTemplate.convertAndSend(destination, event);
@@ -97,8 +96,8 @@ public class PresenceService {
     }
 
     /**
-     * REST: Lấy danh sách member của server kèm trạng thái online/offline.
-     * Dùng cho sidebar member list (SCRUM-59).
+     * Returns all members of a server with their current online/offline status.
+     * Used by the member list sidebar.
      */
     public List<MemberStatusResponse> getMembersWithStatus(UUID serverId) {
         return membershipRepository.findByServerId(serverId).stream()
