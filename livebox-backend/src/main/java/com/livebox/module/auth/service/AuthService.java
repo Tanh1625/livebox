@@ -62,15 +62,13 @@ public class AuthService {
         );
 
         User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new LiveBoxException(HttpStatus.NOT_FOUND, "User not found."));
+                .orElseThrow(() -> new LiveBoxException(HttpStatus.NOT_FOUND, "Invalid email or password."));
 
         return generateTokenResponse(user);
     }
 
     @Transactional
-    public TokenResponse refreshToken(RefreshTokenRequest request) {
-        String token = request.getRefreshToken();
-
+    public TokenResponse refreshToken(String token) {
         // 1. Find token in DB
         RefreshToken refreshToken = refreshTokenRepository.findByTokenValue(token)
                 .orElseThrow(() -> new LiveBoxException(HttpStatus.UNAUTHORIZED, "Refresh token is invalid or has been revoked."));
@@ -90,8 +88,8 @@ public class AuthService {
 
     // LB-103: Safe logout — revoke Refresh Token in DB
     @Transactional
-    public void logout(LogoutRequest request) {
-        refreshTokenRepository.findByTokenValue(request.getRefreshToken())
+    public void logout(String token) {
+        refreshTokenRepository.findByTokenValue(token)
                 .ifPresent(refreshTokenRepository::delete);
     }
 

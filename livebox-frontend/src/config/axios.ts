@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const USE_LOCAL_API = true;
+const USE_LOCAL_API = false;
 
 const LOCAL_API_URL = "http://localhost:8080/api/v1";
 

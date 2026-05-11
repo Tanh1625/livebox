@@ -118,6 +118,7 @@ We are building the **LiveBox Real-time Chat Platform**, a centralized collabora
 | **Voice**     | LiveKit Server SDK (Java)                      | 0.6.x  | JWT token generation for LiveKit SFU rooms.                 |
 | **ORM**       | Spring Data JPA (Hibernate)                    | —      | Type-safe queries, fast schema generation.                  |
 | **Database**  | PostgreSQL                                     | 17      | Phase 1 Single Source of Truth `C03`.                     |
+| **Storage**   | Cloudinary Java SDK                            | —      | Object storage for user avatars and server icons.            |
 
 #### Frontend
 
@@ -136,8 +137,9 @@ We are building the **LiveBox Real-time Chat Platform**, a centralized collabora
 | ----------------------- | --------------------------- | -------------------------------------------------------------- |
 | **Hosting (BE)**  | Render / Railway (Free)     | Minimal config deployment. Connects to persistent DB.          |
 | **Hosting (FE)**  | Vercel / Netlify (Free)     | Zero-config React deployment. Auto CDN.                        |
-| **DB Hosting**    | Neon.tech/ Supabase (Free) | Serverless Postgres, scales to zero.                           |
+| **DB Hosting**    | Neon.tech/ Supabase (Free) | Serverless Postgres, scales to zero.                           |
 | **Voice Infra** | LiveKit Cloud (Free Tier)   | Managed SFU with built-in TURN/STUN. No self-hosted server. |
+| **Object Storage**| Cloudinary (Free Tier)      | Persistent image storage, bypasses free PaaS ephemeral disk limits. CDNs images automatically. |
 
 ### 3.3 Project Structure (Chuẩn thư mục)
 
@@ -202,9 +204,12 @@ livebox-backend/
 | ---------- | --------------------------------------------------------------------------------------------------- | ------------ |
 | 2026-04-16 | ADR-001 created for LiveBox. Status: **Accepted**.                                                  | Tech Lead AI |
 | 2026-05-09 | Updated Voice layer: replaced native WebRTC P2P with LiveKit SFU. See **ADR-002** for full rationale. | Tech Lead AI |
+| 2026-05-11 | Updated Storage layer: Adopted Cloudinary for persistent image storage to handle PaaS ephemeral limits. | Tech Lead AI |
 
 ---
 
 > **Architect's Note:** For an MVP aiming to capture core chat functionality within 1 month, avoiding premature optimization is paramount. Redis and Kafka are powerful, but maintaining a stateless HTTP layer alongside a stateful JVM WebSocket broker attached to PostgreSQL is the absolute fastest path to victory. Limits are known and documented.
 >
 > **Amendment (2026-05-09):** Voice infrastructure has been upgraded from a native WebRTC P2P mesh to LiveKit SFU (see ADR-002). This eliminates the client-side CPU bottleneck of mesh topologies and removes the need for a self-managed TURN server, while remaining within the zero-budget constraint via LiveKit Cloud free tier.
+>
+> **Amendment (2026-05-11):** Cloudinary has been adopted as the persistent object storage for user avatars and attachments. Free-tier PaaS environments reset local storage on deployments; Cloudinary prevents data loss while fulfilling the zero-budget requirement.

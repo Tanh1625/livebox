@@ -1,4 +1,4 @@
-import { create } from 'zustand';
+import { create } from "zustand";
 
 interface User {
   id: string;
@@ -15,47 +15,50 @@ interface AuthState {
 
 const decodeToken = (token: string): User | null => {
   try {
-    const base64Url = token.split('.')[1];
-    let base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    
+    const base64Url = token.split(".")[1];
+    let base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+
     // Add padding if missing
     const pad = base64.length % 4;
     if (pad) {
-      if (pad === 1) throw new Error('Invalid base64');
-      base64 += new Array(5 - pad).join('=');
+      if (pad === 1) throw new Error("Invalid base64");
+      base64 += new Array(5 - pad).join("=");
     }
 
-    const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
-      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-    }).join(''));
-    
+    const jsonPayload = decodeURIComponent(
+      atob(base64)
+        .split("")
+        .map(function (c) {
+          return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+        })
+        .join(""),
+    );
+
     const payload = JSON.parse(jsonPayload);
     // Backend uses email as sub/subject and userId for id in JWT
-    return { 
+    return {
       email: payload.sub,
-      id: payload.userId
+      id: payload.userId,
     };
   } catch (e) {
-    console.error('Failed to decode token:', e);
+    console.error("Failed to decode token:", e);
     return null;
   }
 };
 
-const initialToken = localStorage.getItem('access_token');
-
 export const useAuthStore = create<AuthState>((set) => ({
-  isAuthenticated: !!initialToken,
-  accessToken: initialToken,
-  user: initialToken ? decodeToken(initialToken) : null,
-  
+  isAuthenticated: false,
+  accessToken: null,
+  user: null,
+
   setToken: (token: string) => {
-    localStorage.setItem('access_token', token);
+    // Note: Refresh token is handled by HTTPOnly cookie automatically via backend Set-Cookie
     const user = decodeToken(token);
     set({ accessToken: token, isAuthenticated: true, user });
   },
-  
+
   logout: () => {
-    localStorage.removeItem('access_token');
+    // Cookie is cleared by the backend
     set({ accessToken: null, isAuthenticated: false, user: null });
-  }
+  },
 }));

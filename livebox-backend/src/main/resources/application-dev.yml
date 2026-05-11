@@ -34,6 +34,9 @@ livebox:
     expiration: ${JWT_EXPIRATION:3600000} # 1 hour in ms
     refresh-expiration: ${JWT_REFRESH_EXPIRATION:604800000} # 7 days in ms
 
+cloudinary:
+  url: ${CLOUDINARY_URL:cloudinary://demo_key:demo_secret@demo_cloud}
+
 livekit:
   url: ${LIVEKIT_URL:wss://livebox-dev.livekit.cloud}
   api-key: ${LIVEKIT_API_KEY:dev-api-key}

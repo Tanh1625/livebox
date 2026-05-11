@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
+import java.util.UUID;
 
 /**
  * JwtProvider — utility class for generating and validating JWT tokens.
@@ -52,6 +53,7 @@ public class JwtProvider {
         return Jwts.builder()
                 .subject(email)
                 .claim("userId", userId)
+                .id(UUID.randomUUID().toString())
                 .issuedAt(now)
                 .expiration(expiryDate)
                 .signWith(key)
