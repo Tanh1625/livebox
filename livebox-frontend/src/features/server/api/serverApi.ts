@@ -42,7 +42,12 @@ const normalizeSingleServer = (payload: unknown): ServerResponse | null => {
 
 export const serverApi = {
   createServer: async (data: ServerCreateRequest): Promise<ServerResponse> => {
-    const res = await axiosClient.post<unknown, { data: ServerResponse }>('/api/v1/servers', data);
+    const formData = new FormData();
+    formData.append('name', data.name);
+    if (data.avatar) {
+      formData.append('avatar', data.avatar);
+    }
+    const res = await axiosClient.post<unknown, { data: ServerResponse }>('/api/v1/servers', formData);
     return res.data;
   },
 
@@ -68,7 +73,11 @@ export const serverApi = {
   },
 
   updateServer: async (id: string, data: ServerUpdateRequest): Promise<ServerResponse> => {
-    const res = await axiosClient.patch(`/api/v1/servers/${id}`, data);
+    const formData = new FormData();
+    if (data.name) formData.append('name', data.name);
+    if (data.avatar) formData.append('avatar', data.avatar);
+    
+    const res = await axiosClient.patch(`/api/v1/servers/${id}`, formData);
     const server = normalizeSingleServer(res);
 
     if (!server) {

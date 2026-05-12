@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.ModelAttribute;
 
 import java.util.List;
 import java.util.UUID;
@@ -36,9 +37,9 @@ public class ServerController {
     private final PresenceService presenceService;
 
     // LB-201: Tạo server
-    @PostMapping
+    @PostMapping(consumes = org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public ApiResponse<ServerResponse> createServer(@Valid @RequestBody ServerCreateRequest request) {
+    public ApiResponse<ServerResponse> createServer(@Valid @ModelAttribute ServerCreateRequest request) {
         return ApiResponse.created(serverService.createServer(request));
     }
 
@@ -67,10 +68,10 @@ public class ServerController {
     }
 
     // Cập nhật server (Owner only)
-    @PatchMapping("/{id}")
+    @PatchMapping(value = "/{id}", consumes = org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE)
     public ApiResponse<ServerResponse> updateServer(
             @PathVariable UUID id,
-            @Valid @RequestBody ServerUpdateRequest request) {
+            @Valid @ModelAttribute ServerUpdateRequest request) {
         return ApiResponse.success(serverService.updateServer(id, request));
     }
 

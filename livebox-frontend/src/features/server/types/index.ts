@@ -8,12 +8,12 @@ export interface ServerResponse {
 
 export interface ServerCreateRequest {
   name: string;
-  avatarUrl?: string;
+  avatar?: File;
 }
 
 export interface ServerUpdateRequest {
   name?: string;
-  avatarUrl?: string;
+  avatar?: File;
 }
 
 export interface InviteResponse {

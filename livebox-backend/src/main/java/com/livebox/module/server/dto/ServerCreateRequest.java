@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.UUID;
 
@@ -16,6 +17,6 @@ public class ServerCreateRequest {
     @Size(min = 1, max = 100, message = "Server name must be between 1 and 100 characters")
     private String name;
 
-    @Schema(example = "https://avatar.iran.liara.run/public/1", description = "Ảnh đại diện server")
-    private String avatarUrl;
+    @Schema(description = "Ảnh đại diện server")
+    private MultipartFile avatar;
 }

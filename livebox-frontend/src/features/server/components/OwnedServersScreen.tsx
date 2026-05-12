@@ -69,7 +69,8 @@ export const OwnedServersScreen: React.FC = () => {
   const [loadingServerId, setLoadingServerId] = useState<string | null>(null);
   const [activeServer, setActiveServer] = useState<ServerResponse | null>(null);
   const [editName, setEditName] = useState('');
-  const [editAvatarUrl, setEditAvatarUrl] = useState('');
+  const [editAvatarPreview, setEditAvatarPreview] = useState('');
+  const [editAvatarFile, setEditAvatarFile] = useState<File | null>(null);
   const [isChannelsOpen, setIsChannelsOpen] = useState(false);
   const [channelsServer, setChannelsServer] = useState<ServerResponse | null>(null);
   const [channels, setChannels] = useState<ChannelResponse[]>([]);
@@ -120,13 +121,24 @@ export const OwnedServersScreen: React.FC = () => {
     setPopup(null);
   }, []);
 
+  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setEditAvatarFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => setEditAvatarPreview(reader.result as string);
+      reader.readAsDataURL(file);
+    }
+  };
+
   const openEditServer = async (serverId: string) => {
     try {
       setLoadingServerId(serverId);
       const server = await serverApi.getServerById(serverId);
       setActiveServer(server);
       setEditName(server.name ?? '');
-      setEditAvatarUrl(server.avatarUrl ?? '');
+      setEditAvatarPreview(server.avatarUrl ?? '');
+      setEditAvatarFile(null);
       setIsEditOpen(true);
     } catch (fetchError: unknown) {
       const popupCopy = getBackendPopupCopy(fetchError, 'Khong the mo form chinh sua server. Vui long thu lai.');
@@ -144,7 +156,8 @@ export const OwnedServersScreen: React.FC = () => {
     setIsEditOpen(false);
     setActiveServer(null);
     setEditName('');
-    setEditAvatarUrl('');
+    setEditAvatarPreview('');
+    setEditAvatarFile(null);
   };
 
   const openInvite = useCallback((server: ServerResponse) => {
@@ -339,14 +352,13 @@ export const OwnedServersScreen: React.FC = () => {
 
       const payload: ServerUpdateRequest = {};
       const trimmedName = editName.trim();
-      const trimmedAvatarUrl = editAvatarUrl.trim();
 
       if (trimmedName) {
         payload.name = trimmedName;
       }
 
-      if (trimmedAvatarUrl) {
-        payload.avatarUrl = trimmedAvatarUrl;
+      if (editAvatarFile) {
+        payload.avatar = editAvatarFile;
       }
 
       const updatedServer = await serverApi.updateServer(activeServer.id, payload);
@@ -593,17 +605,21 @@ export const OwnedServersScreen: React.FC = () => {
             <form onSubmit={(event) => void handleUpdateServer(event)} className="p-6 space-y-6">
               <div className="grid gap-6 md:grid-cols-[160px_minmax(0,1fr)] items-start">
                 <div className="space-y-3">
-                  <div className="h-40 w-40 rounded-3xl border border-outline-variant/20 bg-surface-container-high overflow-hidden flex items-center justify-center">
-                    {editAvatarUrl ? (
-                      <img src={editAvatarUrl} alt="Avatar preview" className="h-full w-full object-cover" />
+                  <div className="h-40 w-40 rounded-3xl border border-outline-variant/20 bg-surface-container-high overflow-hidden flex items-center justify-center relative group">
+                    {editAvatarPreview ? (
+                      <img src={editAvatarPreview} alt="Avatar preview" className="h-full w-full object-cover group-hover:opacity-60 transition-opacity" />
                     ) : (
-                      <div className="text-center text-on-surface-variant px-4">
+                      <div className="text-center text-on-surface-variant px-4 group-hover:opacity-60 transition-opacity">
                         <span className="material-symbols-outlined text-4xl">image</span>
                         <p className="mt-2 text-sm">Chua co avatar</p>
                       </div>
                     )}
+                    <label className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 cursor-pointer transition-opacity text-white backdrop-blur-sm bg-black/30">
+                      <span className="material-symbols-outlined">upload</span>
+                      <input type="file" accept="image/*" className="hidden" onChange={handleAvatarChange} />
+                    </label>
                   </div>
-                  <p className="text-xs text-on-surface-variant">Nhap URL avatar neu ban muon doi hinh dai dien cua server.</p>
+                  <p className="text-xs text-on-surface-variant">Click vao khung tren de upload anh (Max 5MB).</p>
                 </div>
 
                 <div className="space-y-5">
@@ -614,17 +630,6 @@ export const OwnedServersScreen: React.FC = () => {
                       value={editName}
                       onChange={(event) => setEditName(event.target.value)}
                       placeholder="Nhap ten server"
-                      className="w-full rounded-2xl border border-outline-variant/20 bg-surface-container-high px-4 py-3 text-on-surface outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/30"
-                    />
-                  </label>
-
-                  <label className="block space-y-2">
-                    <span className="text-xs font-semibold uppercase tracking-[0.18em] text-on-surface-variant">Avatar URL</span>
-                    <input
-                      type="url"
-                      value={editAvatarUrl}
-                      onChange={(event) => setEditAvatarUrl(event.target.value)}
-                      placeholder="https://..."
                       className="w-full rounded-2xl border border-outline-variant/20 bg-surface-container-high px-4 py-3 text-on-surface outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/30"
                     />
                   </label>

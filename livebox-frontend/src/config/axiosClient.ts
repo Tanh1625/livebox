@@ -4,22 +4,25 @@ import { useAuthStore } from "../features/auth/store/authStore";
 // In development (npm run dev), default to localhost unless VITE_API_URL explicitly points elsewhere.
 // Set VITE_USE_LOCAL=true in .env to force localhost even in other environments.
 const isDev = import.meta.env.DEV;
-const useLocal = import.meta.env.VITE_USE_LOCAL === "true" || isDev;
-// const useLocal = false;
+// const useLocal = import.meta.env.VITE_USE_LOCAL === "true" || isDev;
+const useLocal = true;
 const LOCAL_API_URL = "http://localhost:8080";
 const DEPLOYED_API_URL = import.meta.env.VITE_API_URL as string;
 
 const axiosClient = axios.create({
   baseURL: useLocal ? LOCAL_API_URL : DEPLOYED_API_URL,
   withCredentials: true,
-  headers: {
-    "Content-Type": "application/json",
-  },
 });
 
 // Add a request interceptor to attach token
 axiosClient.interceptors.request.use(
   (config) => {
+    // If the data is FormData, we explicitly remove Content-Type 
+    // so the browser can set it automatically with the correct "boundary"
+    if (config.data instanceof FormData) {
+      delete config.headers["Content-Type"];
+    }
+
     // fallback to useAuthStore.getState().accessToken later if used.
     // only store in memory.
     const token = useAuthStore.getState().accessToken;

@@ -3,6 +3,7 @@ package com.livebox.module.server.service;
 import com.livebox.common.exception.LiveBoxException;
 import com.livebox.common.exception.ResourceNotFoundException;
 import com.livebox.common.security.MembershipGuard;
+import com.livebox.common.util.FileUploadService;
 import com.livebox.common.util.SecurityUtils;
 import com.livebox.module.auth.entity.User;
 import com.livebox.module.auth.repository.UserRepository;
@@ -35,14 +36,20 @@ public class ServerService {
     private final BanListRepository banListRepository;
     private final UserRepository userRepository;
     private final MembershipGuard membershipGuard;
+    private final FileUploadService fileUploadService;
 
     @Transactional
     public ServerResponse createServer(ServerCreateRequest request) {
         UUID currentUserId = SecurityUtils.getCurrentUserId();
 
+        String avatarUrl = null;
+        if (request.getAvatar() != null && !request.getAvatar().isEmpty()) {
+            avatarUrl = fileUploadService.uploadImage(request.getAvatar(), "server_icons");
+        }
+
         Server server = Server.builder()
                 .name(request.getName())
-                .avatarUrl(request.getAvatarUrl())
+                .avatarUrl(avatarUrl)
                 .ownerId(currentUserId)
                 .build();
         server = serverRepository.save(server);
@@ -97,7 +104,15 @@ public class ServerService {
                 .orElseThrow(() -> new ResourceNotFoundException("Server not found with id: " + id));
 
         if (request.getName() != null) server.setName(request.getName());
-        if (request.getAvatarUrl() != null) server.setAvatarUrl(request.getAvatarUrl());
+        
+        if (request.getAvatar() != null && !request.getAvatar().isEmpty()) {
+            if (server.getAvatarUrl() != null) {
+                // To avoid storing orphaned images, we could extract the public ID and call fileUploadService.deleteImage
+                // But for now, we'll just upload the new one
+            }
+            String avatarUrl = fileUploadService.uploadImage(request.getAvatar(), "server_icons");
+            server.setAvatarUrl(avatarUrl);
+        }
 
         return ServerResponse.fromEntity(serverRepository.save(server));
     }

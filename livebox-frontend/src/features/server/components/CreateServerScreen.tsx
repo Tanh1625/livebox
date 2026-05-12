@@ -9,6 +9,7 @@ export const CreateServerScreen: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
 
   const navigate = useNavigate();
 
@@ -17,7 +18,12 @@ export const CreateServerScreen: React.FC = () => {
       setIsLoading(true);
       setServerError(null);
 
-      const response = await serverApi.createServer(data);
+      const requestData: ServerCreateRequest = { ...data };
+      if (avatarFile) {
+        requestData.avatar = avatarFile;
+      }
+
+      const response = await serverApi.createServer(requestData);
 
       if (response && response.id) {
         navigate('/app/main');
@@ -33,6 +39,7 @@ export const CreateServerScreen: React.FC = () => {
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      setAvatarFile(file);
       const reader = new FileReader();
       reader.onloadend = () => setAvatarPreview(reader.result as string);
       reader.readAsDataURL(file);
