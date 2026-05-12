@@ -5,7 +5,7 @@ import { useAuthStore } from "../features/auth/store/authStore";
 // Set VITE_USE_LOCAL=true in .env to force localhost even in other environments.
 const isDev = import.meta.env.DEV;
 // const useLocal = import.meta.env.VITE_USE_LOCAL === "true" || isDev;
-const useLocal = true;
+const useLocal = false;
 const LOCAL_API_URL = "http://localhost:8080";
 const DEPLOYED_API_URL = import.meta.env.VITE_API_URL as string;
 
@@ -17,7 +17,7 @@ const axiosClient = axios.create({
 // Add a request interceptor to attach token
 axiosClient.interceptors.request.use(
   (config) => {
-    // If the data is FormData, we explicitly remove Content-Type 
+    // If the data is FormData, we explicitly remove Content-Type
     // so the browser can set it automatically with the correct "boundary"
     if (config.data instanceof FormData) {
       delete config.headers["Content-Type"];

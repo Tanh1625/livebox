@@ -43,16 +43,16 @@ const getBackendPopupCopy = (error: unknown, fallbackMessage: string) => {
   }
 
   const titleByStatus: Record<number, string> = {
-    400: 'Yeu cau khong hop le',
-    403: 'Khong co quyen thao tac',
-    404: 'Khong tim thay server',
-    409: 'Xung dot du lieu',
-    410: 'Du lieu da het han',
-    500: 'Da xay ra loi he thong'
+    400: 'Bad request',
+    403: 'Permission denied',
+    404: 'Server not found',
+    409: 'Data conflict',
+    410: 'Data expired',
+    500: 'System error occurred'
   };
 
   return {
-    title: (status && titleByStatus[status]) || 'Da xay ra loi',
+    title: (status && titleByStatus[status]) || 'An error occurred',
     message
   };
 };
@@ -93,7 +93,7 @@ export const OwnedServersScreen: React.FC = () => {
         const data = await serverApi.getMyOwnedServers();
         setServers(data);
       } catch (fetchError: unknown) {
-        const popupCopy = getBackendPopupCopy(fetchError, 'Khong the tai danh sach server. Vui long thu lai.');
+        const popupCopy = getBackendPopupCopy(fetchError, 'Failed to load server list. Please try again.');
         setError(popupCopy.message);
         setPopup({
           title: popupCopy.title,
@@ -141,7 +141,7 @@ export const OwnedServersScreen: React.FC = () => {
       setEditAvatarFile(null);
       setIsEditOpen(true);
     } catch (fetchError: unknown) {
-      const popupCopy = getBackendPopupCopy(fetchError, 'Khong the mo form chinh sua server. Vui long thu lai.');
+      const popupCopy = getBackendPopupCopy(fetchError, 'Failed to open server edit form. Please try again.');
       setPopup({
         title: popupCopy.title,
         message: popupCopy.message,
@@ -158,6 +158,34 @@ export const OwnedServersScreen: React.FC = () => {
     setEditName('');
     setEditAvatarPreview('');
     setEditAvatarFile(null);
+  };
+
+  const handleDeleteServer = async (serverId: string, serverName: string) => {
+    const isConfirmed = window.confirm(`Are you sure you want to delete server "${serverName}"? This action cannot be undone!`);
+    if (!isConfirmed) return;
+
+    try {
+      setIsSaving(true);
+      await serverApi.deleteServer(serverId);
+      setServers((current) => current.filter((s) => s.id !== serverId));
+      setPopup({
+        title: 'Server deleted',
+        message: `Server "${serverName}" has been deleted.`,
+        variant: 'success'
+      });
+      if (activeServer?.id === serverId) {
+        closeEditModal();
+      }
+    } catch (deleteError: unknown) {
+      const popupCopy = getBackendPopupCopy(deleteError, 'Failed to delete server. Please try again.');
+      setPopup({
+        title: popupCopy.title,
+        message: popupCopy.message,
+        variant: 'error'
+      });
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const openInvite = useCallback((server: ServerResponse) => {
@@ -191,7 +219,7 @@ export const OwnedServersScreen: React.FC = () => {
       const data = await channelApi.getChannels(serverId);
       setChannels(data);
     } catch (channelError: unknown) {
-      const popupCopy = getBackendPopupCopy(channelError, 'Khong the tai danh sach channel. Vui long thu lai.');
+      const popupCopy = getBackendPopupCopy(channelError, 'Failed to load channels. Please try again.');
       setChannelsError(popupCopy.message);
       setPopup({
         title: popupCopy.title,
@@ -236,8 +264,8 @@ export const OwnedServersScreen: React.FC = () => {
     const trimmedName = channelName.trim();
     if (!trimmedName) {
       setPopup({
-        title: 'Ten channel khong hop le',
-        message: 'Vui long nhap ten channel truoc khi tao.',
+        title: 'Invalid channel name',
+        message: 'Please enter a channel name before creating.',
         variant: 'error'
       });
       return;
@@ -252,14 +280,14 @@ export const OwnedServersScreen: React.FC = () => {
 
       setChannels((current) => [...current, createdChannel]);
       setPopup({
-        title: 'Da tao channel',
-        message: `Da tao channel "${createdChannel.name}" cho server ${channelsServer.name || channelsServer.id}.`,
+        title: 'Channel created',
+        message: `Channel created "${createdChannel.name}" for server ${channelsServer.name || channelsServer.id}.`,
         variant: 'success'
       });
       setChannelName('');
       setChannelType('TEXT');
     } catch (createError: unknown) {
-      const popupCopy = getBackendPopupCopy(createError, 'Khong the tao channel. Vui long thu lai.');
+      const popupCopy = getBackendPopupCopy(createError, 'Failed to create channel. Please try again.');
       setPopup({
         title: popupCopy.title,
         message: popupCopy.message,
@@ -280,8 +308,8 @@ export const OwnedServersScreen: React.FC = () => {
     const trimmedName = channelEditName.trim();
     if (!trimmedName) {
       setPopup({
-        title: 'Ten channel khong hop le',
-        message: 'Vui long nhap ten channel moi truoc khi luu.',
+        title: 'Invalid channel name',
+        message: 'Please enter a new channel name before saving.',
         variant: 'error'
       });
       return;
@@ -292,13 +320,13 @@ export const OwnedServersScreen: React.FC = () => {
       const updatedChannel = await channelApi.renameChannel(channelsServer.id, channelEditId, trimmedName);
       setChannels((current) => current.map((channel) => (channel.id === updatedChannel.id ? updatedChannel : channel)));
       setPopup({
-        title: 'Da cap nhat channel',
-        message: `Da doi ten channel thanh "${updatedChannel.name}".`,
+        title: 'Channel updated',
+        message: `Renamed channel to "${updatedChannel.name}".`,
         variant: 'success'
       });
       closeRenameChannel();
     } catch (renameError: unknown) {
-      const popupCopy = getBackendPopupCopy(renameError, 'Khong the doi ten channel. Vui long thu lai.');
+      const popupCopy = getBackendPopupCopy(renameError, 'Failed to rename channel. Please try again.');
       setPopup({
         title: popupCopy.title,
         message: popupCopy.message,
@@ -314,7 +342,7 @@ export const OwnedServersScreen: React.FC = () => {
       return;
     }
 
-    const isConfirmed = window.confirm(`Xoa channel "${channel.name}"?`);
+    const isConfirmed = window.confirm(`Delete channel "${channel.name}"?`);
     if (!isConfirmed) {
       return;
     }
@@ -324,12 +352,12 @@ export const OwnedServersScreen: React.FC = () => {
       await channelApi.deleteChannel(channelsServer.id, channel.id);
       setChannels((current) => current.filter((item) => item.id !== channel.id));
       setPopup({
-        title: 'Da xoa channel',
-        message: `Channel "${channel.name}" da bi xoa.`,
+        title: 'Channel deleted',
+        message: `Channel "${channel.name}" has been deleted.`,
         variant: 'success'
       });
     } catch (deleteError: unknown) {
-      const popupCopy = getBackendPopupCopy(deleteError, 'Khong the xoa channel. Vui long thu lai.');
+      const popupCopy = getBackendPopupCopy(deleteError, 'Failed to delete channel. Please try again.');
       setPopup({
         title: popupCopy.title,
         message: popupCopy.message,
@@ -365,13 +393,13 @@ export const OwnedServersScreen: React.FC = () => {
 
       setServers((current) => current.map((server) => (server.id === updatedServer.id ? updatedServer : server)));
       setPopup({
-        title: 'Cap nhat thanh cong',
-        message: 'Thong tin server da duoc cap nhat thanh cong.',
+        title: 'Update successful',
+        message: 'Server information updated successfully.',
         variant: 'success'
       });
       closeEditModal();
     } catch (updateError: unknown) {
-      const popupCopy = getBackendPopupCopy(updateError, 'Khong the cap nhat server. Vui long thu lai.');
+      const popupCopy = getBackendPopupCopy(updateError, 'Failed to update server. Please try again.');
       setPopup({
         title: popupCopy.title,
         message: popupCopy.message,
@@ -413,7 +441,7 @@ export const OwnedServersScreen: React.FC = () => {
               onClick={() => navigate('/servers/create')}
               className="px-4 py-2 rounded-full text-sm bg-primary text-on-primary font-semibold hover:opacity-90 transition-colors"
             >
-              Tao server
+              Create server
             </button>
             <button
               type="button"
@@ -451,7 +479,7 @@ export const OwnedServersScreen: React.FC = () => {
 
         {isLoading && (
           <div className="rounded-2xl bg-surface-container-low p-8 border border-outline-variant/20 text-on-surface-variant">
-            Dang tai du lieu...
+            Loading data...
           </div>
         )}
 
@@ -463,27 +491,27 @@ export const OwnedServersScreen: React.FC = () => {
               onClick={() => window.location.reload()}
               className="px-4 py-2 rounded-xl bg-error text-on-error hover:opacity-90 transition-colors"
             >
-              Tai lai trang
+              Reload page
             </button>
           </div>
         )}
 
         {!isLoading && !error && servers.length === 0 && (
           <div className="rounded-2xl bg-surface-container-low p-8 border border-outline-variant/20 text-on-surface-variant space-y-4">
-            <p>Ban chua tao server nao.</p>
+            <p>You haven't created any servers yet.</p>
             <button
               type="button"
               onClick={() => navigate('/servers/create')}
               className="px-5 py-2.5 rounded-xl bg-primary text-on-primary hover:opacity-90 transition-colors"
             >
-              Tao server dau tien
+              Create your first server
             </button>
           </div>
         )}
 
         {!isLoading && !error && servers.length > 0 && filteredServers.length === 0 && (
           <div className="rounded-2xl bg-surface-container-low p-8 border border-outline-variant/20 text-on-surface-variant">
-            Khong tim thay server phu hop voi tu khoa "{searchQuery}".
+            Server not found phu hop voi tu khoa "{searchQuery}".
           </div>
         )}
 
@@ -534,7 +562,7 @@ export const OwnedServersScreen: React.FC = () => {
                         className="flex-1 min-w-0 bg-gradient-to-r from-primary to-primary-dim text-on-primary font-headline font-bold py-3 rounded-xl flex items-center justify-center gap-2 active:scale-95 transition-transform disabled:opacity-60 disabled:cursor-wait"
                       >
                         <span className="material-symbols-outlined text-sm">edit</span>
-                        {loadingServerId === server.id ? 'Dang mo...' : 'Chinh sua server'}
+                        {loadingServerId === server.id ? 'Opening...' : 'Edit server'}
                       </button>
                       <button
                         type="button"
@@ -577,7 +605,7 @@ export const OwnedServersScreen: React.FC = () => {
                 onClick={closePopup}
                 className={`px-4 py-2 rounded-xl transition-colors ${popup.variant === 'success' ? 'bg-primary text-on-primary hover:opacity-90' : 'bg-error text-on-error hover:opacity-90'}`}
               >
-                Dong y
+                OK
               </button>
             </div>
           </div>
@@ -589,8 +617,8 @@ export const OwnedServersScreen: React.FC = () => {
           <div className="w-full max-w-2xl rounded-3xl border border-outline-variant/20 bg-surface-container-low shadow-[0_32px_96px_rgba(0,0,0,0.5)] overflow-hidden">
             <div className="flex items-center justify-between px-6 py-5 border-b border-outline-variant/10">
               <div>
-                <h2 className="text-2xl font-bold tracking-tight">Chinh sua server</h2>
-                <p className="text-sm text-on-surface-variant mt-1">Cap nhat ten va avatar cho {activeServer.name}.</p>
+                <h2 className="text-2xl font-bold tracking-tight">Edit server</h2>
+                <p className="text-sm text-on-surface-variant mt-1">Update name and avatar for {activeServer.name}.</p>
               </div>
               <button
                 type="button"
@@ -611,7 +639,7 @@ export const OwnedServersScreen: React.FC = () => {
                     ) : (
                       <div className="text-center text-on-surface-variant px-4 group-hover:opacity-60 transition-opacity">
                         <span className="material-symbols-outlined text-4xl">image</span>
-                        <p className="mt-2 text-sm">Chua co avatar</p>
+                        <p className="mt-2 text-sm">No avatar</p>
                       </div>
                     )}
                     <label className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 cursor-pointer transition-opacity text-white backdrop-blur-sm bg-black/30">
@@ -619,42 +647,54 @@ export const OwnedServersScreen: React.FC = () => {
                       <input type="file" accept="image/*" className="hidden" onChange={handleAvatarChange} />
                     </label>
                   </div>
-                  <p className="text-xs text-on-surface-variant">Click vao khung tren de upload anh (Max 5MB).</p>
+                  <p className="text-xs text-on-surface-variant">Click the frame above to upload image (Max 5MB).</p>
                 </div>
 
                 <div className="space-y-5">
                   <label className="block space-y-2">
-                    <span className="text-xs font-semibold uppercase tracking-[0.18em] text-on-surface-variant">Ten server</span>
+                    <span className="text-xs font-semibold uppercase tracking-[0.18em] text-on-surface-variant">Server name</span>
                     <input
                       type="text"
                       value={editName}
                       onChange={(event) => setEditName(event.target.value)}
-                      placeholder="Nhap ten server"
+                      placeholder="Enter server name"
                       className="w-full rounded-2xl border border-outline-variant/20 bg-surface-container-high px-4 py-3 text-on-surface outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/30"
                     />
                   </label>
 
                   <div className="rounded-2xl border border-outline-variant/10 bg-surface-container p-4 text-sm text-on-surface-variant">
-                    Doi ten server se cap nhat ngay sau khi ban luu thay doi. Neu backend tra ve loi, popup se hien thi thong bao tuong ung.
+                    Changes to the server name are applied immediately upon saving. Errors will be shown in a popup.
                   </div>
                 </div>
               </div>
 
-              <div className="flex items-center justify-end gap-3 pt-2">
-                <button
-                  type="button"
-                  onClick={closeEditModal}
-                  className="px-5 py-2.5 rounded-xl bg-surface-container-high text-on-surface hover:bg-surface-bright transition-colors"
-                >
-                  Huy
-                </button>
-                <button
-                  type="submit"
-                  disabled={isSaving}
-                  className="px-5 py-2.5 rounded-xl bg-primary text-on-primary hover:opacity-90 transition-colors disabled:opacity-60 disabled:cursor-wait"
-                >
-                  {isSaving ? 'Dang luu...' : 'Luu thay doi'}
-                </button>
+              <div className="flex items-center gap-3 pt-2 w-full justify-between">
+                {activeServer && (
+                  <button
+                    type="button"
+                    onClick={() => void handleDeleteServer(activeServer.id, activeServer.name ?? '')}
+                    disabled={isSaving}
+                    className="px-5 py-2.5 rounded-xl bg-error/10 text-error hover:bg-error/20 transition-colors disabled:opacity-60 disabled:cursor-wait"
+                  >
+                    Delete Server
+                  </button>
+                )}
+                <div className="flex gap-3">
+                  <button
+                    type="button"
+                    onClick={closeEditModal}
+                    className="px-5 py-2.5 rounded-xl bg-surface-container-high text-on-surface hover:bg-surface-bright transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={isSaving}
+                    className="px-5 py-2.5 rounded-xl bg-primary text-on-primary hover:opacity-90 transition-colors disabled:opacity-60 disabled:cursor-wait"
+                  >
+                    {isSaving ? 'Saving...' : 'Save changes'}
+                  </button>
+                </div>
               </div>
             </form>
           </div>
@@ -760,7 +800,7 @@ export const OwnedServersScreen: React.FC = () => {
                     disabled={isChannelSaving}
                     className="bg-primary text-on-primary px-8 py-3.5 rounded-xl font-display font-black text-sm uppercase tracking-widest shadow-[0_8px_24px_-4px_rgba(0,227,253,0.3)] hover:shadow-[0_12px_32px_-4px_rgba(0,227,253,0.5)] active:scale-95 transition-all duration-200 disabled:opacity-60 disabled:cursor-wait"
                   >
-                    {isChannelSaving ? 'Dang tao...' : 'Create Channel'}
+                    {isChannelSaving ? 'Creating...' : 'Create Channel'}
                   </button>
                 </div>
               </form>
@@ -769,7 +809,7 @@ export const OwnedServersScreen: React.FC = () => {
                 <div className="flex items-center justify-between gap-3">
                   <div>
                     <h3 className="text-lg font-bold text-on-surface">Channels</h3>
-                    <p className="text-sm text-on-surface-variant">Danh sach channel hien co cua server nay.</p>
+                    <p className="text-sm text-on-surface-variant">List of existing channels for this server.</p>
                   </div>
                   <button
                     type="button"
@@ -780,7 +820,7 @@ export const OwnedServersScreen: React.FC = () => {
                   </button>
                 </div>
 
-                {channelsLoading && <div className="rounded-2xl bg-surface-container-high p-4 text-on-surface-variant">Dang tai channel...</div>}
+                {channelsLoading && <div className="rounded-2xl bg-surface-container-high p-4 text-on-surface-variant">Loading channels...</div>}
 
                 {!channelsLoading && channelsError && (
                   <div className="rounded-2xl bg-error-container/20 p-4 border border-error/40 text-error">
@@ -789,7 +829,7 @@ export const OwnedServersScreen: React.FC = () => {
                 )}
 
                 {!channelsLoading && !channelsError && channels.length === 0 && (
-                  <div className="rounded-2xl bg-surface-container-high p-4 text-on-surface-variant">Chua co channel nao.</div>
+                  <div className="rounded-2xl bg-surface-container-high p-4 text-on-surface-variant">No channels yet.</div>
                 )}
 
                 {!channelsLoading && !channelsError && channels.length > 0 && (
@@ -895,7 +935,7 @@ export const OwnedServersScreen: React.FC = () => {
                   disabled={isChannelSaving}
                   className="px-5 py-2.5 rounded-xl bg-primary text-on-primary hover:opacity-90 transition-colors disabled:opacity-60 disabled:cursor-wait"
                 >
-                  {isChannelSaving ? 'Dang luu...' : 'Save'}
+                  {isChannelSaving ? 'Saving...' : 'Save'}
                 </button>
               </div>
             </form>

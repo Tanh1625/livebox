@@ -87,6 +87,10 @@ export const serverApi = {
     return server;
   },
 
+  deleteServer: async (id: string): Promise<void> => {
+    await axiosClient.delete(`/api/v1/servers/${id}`);
+  },
+
   getServerMembers: async (serverId: string): Promise<MemberStatusResponse[]> => {
     const res = await axiosClient.get(`/api/v1/servers/${serverId}/members`);
     return (res as any).data || [];
