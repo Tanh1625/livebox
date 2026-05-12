@@ -3,7 +3,7 @@ import { useAuthStore } from "../features/auth/store/authStore";
 
 // In development (npm run dev), default to localhost unless VITE_API_URL explicitly points elsewhere.
 // Set VITE_USE_LOCAL=true in .env to force localhost even in other environments.
-const isDev = import.meta.env.DEV;
+// const isDev = import.meta.env.DEV;
 // const useLocal = import.meta.env.VITE_USE_LOCAL === "true" || isDev;
 const useLocal = false;
 const LOCAL_API_URL = "http://localhost:8080";
