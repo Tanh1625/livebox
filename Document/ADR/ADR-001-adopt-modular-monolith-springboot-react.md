@@ -143,6 +143,8 @@ We are building the **LiveBox Real-time Chat Platform**, a centralized collabora
 
 ### 3.3 Project Structure (Chuẩn thư mục)
 
+#### Backend (Modular Monolith)
+
 ```
 livebox-backend/
 ├── src/main/java/com/livebox/
@@ -155,6 +157,28 @@ livebox-backend/
 │   │   └── message/     ← WebSocket chat streams, unread badges, signaling
 │   └── LiveBoxApplication.java
 └── pom.xml
+```
+
+#### Frontend (Feature-based)
+
+```
+livebox-frontend/
+├── src/
+│   ├── assets/          ← Static assets: images, icons, fonts
+│   ├── components/      ← Shared UI components (Atomic design)
+│   ├── config/          ← App config: API endpoints, LiveKit, STOMP
+│   ├── features/        ← Feature-based modules (Mirroring Backend)
+│   │   ├── auth/        ← Login, Register, Profile
+│   │   ├── server/      ← Server management, Member lists
+│   │   ├── channel/     ← Channel creation, Voice room UI
+│   │   └── message/     ← Chat window, WebSocket handling
+│   ├── hooks/           ← Custom React hooks (logic reuse)
+│   ├── pages/           ← Page components (Login, Dashboard, Room)
+│   ├── store/           ← State management (Zustand stores)
+│   ├── utils/           ← Utility functions and constants
+│   └── main.tsx         ← Application entry point
+├── package.json
+└── vite.config.ts
 ```
 
 ---
@@ -205,6 +229,7 @@ livebox-backend/
 | 2026-04-16 | ADR-001 created for LiveBox. Status: **Accepted**.                                                      | Tech Lead AI |
 | 2026-05-09 | Updated Voice layer: replaced native WebRTC P2P with LiveKit SFU. See **ADR-002** for full rationale.   | Tech Lead AI |
 | 2026-05-11 | Updated Storage layer: Adopted Cloudinary for persistent image storage to handle PaaS ephemeral limits. | Tech Lead AI |
+| 2026-05-13 | Added Frontend project structure mirroring Backend modules to ADR-001.                                   | Tech Lead AI |
 
 ---
 
