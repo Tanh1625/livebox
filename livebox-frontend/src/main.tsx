@@ -9,6 +9,7 @@ import { InvitePreviewPage } from "./pages/server/InvitePreviewPage";
 import { MainApplicationPage } from "./pages/server/MainApplicationPage";
 import { OwnedServersPage } from "./pages/server/OwnedServersPage";
 import { ServerEmptyPage } from "./pages/server/ServerEmptyPage";
+import { AccountSettingsPage } from "./pages/user/AccountSettingsPage";
 
 import { ProtectedRoute } from "./components/auth/ProtectedRoute";
 import { LoadingSpinner } from "./components/ui/LoadingSpinner";
@@ -86,6 +87,14 @@ const AppRoot = () => {
           element={
             <ProtectedRoute>
               <MainApplicationPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/settings"
+          element={
+            <ProtectedRoute>
+              <AccountSettingsPage />
             </ProtectedRoute>
           }
         />

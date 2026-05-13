@@ -252,6 +252,13 @@ export const MainApplicationScreen: React.FC = () => {
                 </button>
                 <button
                   type="button"
+                  onClick={() => navigate('/settings')}
+                  className="w-full text-left px-3 py-2 rounded-lg text-sm text-on-surface hover:bg-white/5 transition-colors"
+                >
+                  Account Settings
+                </button>
+                <button
+                  type="button"
                   onClick={handleLogout}
                   className="w-full text-left px-3 py-2 rounded-lg text-sm text-error hover:bg-error/15 transition-colors"
                 >
