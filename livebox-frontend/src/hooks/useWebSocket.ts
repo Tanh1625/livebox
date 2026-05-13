@@ -3,6 +3,7 @@ import { Client, IMessage, StompSubscription } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import { MessageResponse } from '../features/message/types';
 import { MemberStatusResponse } from '../features/server/types';
+import { useAuthStore } from '../features/auth/store/authStore';
 
 interface UseWebSocketOptions {
   channelId: string | null;
@@ -17,6 +18,7 @@ type ExtendedStompClient = Client & {
 };
 
 export const useWebSocket = ({ channelId, serverId, onMessageReceived, onMemberStatusChanged }: UseWebSocketOptions) => {
+  const { accessToken } = useAuthStore();
   const stompClientRef = useRef<Client | null>(null);
 
   const onMessageReceivedRef = useRef(onMessageReceived);
@@ -46,11 +48,10 @@ export const useWebSocket = ({ channelId, serverId, onMessageReceived, onMemberS
   }, [serverId]);
 
   useEffect(() => {
-    const token = localStorage.getItem('access_token');
-    if (!token) return;
+    if (!accessToken) return;
 
     const client = new Client({
-      webSocketFactory: () => new SockJS(`${import.meta.env.VITE_API_URL}/ws?token=${token}`),
+      webSocketFactory: () => new SockJS(`${import.meta.env.VITE_API_URL}/ws?token=${accessToken}`),
       reconnectDelay: 5000,
       heartbeatIncoming: 4000,
       heartbeatOutgoing: 4000,
@@ -101,7 +102,7 @@ export const useWebSocket = ({ channelId, serverId, onMessageReceived, onMemberS
       client.deactivate();
       stompClientRef.current = null;
     };
-  }, []);
+  }, [accessToken]);
 
   // Handle dynamic channel subscription changes
   useEffect(() => {
