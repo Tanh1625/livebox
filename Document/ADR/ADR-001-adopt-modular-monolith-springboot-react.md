@@ -159,26 +159,29 @@ livebox-backend/
 └── pom.xml
 ```
 
-#### Frontend (Feature-based)
+#### Frontend (Feature-Driven Architecture)
 
 ```
-livebox-frontend/
-├── src/
-│   ├── assets/          ← Static assets: images, icons, fonts
-│   ├── components/      ← Shared UI components (Atomic design)
-│   ├── config/          ← App config: API endpoints, LiveKit, STOMP
-│   ├── features/        ← Feature-based modules (Mirroring Backend)
-│   │   ├── auth/        ← Login, Register, Profile
-│   │   ├── server/      ← Server management, Member lists
-│   │   ├── channel/     ← Channel creation, Voice room UI
-│   │   └── message/     ← Chat window, WebSocket handling
-│   ├── hooks/           ← Custom React hooks (logic reuse)
-│   ├── pages/           ← Page components (Login, Dashboard, Room)
-│   ├── store/           ← State management (Zustand stores)
-│   ├── utils/           ← Utility functions and constants
-│   └── main.tsx         ← Application entry point
-├── package.json
-└── vite.config.ts
+src/
+├── components/          ← Shared UI Design System
+│   ├── ui/              ← Atoms: Button, Input, Avatar (Stateless)
+│   ├── layout/          ← Molecules: SidebarWrapper, MainContainer
+│   └── shared/          ← Organisms: ModalConfirm, SearchBar
+├── features/            # Business Logic & Bounded Contexts
+│   ├── auth/            # Auth Feature
+│   │   ├── components/  # LoginForm, RegisterForm
+│   │   ├── hooks/       # useLogin, useUser
+│   │   ├── api/         # Auth-specific API calls
+│   │   └── types/       # Auth-specific types
+│   ├── server/          # Server Management Feature
+│   ├── channel/         # Channel Management Feature
+│   └── chat/            # Real-time Chat (Mirroring Backend Messaging)
+├── pages/               ← Route entry points (Composition only)
+├── layouts/             ← Layout templates (AuthLayout, AppLayout)
+├── hooks/               ← Global generic hooks (useDebounce, useLocalStorage)
+├── store/               ← Global state (Theme, Global Notifications)
+├── utils/               ← Pure helper functions
+└── config/              ← App constants & environment config
 ```
 
 ---
@@ -230,6 +233,7 @@ livebox-frontend/
 | 2026-05-09 | Updated Voice layer: replaced native WebRTC P2P with LiveKit SFU. See **ADR-002** for full rationale.   | Tech Lead AI |
 | 2026-05-11 | Updated Storage layer: Adopted Cloudinary for persistent image storage to handle PaaS ephemeral limits. | Tech Lead AI |
 | 2026-05-13 | Added Frontend project structure mirroring Backend modules to ADR-001.                                   | Tech Lead AI |
+| 2026-05-13 | Restructured FE architecture to Feature-Driven + Atomic Design for scalability.                         | Tech Lead AI |
 
 ---
 

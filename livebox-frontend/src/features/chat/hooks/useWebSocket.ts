@@ -1,9 +1,9 @@
 import { useEffect, useRef, useCallback } from 'react';
 import { Client, IMessage, StompSubscription } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
-import { MessageResponse } from '../features/message/types';
-import { MemberStatusResponse } from '../features/server/types';
-import { useAuthStore } from '../features/auth/store/authStore';
+import { MessageResponse } from '../types';
+import { MemberStatusResponse } from '../../server/types';
+import { useAuthStore } from '../../auth/store/authStore';
 
 interface UseWebSocketOptions {
   channelId: string | null;

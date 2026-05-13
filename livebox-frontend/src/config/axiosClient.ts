@@ -5,7 +5,7 @@ import { useAuthStore } from "../features/auth/store/authStore";
 // Set VITE_USE_LOCAL=true in .env to force localhost even in other environments.
 // const isDev = import.meta.env.DEV;
 // const useLocal = import.meta.env.VITE_USE_LOCAL === "true" || isDev;
-const useLocal = false;
+const useLocal = true;
 const LOCAL_API_URL = "http://localhost:8080";
 const DEPLOYED_API_URL = import.meta.env.VITE_API_URL as string;
 
