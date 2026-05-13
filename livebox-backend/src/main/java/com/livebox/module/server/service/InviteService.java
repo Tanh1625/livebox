@@ -13,6 +13,7 @@ import com.livebox.module.server.entity.InviteCode;
 import com.livebox.module.server.entity.Membership;
 import com.livebox.module.server.entity.Role;
 import com.livebox.module.server.entity.Server;
+import com.livebox.module.server.mapper.ServerMapper;
 import com.livebox.module.server.repository.BanListRepository;
 import com.livebox.module.server.repository.InviteCodeRepository;
 import com.livebox.module.server.repository.MembershipRepository;
@@ -45,6 +46,7 @@ public class InviteService {
     private final InviteCodeRepository inviteCodeRepository;
     private final UserRepository userRepository;
     private final MembershipGuard membershipGuard;
+    private final ServerMapper serverMapper;
 
     /**
      * LB-202: Generates a new invite link for the server (Owner only).
@@ -147,7 +149,7 @@ public class InviteService {
 
         // Check if the user is already a member
         if (membershipRepository.existsByUserIdAndServerId(currentUserId, serverId)) {
-            return ServerResponse.fromEntity(invite.getServer());
+            return serverMapper.toResponse(invite.getServer());
         }
 
         // Create a new Membership
@@ -160,6 +162,6 @@ public class InviteService {
         membership.setJoinedAt(Instant.now());
         membershipRepository.save(membership);
 
-        return ServerResponse.fromEntity(invite.getServer());
+        return serverMapper.toResponse(invite.getServer());
     }
 }

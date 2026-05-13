@@ -10,6 +10,7 @@ import com.livebox.module.auth.repository.UserRepository;
 import com.livebox.module.server.dto.ServerCreateRequest;
 import com.livebox.module.server.dto.ServerUpdateRequest;
 import com.livebox.module.server.dto.ServerResponse;
+import com.livebox.module.server.mapper.ServerMapper;
 import com.livebox.module.server.entity.BanList;
 import com.livebox.module.server.entity.Membership;
 import com.livebox.module.server.entity.Role;
@@ -37,6 +38,7 @@ public class ServerService {
     private final UserRepository userRepository;
     private final MembershipGuard membershipGuard;
     private final FileUploadService fileUploadService;
+    private final ServerMapper serverMapper;
 
     @Transactional
     public ServerResponse createServer(ServerCreateRequest request) {
@@ -62,14 +64,14 @@ public class ServerService {
         membership.setJoinedAt(Instant.now());
         membershipRepository.save(membership);
 
-        return ServerResponse.fromEntity(server);
+        return serverMapper.toResponse(server);
     }
 
     @Transactional(readOnly = true)
     public List<ServerResponse> getMyServers() {
         UUID currentUserId = SecurityUtils.getCurrentUserId();
         return membershipRepository.findByUserId(currentUserId).stream()
-                .map(m -> ServerResponse.fromEntity(m.getServer()))
+                .map(m -> serverMapper.toResponse(m.getServer()))
                 .collect(Collectors.toList());
     }
 
@@ -82,7 +84,7 @@ public class ServerService {
     public List<ServerResponse> getMyOwnedServers() {
         UUID currentUserId = SecurityUtils.getCurrentUserId();
         return serverRepository.findByOwnerId(currentUserId).stream()
-                .map(ServerResponse::fromEntity)
+                .map(serverMapper::toResponse)
                 .collect(Collectors.toList());
     }
 
@@ -92,7 +94,7 @@ public class ServerService {
         membershipGuard.requireMembership(id, currentUserId);
         Server server = serverRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Server not found with id: " + id));
-        return ServerResponse.fromEntity(server);
+        return serverMapper.toResponse(server);
     }
 
     @Transactional
@@ -114,7 +116,7 @@ public class ServerService {
             server.setAvatarUrl(avatarUrl);
         }
 
-        return ServerResponse.fromEntity(serverRepository.save(server));
+        return serverMapper.toResponse(serverRepository.save(server));
     }
 
     @Transactional

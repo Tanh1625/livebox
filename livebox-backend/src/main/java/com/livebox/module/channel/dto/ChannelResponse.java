@@ -16,14 +16,4 @@ public class ChannelResponse {
     private String name;
     private ChannelType type;
     private Instant createdAt;
-
-    public static ChannelResponse fromEntity(Channel channel) {
-        return ChannelResponse.builder()
-                .id(channel.getId())
-                .serverId(channel.getServerId())
-                .name(channel.getName())
-                .type(channel.getType())
-                .createdAt(channel.getCreatedAt())
-                .build();
-    }
 }

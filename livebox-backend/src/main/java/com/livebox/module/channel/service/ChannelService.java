@@ -7,6 +7,7 @@ import com.livebox.common.util.SecurityUtils;
 import com.livebox.module.channel.dto.ChannelCreateRequest;
 import com.livebox.module.channel.dto.ChannelResponse;
 import com.livebox.module.channel.entity.Channel;
+import com.livebox.module.channel.mapper.ChannelMapper;
 import com.livebox.module.channel.repository.ChannelRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -27,6 +28,7 @@ public class ChannelService {
 
     private final ChannelRepository channelRepository;
     private final MembershipGuard membershipGuard;
+    private final ChannelMapper channelMapper;
 
     /**
      * LB-302: Tạo channel mới trong server. Chỉ Owner được phép.
@@ -42,7 +44,7 @@ public class ChannelService {
                 .type(request.getType())
                 .build();
         channel = channelRepository.save(channel);
-        return ChannelResponse.fromEntity(channel);
+        return channelMapper.toResponse(channel);
     }
 
     /**
@@ -54,7 +56,7 @@ public class ChannelService {
         membershipGuard.requireMembership(serverId, currentUserId); // Member only
 
         return channelRepository.findByServerId(serverId).stream()
-                .map(ChannelResponse::fromEntity)
+                .map(channelMapper::toResponse)
                 .collect(Collectors.toList());
     }
 
@@ -74,7 +76,7 @@ public class ChannelService {
         }
 
         channel.setName(newName.toLowerCase().replace(" ", "-"));
-        return ChannelResponse.fromEntity(channelRepository.save(channel));
+        return channelMapper.toResponse(channelRepository.save(channel));
     }
 
     /**

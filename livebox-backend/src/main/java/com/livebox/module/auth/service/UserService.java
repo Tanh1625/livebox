@@ -8,6 +8,7 @@ import com.livebox.module.auth.dto.ChangePasswordRequest;
 import com.livebox.module.auth.dto.UserProfileResponse;
 import com.livebox.module.auth.dto.UserProfileUpdateRequest;
 import com.livebox.module.auth.entity.User;
+import com.livebox.module.auth.mapper.UserMapper;
 import com.livebox.module.auth.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -24,13 +25,14 @@ public class UserService {
     private final UserRepository userRepository;
     private final FileUploadService fileUploadService;
     private final PasswordEncoder passwordEncoder;
+    private final UserMapper userMapper;
 
     @Transactional(readOnly = true)
     public UserProfileResponse getMyProfile() {
         UUID currentUserId = SecurityUtils.getCurrentUserId();
         User user = userRepository.findById(currentUserId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        return UserProfileResponse.fromEntity(user);
+        return userMapper.toUserProfileResponse(user);
     }
 
     @Transactional
@@ -49,7 +51,7 @@ public class UserService {
         }
 
         user = userRepository.save(user);
-        return UserProfileResponse.fromEntity(user);
+        return userMapper.toUserProfileResponse(user);
     }
 
     @Transactional
