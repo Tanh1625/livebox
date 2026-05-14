@@ -4,16 +4,17 @@ import { persist, createJSONStorage } from "zustand/middleware";
 interface User {
   id: string;
   email: string;
-  username?: string;
-  displayName?: string; // Fallback or alias
+  displayName?: string;
   avatarUrl?: string;
+  bio?: string;
 }
 
 interface AuthState {
   isAuthenticated: boolean;
   accessToken: string | null;
   user: User | null;
-  setToken: (token: string, userData?: any) => void;
+  setToken: (token: string) => void;
+  updateUser: (userData: Partial<User>) => void;
   logout: () => void;
 }
 
@@ -68,6 +69,12 @@ export const useAuthStore = create<AuthState>()(
         }
         
         set({ accessToken: token, isAuthenticated: true, user });
+      },
+
+      updateUser: (userData: Partial<User>) => {
+        set((state) => ({
+          user: state.user ? { ...state.user, ...userData } : null,
+        }));
       },
 
       logout: () => {

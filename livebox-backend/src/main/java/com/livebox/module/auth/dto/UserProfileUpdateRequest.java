@@ -13,4 +13,8 @@ public class UserProfileUpdateRequest {
 
     @Schema(description = "Ảnh đại diện mới")
     private MultipartFile avatar;
+
+    @Schema(example = "I am a developer", description = "Tiểu sử mới")
+    @Size(max = 255, message = "Bio must be at most 255 characters")
+    private String bio;
 }

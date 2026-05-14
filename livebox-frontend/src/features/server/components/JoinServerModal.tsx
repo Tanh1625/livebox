@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '../../../components/ui/Button';
 import { Input } from '../../../components/ui/Input';
+import { Modal } from '../../../components/ui/Modal';
+import { toast } from '../../../store/useToastStore';
 
 interface JoinServerModalProps {
   isOpen: boolean;
@@ -15,14 +17,11 @@ export const JoinServerModal: React.FC<JoinServerModalProps> = ({
   const navigate = useNavigate();
   const [inviteCode, setInviteCode] = useState('');
   const [isLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  if (!isOpen) return null;
 
   const handlePreview = () => {
     const trimmed = inviteCode.trim();
     if (!trimmed) {
-      setError('Vui lòng nhập mã mời');
+      toast.error('Please enter an invite code or URL');
       return;
     }
 
@@ -37,68 +36,56 @@ export const JoinServerModal: React.FC<JoinServerModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 bg-surface-container-lowest/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
-      <div className="w-full max-w-[480px] glass-morphism bg-surface-container-low/90 rounded-2xl overflow-hidden shadow-[0_24px_64px_rgba(0,0,0,0.45)] border border-outline-variant/20">
-        {/* Header */}
-        <div className="px-8 pt-8 pb-4 flex justify-between items-center">
-          <div>
-            <h2 className="text-2xl font-bold font-headline text-on-surface tracking-tight">Join a Server</h2>
-            <p className="text-on-surface-variant text-sm mt-1">Enter an invite code to join an existing cluster.</p>
-          </div>
-          <button 
-            onClick={onClose}
-            className="p-2 rounded-full hover:bg-white/5 transition-colors text-outline hover:text-on-surface"
-          >
-            <span className="material-symbols-outlined">close</span>
-          </button>
-        </div>
-
-        {/* Body */}
-        <div className="px-8 py-6 space-y-6">
-          <div className="space-y-4">
-            <Input
-              label="Invite Code"
-              placeholder="e.g. HT-789-XP"
-              value={inviteCode}
-              onChange={(e) => setInviteCode(e.target.value)}
-              icon="link"
-              error={error || undefined}
-              disabled={isLoading}
-            />
-            
-            <div className="bg-surface-container-high/50 p-4 rounded-xl border border-white/5">
-              <h4 className="text-[10px] font-bold uppercase tracking-widest text-primary mb-2">Example formats</h4>
-              <ul className="text-xs text-on-surface-variant space-y-1">
-                <li className="flex items-center gap-2">
-                  <span className="w-1 h-1 bg-primary rounded-full"></span>
-                  h7x8p2
-                </li>
-                <li className="flex items-center gap-2">
-                  <span className="w-1 h-1 bg-primary rounded-full"></span>
-                  https://livebox.gg/invite/h7x8p2
-                </li>
-              </ul>
-            </div>
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      title="Join a Server"
+    >
+      <div className="space-y-8 py-2">
+        <div className="space-y-6">
+          <p className="text-sm text-outline/60 -mt-2">Enter an invite code to join an existing cluster.</p>
+          
+          <Input 
+            label="Neural Link ID"
+            placeholder="Enter server address..."
+            value={inviteCode}
+            onChange={(e) => setInviteCode(e.target.value)}
+            icon="link"
+            disabled={isLoading}
+          />
+          
+          <div className="bg-surface-container-high/30 p-5 rounded-[1.5rem] border border-white/5 space-y-3">
+            <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/80">Protocol Formats</h4>
+            <ul className="text-xs text-on-surface-variant space-y-2">
+              <li className="flex items-center gap-3">
+                <div className="w-1.5 h-1.5 bg-primary rounded-full shadow-[0_0_8px_#81ecff]" />
+                <code className="text-primary/70 font-mono">h7x8p2</code>
+              </li>
+              <li className="flex items-center gap-3">
+                <div className="w-1.5 h-1.5 bg-primary rounded-full shadow-[0_0_8px_#81ecff]" />
+                <code className="text-primary/70 font-mono">https://livebox.gg/invite/h7x8p2</code>
+              </li>
+            </ul>
           </div>
         </div>
 
-        {/* Footer */}
-        <div className="px-8 py-6 bg-surface-container-low/50 flex flex-col gap-3">
+        <div className="flex flex-col gap-3 pt-4">
           <Button 
             onClick={handlePreview} 
             isLoading={isLoading}
-            className="w-full py-4 text-sm font-bold tracking-widest uppercase"
+            className="w-full"
+            size="lg"
           >
-            Check Invitation
+            Transmit Join Signal
           </Button>
           <button 
             onClick={onClose}
-            className="w-full py-3 text-xs font-semibold text-outline hover:text-on-surface transition-colors"
+            className="w-full py-3 text-[10px] font-black uppercase tracking-[0.2em] text-outline/40 hover:text-on-surface transition-colors"
           >
-            Back to Base
+            Cancel Signal
           </button>
         </div>
       </div>
-    </div>
+    </Modal>
   );
 };

@@ -50,6 +50,10 @@ public class UserService {
             user.setAvatarUrl(avatarUrl);
         }
 
+        if (request.getBio() != null) {
+            user.setBio(request.getBio());
+        }
+
         user = userRepository.save(user);
         return userMapper.toUserProfileResponse(user);
     }

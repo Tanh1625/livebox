@@ -947,8 +947,6 @@ export const OwnedServersScreen: React.FC = () => {
         <InviteFriendsModal
           server={inviteServer}
           onClose={closeInviteModal}
-          onSuccess={(msg) => setPopup({ title: 'Success', message: msg, variant: 'success' })}
-          onError={(msg) => setPopup({ title: 'Error', message: msg, variant: 'error' })}
         />
       )}
     </div>

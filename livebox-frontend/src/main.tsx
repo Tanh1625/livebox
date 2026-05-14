@@ -13,6 +13,7 @@ import { AccountSettingsPage } from "./pages/user/AccountSettingsPage";
 
 import { ProtectedRoute } from "./components/auth/ProtectedRoute";
 import { LoadingSpinner } from "./components/ui/LoadingSpinner";
+import { ToastContainer } from "./components/ui/ToastContainer";
 import axiosClient from "./config/axiosClient";
 import { useAuthStore } from "./features/auth/store/authStore";
 
@@ -53,6 +54,7 @@ const AppRoot = () => {
 
   return (
     <BrowserRouter>
+      <ToastContainer />
       <Routes>
         {/* Public Routes */}
         <Route path="/" element={<LoginPage />} />

@@ -7,6 +7,7 @@ import { authApi } from '../api/authApi';
 import { useAuthStore } from '../store/authStore';
 import { LoginRequest } from '../types';
 import { serverApi } from '../../server/api/serverApi';
+import { toast } from '@/store/useToastStore';
 
 export const LoginForm: React.FC = () => {
   const { register, handleSubmit, formState: { errors } } = useForm<LoginRequest>();
@@ -45,7 +46,8 @@ export const LoginForm: React.FC = () => {
       const response = await authApi.login(data);
       
       if (response && response.accessToken) {
-        setToken(response.accessToken, response.user);
+        setToken(response.accessToken);
+        toast.success('Access granted. Synchronizing neural link...');
 
         try {
           const joinedServers = await serverApi.getMyServers();
@@ -61,7 +63,9 @@ export const LoginForm: React.FC = () => {
       }
     } catch (error : unknown) {
       console.error('Login failed:', error);
-      setServerError((error as { response?: { data?: { message?: string } } }).response?.data?.message || 'Failed to connect to the server. Please try again.');
+      const message = (error as { response?: { data?: { message?: string } } }).response?.data?.message || 'Failed to connect to the server. Please try again.';
+      setServerError(message);
+      toast.error(message);
     } finally {
       setIsLoading(false);
     }

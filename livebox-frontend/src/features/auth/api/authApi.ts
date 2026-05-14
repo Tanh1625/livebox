@@ -14,5 +14,9 @@ export const authApi = {
   register: async (data: RegisterRequest): Promise<TokenResponse> => {
     const res = await axiosClient.post<unknown, { data: TokenResponse }>('/api/v1/auth/register', data);
     return res.data;
+  },
+
+  logout: async (): Promise<void> => {
+    await axiosClient.post('/api/v1/auth/logout');
   }
 };

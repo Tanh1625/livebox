@@ -9,8 +9,7 @@ interface MemberListProps {
 
 export const MemberList: React.FC<MemberListProps> = ({
   members,
-  isLoading,
-  // onClose
+  isLoading
 }) => {
   const onlineMembers = members.filter(m => m.online);
   const offlineMembers = members.filter(m => !m.online);
