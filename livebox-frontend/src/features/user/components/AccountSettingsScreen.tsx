@@ -12,7 +12,6 @@ import { authApi } from '../../auth/api/authApi';
 type SettingsTab = 'MY_ACCOUNT' | 'APPEARANCE' | 'NOTIFICATIONS' | 'PRIVACY' | 'VOICE';
 
 export const AccountSettingsScreen: React.FC = () => {
-  const setToken = useAuthStore(state => state.setToken);
   const { user, updateUser, logout } = useAuthStore();
   const navigate = useNavigate();
 
