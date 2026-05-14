@@ -11,6 +11,7 @@ import { JoinServerModal } from './JoinServerModal';
 import { messageApi } from '../../chat/api/messageApi';
 import type { MessageResponse } from '../../chat/types';
 import { VoiceRoomTest } from '../../channel/components/VoiceRoomTest';
+import { authApi } from '../../auth/api/authApi';
 
 // New specialized components
 import { ServerSidebar } from './ServerSidebar';
@@ -127,8 +128,13 @@ export const MainApplicationScreen: React.FC = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     setIsSettingsOpen(false);
+    try {
+      await authApi.logout();
+    } catch (err) {
+      console.error('Backend logout failed', err);
+    }
     logout();
     navigate('/login');
   };

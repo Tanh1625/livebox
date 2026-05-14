@@ -4,6 +4,9 @@ import { persist, createJSONStorage } from "zustand/middleware";
 interface User {
   id: string;
   email: string;
+  displayName?: string;
+  avatarUrl?: string;
+  bio?: string;
 }
 
 interface AuthState {
@@ -11,6 +14,7 @@ interface AuthState {
   accessToken: string | null;
   user: User | null;
   setToken: (token: string) => void;
+  updateUser: (userData: Partial<User>) => void;
   logout: () => void;
 }
 
@@ -58,6 +62,12 @@ export const useAuthStore = create<AuthState>()(
         // Note: Refresh token is handled by HTTPOnly cookie automatically via backend Set-Cookie
         const user = decodeToken(token);
         set({ accessToken: token, isAuthenticated: true, user });
+      },
+
+      updateUser: (userData: Partial<User>) => {
+        set((state) => ({
+          user: state.user ? { ...state.user, ...userData } : null,
+        }));
       },
 
       logout: () => {

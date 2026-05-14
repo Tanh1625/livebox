@@ -36,4 +36,7 @@ public class User extends BaseEntity {
 
     @Column(name = "avatar_url")
     private String avatarUrl;
+
+    @Column(name = "bio", length = 255)
+    private String bio;
 }

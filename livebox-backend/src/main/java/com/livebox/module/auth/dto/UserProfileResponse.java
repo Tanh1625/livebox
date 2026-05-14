@@ -9,4 +9,5 @@ public class UserProfileResponse {
     private String email;
     private String displayName;
     private String avatarUrl;
+    private String bio;
 }

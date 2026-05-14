@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../../auth/store/authStore';
 import { JoinServerModal } from './JoinServerModal';
+import { authApi } from '../../auth/api/authApi';
 
 export const ServerEmptyScreen: React.FC = () => {
   const navigate = useNavigate();
@@ -9,8 +10,13 @@ export const ServerEmptyScreen: React.FC = () => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isJoinModalOpen, setIsJoinModalOpen] = useState(false);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     setIsSettingsOpen(false);
+    try {
+      await authApi.logout();
+    } catch (err) {
+      console.error('Backend logout failed', err);
+    }
     logout();
     navigate('/login');
   };

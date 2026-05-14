@@ -1,22 +1,104 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ProfileSection } from './ProfileSection';
+import { useAuthStore } from '../../auth/store/authStore';
+import { userApi } from '../api/userApi';
+import { UserProfileUpdateRequest } from '../types';
 import { AppearanceSection } from './AppearanceSection';
 import { NotificationSection } from './NotificationSection';
-import { useAuthStore } from '../../auth/store/authStore';
+import { ProfileSection } from './ProfileSection';
+import { toast } from '@/store/useToastStore';
+import { authApi } from '../../auth/api/authApi';
 
 type SettingsTab = 'MY_ACCOUNT' | 'APPEARANCE' | 'NOTIFICATIONS' | 'PRIVACY' | 'VOICE';
 
 export const AccountSettingsScreen: React.FC = () => {
+  const setToken = useAuthStore(state => state.setToken);
+  const { user, updateUser, logout } = useAuthStore();
   const navigate = useNavigate();
-  const { user } = useAuthStore();
+
+  const handleLogout = async () => {
+    try {
+      await authApi.logout();
+    } catch (err) {
+      console.error('Backend logout failed', err);
+    }
+    logout();
+    navigate('/login');
+  };
   const [activeTab, setActiveTab] = useState<SettingsTab>('MY_ACCOUNT');
   
-  const [displayName, setDisplayName] = useState(user?.email?.split('@')[0] || 'DOTUANANH1625');
+  const [displayName, setDisplayName] = useState('');
+  const [bio, setBio] = useState('');
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
+  const [avatarPreview, setAvatarPreview] = useState<string | undefined>(undefined);
+  
+  // Sync with store when user data becomes available
+  useEffect(() => {
+    if (user) {
+      setDisplayName(prev => prev || user.displayName || user.email?.split('@')[0] || '');
+      setBio(prev => prev || user.bio || '');
+      setAvatarPreview(prev => prev || user.avatarUrl);
+    }
+  }, [user]);
+  
   const [theme, setTheme] = useState<'LIGHT' | 'DARK'>('DARK');
   const [scaling, setScaling] = useState(100);
   const [webNotifications, setWebNotifications] = useState(true);
   const [soundAlerts, setSoundAlerts] = useState(false);
+  
+  const [isSaving, setIsSaving] = useState(false);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const fullProfile = await userApi.getProfile();
+        updateUser(fullProfile);
+        
+        // Update local state with fetched profile data
+        setDisplayName(fullProfile.displayName || user?.email?.split('@')[0] || '');
+        setBio(fullProfile.bio || '');
+        setAvatarPreview(fullProfile.avatarUrl);
+      } catch (error) {
+        console.error('Failed to fetch profile:', error);
+      }
+    };
+
+    fetchProfile();
+  }, []); // Run once on mount
+
+
+  const handleAvatarChange = (file: File) => {
+    setAvatarFile(file);
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setAvatarPreview(reader.result as string);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleSave = async () => {
+    try {
+      setIsSaving(true);
+      const updateData: UserProfileUpdateRequest = {
+        displayName,
+        bio,
+        avatar: avatarFile || undefined
+      };
+      
+      const updatedUser = await userApi.updateProfile(updateData);
+      updateUser(updatedUser);
+      setAvatarPreview(updatedUser.avatarUrl);
+      setAvatarFile(null);
+      toast.success('Identity synchronized successfully');
+    } catch (error : any) {
+      console.error('Failed to update profile:', error);
+      const message = error.response?.data?.message || 'Failed to update identity';
+      toast.error(message);
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
 
   const SidebarItem: React.FC<{ id: SettingsTab; label: string; danger?: boolean }> = ({ id, label, danger }) => (
     <button
@@ -41,12 +123,18 @@ export const AccountSettingsScreen: React.FC = () => {
       case 'MY_ACCOUNT':
         return (
           <ProfileSection 
+            userId={user?.id || ''}
             displayName={displayName}
             onDisplayNameChange={setDisplayName}
+            bio={bio}
+            onBioChange={setBio}
             tier="Pro"
             isVerified={true}
-            avatarUrl={user?.avatarUrl}
-            onChangeAvatar={() => console.log('Change avatar clicked')}
+            avatarUrl={avatarPreview}
+            onAvatarChange={handleAvatarChange}
+            email={user?.email || ''}
+            onSave={handleSave}
+            isSaving={isSaving}
           />
         );
       case 'APPEARANCE':
@@ -102,7 +190,7 @@ export const AccountSettingsScreen: React.FC = () => {
           <div className="h-[1px] bg-gradient-to-r from-transparent via-outline-variant/20 to-transparent my-6 mx-3"></div>
           
           <button
-            onClick={() => navigate('/login')}
+            onClick={handleLogout}
             className="w-full text-left px-3 py-2 rounded-lg text-sm text-error/80 hover:bg-error/10 hover:text-error transition-all font-medium flex items-center gap-3"
           >
             <span className="material-symbols-outlined text-lg">logout</span>
@@ -111,7 +199,7 @@ export const AccountSettingsScreen: React.FC = () => {
           
           <div className="px-3 py-8">
             <p className="text-[10px] text-outline/40 uppercase tracking-widest font-black">LiveBox Ignite</p>
-            <p className="text-[9px] text-outline/30 mt-1">Stable v1.0.4 (992) — 2026-05-13</p>
+            <p className="text-[9px] text-outline/30 mt-1">Stable v1.0.4 (992) — 2026-05-14</p>
           </div>
         </div>
       </aside>
@@ -124,29 +212,6 @@ export const AccountSettingsScreen: React.FC = () => {
           </div>
         </div>
 
-        {/* Action Bar */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 w-full max-w-[700px] px-4 z-50">
-          <div className="bg-surface-container-high/80 backdrop-blur-2xl rounded-2xl p-4 flex items-center justify-between border border-white/5 shadow-[0_20px_50px_rgba(0,0,0,0.5)] animate-in fade-in slide-in-from-bottom-4 duration-300">
-            <div className="flex items-center gap-3 pl-2">
-              <div className="w-2 h-2 bg-primary rounded-full animate-pulse shadow-[0_0_8px_rgba(129,236,255,1)]" />
-              <p className="text-sm font-bold tracking-tight">Careful — you have unsaved changes!</p>
-            </div>
-            <div className="flex gap-2">
-              <button 
-                onClick={() => window.location.reload()}
-                className="px-5 py-2 text-xs font-black uppercase tracking-widest hover:text-primary transition-colors"
-              >
-                Reset
-              </button>
-              <button 
-                onClick={() => console.log('Saved')}
-                className="px-8 py-2 bg-primary text-on-primary-fixed rounded-xl text-xs font-black uppercase tracking-widest shadow-[0_4px_20px_rgba(129,236,255,0.3)] hover:shadow-[0_4px_25px_rgba(129,236,255,0.5)] hover:-translate-y-0.5 transition-all active:translate-y-0"
-              >
-                Save Changes
-              </button>
-            </div>
-          </div>
-        </div>
       </main>
 
       {/* Exit Button Container */}

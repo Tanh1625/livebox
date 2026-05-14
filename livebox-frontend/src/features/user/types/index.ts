@@ -1,15 +1,18 @@
 export interface UserProfile {
   id: string;
-  displayName: string;
   email: string;
+  displayName: string;
   avatarUrl?: string;
-  isVerified: boolean;
-  tier: 'FREE' | 'PRO';
+  bio?: string;
 }
 
-export interface UserSettings {
-  theme: 'LIGHT' | 'DARK';
-  interfaceScaling: number;
-  webNotifications: boolean;
-  soundAlerts: boolean;
+export interface UserProfileUpdateRequest {
+  displayName?: string;
+  avatar?: File;
+  bio?: string;
+}
+
+export interface ChangePasswordRequest {
+  currentPassword: string;
+  newPassword: string;
 }
