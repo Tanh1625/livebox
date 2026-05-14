@@ -4,13 +4,16 @@ import { persist, createJSONStorage } from "zustand/middleware";
 interface User {
   id: string;
   email: string;
+  username?: string;
+  displayName?: string; // Fallback or alias
+  avatarUrl?: string;
 }
 
 interface AuthState {
   isAuthenticated: boolean;
   accessToken: string | null;
   user: User | null;
-  setToken: (token: string) => void;
+  setToken: (token: string, userData?: any) => void;
   logout: () => void;
 }
 
@@ -54,9 +57,16 @@ export const useAuthStore = create<AuthState>()(
       accessToken: null,
       user: null,
 
-      setToken: (token: string) => {
-        // Note: Refresh token is handled by HTTPOnly cookie automatically via backend Set-Cookie
-        const user = decodeToken(token);
+      setToken: (token: string, userData?: any) => {
+        // If userData is provided (e.g. from login/refresh response body), use it.
+        // Otherwise, decode the token as a fallback.
+        let user = userData || decodeToken(token);
+        
+        // Map backend 'username' to 'displayName' if needed by FE components
+        if (user && user.username && !user.displayName) {
+          user = { ...user, displayName: user.username };
+        }
+        
         set({ accessToken: token, isAuthenticated: true, user });
       },
 

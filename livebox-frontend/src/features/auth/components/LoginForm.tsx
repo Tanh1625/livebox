@@ -45,7 +45,7 @@ export const LoginForm: React.FC = () => {
       const response = await authApi.login(data);
       
       if (response && response.accessToken) {
-        setToken(response.accessToken);
+        setToken(response.accessToken, response.user);
 
         try {
           const joinedServers = await serverApi.getMyServers();

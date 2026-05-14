@@ -26,9 +26,12 @@ const AppRoot = () => {
     const silentRefresh = async () => {
       try {
         const response = await axiosClient.post("/api/v1/auth/refresh");
-        const token = response.data?.accessToken || response.data; // Depending on interceptor behavior
+        // response is the ApiResponse object from the interceptor
+        const token = response.data?.accessToken;
+        const userData = response.data?.user;
+        
         if (token) {
-          setToken(token);
+          setToken(token, userData);
         } else {
           logout();
         }

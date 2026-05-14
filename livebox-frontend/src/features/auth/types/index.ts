@@ -14,4 +14,10 @@ export interface TokenResponse {
   refreshToken: string;
   tokenType?: string;
   expiresIn?: number;
+  user: {
+    id: string;
+    email: string;
+    username: string;
+    avatarUrl?: string;
+  };
 }
