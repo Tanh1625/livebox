@@ -75,3 +75,11 @@ livekit:
 
 cloudinary:
   url: ${CLOUDINARY_URL}
+
+# ── Custom LiveBox Config ─────────────────────────────────────────────────────
+livebox:
+  cookie:
+    secure: ${COOKIE_SECURE:false}
+    same-site: ${COOKIE_SAME_SITE:Lax}
+  jwt:
+    refresh-expiration: ${JWT_REFRESH_EXPIRY_MS:604800000}

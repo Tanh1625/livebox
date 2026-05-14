@@ -31,6 +31,12 @@ public class AuthController {
     @Value("${livebox.jwt.refresh-expiration:604800000}")
     private long refreshExpirationMs;
 
+    @Value("${livebox.cookie.secure:false}")
+    private boolean cookieSecure;
+
+    @Value("${livebox.cookie.same-site:Lax}")
+    private String cookieSameSite;
+
     // LB-101: Đăng ký tài khoản mới
     @PostMapping("/register")
     public ResponseEntity<ApiResponse<TokenResponse>> register(@Valid @RequestBody RegisterRequest request) {
@@ -82,10 +88,10 @@ public class AuthController {
     private ResponseCookie createRefreshTokenCookie(String refreshToken, long maxAgeSecs) {
         return ResponseCookie.from("refreshToken", refreshToken)
                 .httpOnly(true)
-                .secure(false) // Set false for localhost dev, should be true in prod
+                .secure(cookieSecure)
                 .path("/api/v1/auth")
                 .maxAge(maxAgeSecs)
-                .sameSite("Strict")
+                .sameSite(cookieSameSite)
                 .build();
     }
 }

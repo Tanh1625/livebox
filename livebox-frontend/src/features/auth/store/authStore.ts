@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { persist, createJSONStorage } from "zustand/middleware";
 
 interface User {
   id: string;
@@ -46,19 +47,29 @@ const decodeToken = (token: string): User | null => {
   }
 };
 
-export const useAuthStore = create<AuthState>((set) => ({
-  isAuthenticated: false,
-  accessToken: null,
-  user: null,
+export const useAuthStore = create<AuthState>()(
+  persist(
+    (set) => ({
+      isAuthenticated: false,
+      accessToken: null,
+      user: null,
 
-  setToken: (token: string) => {
-    // Note: Refresh token is handled by HTTPOnly cookie automatically via backend Set-Cookie
-    const user = decodeToken(token);
-    set({ accessToken: token, isAuthenticated: true, user });
-  },
+      setToken: (token: string) => {
+        // Note: Refresh token is handled by HTTPOnly cookie automatically via backend Set-Cookie
+        const user = decodeToken(token);
+        set({ accessToken: token, isAuthenticated: true, user });
+      },
 
-  logout: () => {
-    // Cookie is cleared by the backend
-    set({ accessToken: null, isAuthenticated: false, user: null });
-  },
-}));
+      logout: () => {
+        // Cookie is cleared by the backend
+        set({ accessToken: null, isAuthenticated: false, user: null });
+        // Clear storage explicitly to be safe
+        localStorage.removeItem("auth-storage");
+      },
+    }),
+    {
+      name: "auth-storage", // unique name for the item in storage
+      storage: createJSONStorage(() => localStorage),
+    },
+  ),
+);
